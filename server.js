@@ -27,25 +27,33 @@ app.use((req, res, next) => {
 
 
 var requestToken = function (req, res, next) {
-  const resQuery = f.query(`select * from "authorization"`);
-  var tokens = req.get('authorization')
-  resQuery.then((a) => {
-    // console.log(a.rows);
-    var rows = a.rows;
-    var adaToken = 0;
-    for (var i in rows) {
-      if (tokens == rows[i].accessToken) {
-        adaToken = 1
+  if (req.path != "/auth/login/" && req.path != "/") {
+    console.log('lewat');
+  } else {
+    const resQuery = f.query(`select * from "authorization"`);
+    var tokens = req.get('authorization')
+    resQuery.then((a) => {
+      // console.log(a.rows);
+      var rows = a.rows;
+      var adaToken = 0;
+      for (var i in rows) {
+        if (tokens == rows[i].accessToken) {
+          adaToken = 1
+        }
       }
-    }
-    if (adaToken == 0) {
-      res.send('Not Authorization')
-    } else {
-      console.log('silahkan lewat');
-      next();
-    }
-  })
-  // console.log(req.get('authorization'));
+      if (adaToken == 0) {
+        res.send('Not Authorization')
+      } else {
+        console.log('silahkan lewat');
+        next();
+      }
+    })
+  }
+
+
+
+
+
   // res.send("tester")
 }
 
