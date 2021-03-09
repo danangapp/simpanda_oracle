@@ -43,8 +43,7 @@ const MstBktPandu = function (mstbktpandu) {
 };
 
 MstBktPandu.create = async(newMstBktPandu, result) => {
-		newMstBktPandu.id = "mst_bkt_pandu_seq.nextval"
-		const hv = f.headerValue(newMstBktPandu);
+		const hv = await f.headerValue(newMstBktPandu, "mst_bkt_pandu");
 		var queryText = "INSERT INTO \"mst_bkt_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstBktPandu.id;
@@ -80,7 +79,7 @@ MstBktPandu.updateById = async(id, mstbktpandu, result) => {
 	var arr = ["NO_BKT_PANDU", "TGL_FORM_BKT_PANDU", "NO_UKK", "KD_PERS_PANDU", "KD_FAS", "KD_PPKB", "KD_NM_NAHKODA", "PANDU_DARI", "PANDU_KE", "TGL_MPANDU", "TGL_SPANDU", "KD_GERAKAN", "KET_PANDU", "KD_PERAIRAN", "TGL_JAM_ENTRY", "JAM_PANDU_NAIK", "JAM_KAPAL_GERAK", "JAM_SPANDU", "JAM_PANDU_TURUN", "USERID_BKT_PANDU", "PPKB_KE", "BIAYA_PANDU", "NO_UKK1", "NO_UKK2", "NO_UKK3", "DRAFT_DEPAN", "DRAFT_BELAKANG", "NO_UKK_TK1", "NO_UKK_TK2", "PPKB_KE_ORIGIN", "KOREKSI_KE", "PPKB_KE_ORIGIN_AKHIR", "NO_BA", "KETERANGAN_BA", "TGL_BA", "KET_PANDU_KHUSUS", "KD_FAS_JEMPUT"];
 	var str = f.getValueUpdate(mstbktpandu, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_bkt_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

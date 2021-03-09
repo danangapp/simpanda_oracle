@@ -41,16 +41,16 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newPemeriksaanKapal });
 };
 
 PemeriksaanKapal.findById = async (id, result) => {
-	const resQuery = f.query("SELECT kondisi_id, pemeriksaan_kapal_check_id, tanggal_awal, tanggal_akhir, keterangan FROM pemeriksaan_kapal_check_data WHERE pemeriksaan_kapal_id = '" + id + "'");
+	const resQuery = f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "'");
 	const resActivityLog = f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" , a6.question, a5.tanggal_awal, a5.tanggal_akhir, a5.keterangan  FROM \"pemeriksaan_kapal\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"  LEFT JOIN pemeriksaan_kapal_check_data a5 ON a.id = a5.pemeriksaan_kapal_id LEFT JOIN pemeriksaan_kapal_check a6 ON a5.pemeriksaan_kapal_check_id = a6.id LEFT JOIN kondisi a7 ON a5.kondisi_id = a7.id   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" , a6.\"question\", a5.\"tanggal_awal\", a5.\"tanggal_akhir\", a5.\"keterangan\"  FROM \"pemeriksaan_kapal\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check_data\" a5 ON a.\"id\" = a5.\"pemeriksaan_kapal_id\" LEFT JOIN \"pemeriksaan_kapal_check\" a6 ON a5.\"pemeriksaan_kapal_check_id\" = a6.\"id\" LEFT JOIN \"kondisi\" a7 ON a5.\"kondisi_id\" = a7.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 		const check = { "check": resQuery }
@@ -61,7 +61,7 @@ PemeriksaanKapal.findById = async (id, result) => {
 
 PemeriksaanKapal.getAll = async (param, result) => {
     var wheres = f.getParam(param);
-    var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" , a6.question, a5.tanggal_awal, a5.tanggal_akhir, a5.keterangan  FROM \"pemeriksaan_kapal\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"  LEFT JOIN pemeriksaan_kapal_check_data a5 ON a.id = a5.pemeriksaan_kapal_id LEFT JOIN pemeriksaan_kapal_check a6 ON a5.pemeriksaan_kapal_check_id = a6.id LEFT JOIN kondisi a7 ON a5.kondisi_id = a7.id ";
+    var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" , a6.\"question\", a5.\"tanggal_awal\", a5.\"tanggal_akhir\", a5.\"keterangan\"  FROM \"pemeriksaan_kapal\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check_data\" a5 ON a.\"id\" = a5.\"pemeriksaan_kapal_id\" LEFT JOIN \"pemeriksaan_kapal_check\" a6 ON a5.\"pemeriksaan_kapal_check_id\" = a6.\"id\" LEFT JOIN \"kondisi\" a7 ON a5.\"kondisi_id\" = a7.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";	
@@ -91,7 +91,7 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result) => {
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -7,8 +7,7 @@ const TipeSaranaPemanduKapal = function (tipesaranapemandukapal) {
 };
 
 TipeSaranaPemanduKapal.create = async(newTipeSaranaPemanduKapal, result) => {
-		newTipeSaranaPemanduKapal.id = "tipe_sarana_pemandu_kapal_seq.nextval"
-		const hv = f.headerValue(newTipeSaranaPemanduKapal);
+		const hv = await f.headerValue(newTipeSaranaPemanduKapal, "tipe_sarana_pemandu_kapal");
 		var queryText = "INSERT INTO \"tipe_sarana_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeSaranaPemanduKapal.id;
@@ -44,7 +43,7 @@ TipeSaranaPemanduKapal.updateById = async(id, tipesaranapemandukapal, result) =>
 	var arr = ["nama"];
 	var str = f.getValueUpdate(tipesaranapemandukapal, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_sarana_pemandu_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -7,8 +7,7 @@ const StatusEvaluasiPelimpahan = function (statusevaluasipelimpahan) {
 };
 
 StatusEvaluasiPelimpahan.create = async(newStatusEvaluasiPelimpahan, result) => {
-		newStatusEvaluasiPelimpahan.id = "status_evaluasi_pelimpahan_seq.nextval"
-		const hv = f.headerValue(newStatusEvaluasiPelimpahan);
+		const hv = await f.headerValue(newStatusEvaluasiPelimpahan, "status_evaluasi_pelimpahan");
 		var queryText = "INSERT INTO \"status_evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusEvaluasiPelimpahan.id;
@@ -44,7 +43,7 @@ StatusEvaluasiPelimpahan.updateById = async(id, statusevaluasipelimpahan, result
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusevaluasipelimpahan, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

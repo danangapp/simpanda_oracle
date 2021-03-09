@@ -24,8 +24,7 @@ const MstBktKepil = function (mstbktkepil) {
 };
 
 MstBktKepil.create = async(newMstBktKepil, result) => {
-		newMstBktKepil.id = "mst_bkt_kepil_seq.nextval"
-		const hv = f.headerValue(newMstBktKepil);
+		const hv = await f.headerValue(newMstBktKepil, "mst_bkt_kepil");
 		var queryText = "INSERT INTO \"mst_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstBktKepil.id;
@@ -61,7 +60,7 @@ MstBktKepil.updateById = async(id, mstbktkepil, result) => {
 	var arr = ["NO_BKT_KEPIL", "TGL_FORM_BKT_KEPIL", "NO_UKK", "KD_PPKB", "KD_KADE", "KD_MST_KEPIL", "KD_FAS", "TGL_JAM_BKT_KEPIL", "TGL_JAM_ENTRY", "JAM_TOLAK", "JAM_TIBA", "USERID_BKT_KEPIL", "PPKB_KE", "BIAYA_KEPIL", "KD_MORING", "KOREKSI_KE", "PPKB_KE_ORIGIN", "PPKB_KE_ORIGIN_AKHIR"];
 	var str = f.getValueUpdate(mstbktkepil, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_bkt_kepil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

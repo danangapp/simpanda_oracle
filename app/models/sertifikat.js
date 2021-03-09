@@ -28,8 +28,7 @@ const Sertifikat = function (sertifikat) {
 Sertifikat.create = async(newSertifikat, result) => {
 		const sertifikat = newSertifikat.sertifikat;
 		delete newSertifikat.sertifikat;
-		newSertifikat.id = "sertifikat_seq.nextval"
-		const hv = f.headerValue(newSertifikat);
+		const hv = await f.headerValue(newSertifikat, "sertifikat");
 		var queryText = "INSERT INTO \"sertifikat\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newSertifikat.id;
@@ -69,7 +68,7 @@ Sertifikat.updateById = async(id, sertifikat, result) => {
 	var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id"];
 	var str = f.getValueUpdate(sertifikat, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sertifikat\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

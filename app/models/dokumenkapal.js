@@ -7,8 +7,7 @@ const DokumenKapal = function (dokumenkapal) {
 };
 
 DokumenKapal.create = async(newDokumenKapal, result) => {
-		newDokumenKapal.id = "dokumen_kapal_seq.nextval"
-		const hv = f.headerValue(newDokumenKapal);
+		const hv = await f.headerValue(newDokumenKapal, "dokumen_kapal");
 		var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newDokumenKapal.id;
@@ -44,7 +43,7 @@ DokumenKapal.updateById = async(id, dokumenkapal, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(dokumenkapal, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"dokumen_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

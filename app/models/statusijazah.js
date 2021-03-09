@@ -7,8 +7,7 @@ const StatusIjazah = function (statusijazah) {
 };
 
 StatusIjazah.create = async(newStatusIjazah, result) => {
-		newStatusIjazah.id = "status_ijazah_seq.nextval"
-		const hv = f.headerValue(newStatusIjazah);
+		const hv = await f.headerValue(newStatusIjazah, "status_ijazah");
 		var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusIjazah.id;
@@ -44,7 +43,7 @@ StatusIjazah.updateById = async(id, statusijazah, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusijazah, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_ijazah\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -12,8 +12,7 @@ const SaranaBantuPemanduPersonil = function (saranabantupemandupersonil) {
 };
 
 SaranaBantuPemanduPersonil.create = async(newSaranaBantuPemanduPersonil, result) => {
-		newSaranaBantuPemanduPersonil.id = "sarana_bantu_pemandu_personil_seq.nextval"
-		const hv = f.headerValue(newSaranaBantuPemanduPersonil);
+		const hv = await f.headerValue(newSaranaBantuPemanduPersonil, "sarana_bantu_pemandu_personil");
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu_personil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newSaranaBantuPemanduPersonil.id;
@@ -49,7 +48,7 @@ SaranaBantuPemanduPersonil.updateById = async(id, saranabantupemandupersonil, re
 	var arr = ["sarana_bantu_pemandu_id", "nama", "jabatan", "asset_kapal_id", "tipe_asset_id", "status_ijazah_id"];
 	var str = f.getValueUpdate(saranabantupemandupersonil, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sarana_bantu_pemandu_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

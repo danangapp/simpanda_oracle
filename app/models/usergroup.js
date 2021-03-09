@@ -11,8 +11,7 @@ const UserGroup = function (usergroup) {
 UserGroup.create = async(newUserGroup, result) => {
 		const user_access = newUserGroup.user_access;
 		delete newUserGroup.user_access;
-		newUserGroup.id = "user_group_seq.nextval"
-		const hv = f.headerValue(newUserGroup);
+		const hv = await f.headerValue(newUserGroup, "user_group");
 		var queryText = "INSERT INTO \"user_group\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newUserGroup.id;
@@ -100,7 +99,7 @@ UserGroup.updateById = async(id, usergroup, result) => {
 	var arr = ["nama", "keterangan", "cabang_id"];
 	var str = f.getValueUpdate(usergroup, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"user_group\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

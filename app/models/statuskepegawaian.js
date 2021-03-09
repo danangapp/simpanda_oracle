@@ -7,8 +7,7 @@ const StatusKepegawaian = function (statuskepegawaian) {
 };
 
 StatusKepegawaian.create = async(newStatusKepegawaian, result) => {
-		newStatusKepegawaian.id = "status_kepegawaian_seq.nextval"
-		const hv = f.headerValue(newStatusKepegawaian);
+		const hv = await f.headerValue(newStatusKepegawaian, "status_kepegawaian");
 		var queryText = "INSERT INTO \"status_kepegawaian\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusKepegawaian.id;
@@ -44,7 +43,7 @@ StatusKepegawaian.updateById = async(id, statuskepegawaian, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statuskepegawaian, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_kepegawaian\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

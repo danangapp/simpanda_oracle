@@ -10,8 +10,7 @@ const TipeAsset = function (tipeasset) {
 };
 
 TipeAsset.create = async(newTipeAsset, result) => {
-		newTipeAsset.id = "tipe_asset_seq.nextval"
-		const hv = f.headerValue(newTipeAsset);
+		const hv = await f.headerValue(newTipeAsset, "tipe_asset");
 		var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeAsset.id;
@@ -47,7 +46,7 @@ TipeAsset.updateById = async(id, tipeasset, result) => {
 	var arr = ["nama", "type", "sarana_config_question", "flag"];
 	var str = f.getValueUpdate(tipeasset, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_asset\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -8,8 +8,7 @@ const UserAccess = function (useraccess) {
 };
 
 UserAccess.create = async(newUserAccess, result) => {
-		newUserAccess.id = "user_access_seq.nextval"
-		const hv = f.headerValue(newUserAccess);
+		const hv = await f.headerValue(newUserAccess, "user_access");
 		var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newUserAccess.id;
@@ -45,7 +44,7 @@ UserAccess.updateById = async(id, useraccess, result) => {
 	var arr = ["user_group_id", "menu_id"];
 	var str = f.getValueUpdate(useraccess, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"user_access\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

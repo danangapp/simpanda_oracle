@@ -69,8 +69,7 @@ const MstKapalCabangBktTunda = function (mstkapalcabangbkttunda) {
 };
 
 MstKapalCabangBktTunda.create = async(newMstKapalCabangBktTunda, result) => {
-		newMstKapalCabangBktTunda.id = "mst_kapal_cabang_bkt_tunda_seq.nextval"
-		const hv = f.headerValue(newMstKapalCabangBktTunda);
+		const hv = await f.headerValue(newMstKapalCabangBktTunda, "mst_kapal_cabang_bkt_tunda");
 		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstKapalCabangBktTunda.id;
@@ -106,7 +105,7 @@ MstKapalCabangBktTunda.updateById = async(id, mstkapalcabangbkttunda, result) =>
 	var arr = ["NO_BKT_TUNDA", "TGL_FORM_BKT_TUNDA", "NO_UKK", "KD_PPKB", "TUNDA_DARI", "TUNDA_KE", "TGL_JAM_ENTRY", "USERID_BKT_TUNDA", "PPKB_KE", "BIAYA_TUNDA", "TGL_JAM_MTUNDA", "TGL_JAM_STUNDA", "NO_BKT_PANDU", "KD_FAS_1", "KD_FAS_2", "KD_FAS_3", "KD_KAPAL_1", "KD_KAPAL_2", "KD_KAPAL_3", "TGL_JAM_TIBA_KPL1", "TGL_JAM_TIBA_KPL2", "TGL_JAM_TIBA_KPL3", "TGL_JAM_BRNGKT_KPL1", "TGL_JAM_BRNGKT_KPL2", "TGL_JAM_BRNGKT_KPL3", "KOREKSI_KE", "KD_KAPAL_4", "TGL_JAM_TIBA_KPL4", "TGL_JAM_BRNGKT_KPL4", "TUNDA_X", "EMERGENCY", "EMERGENCY_KPL1", "EMERGENCY_KPL2", "EMERGENCY_KPL3", "EMERGENCY_KPL4", "BERMUATAN", "FLAG_LS", "EMERGENCY_KPL6", "KD_KAPAL_5", "TGL_JAM_TIBA_KPL5", "TGL_JAM_BRNGKT_KPL5", "EMERGENCY_KPL5", "KD_KAPAL_6", "TGL_JAM_TIBA_KPL6", "TGL_JAM_BRNGKT_KPL6", "TGL_JAM_MOVE_KPL1", "TGL_JAM_MOVE_KPL2", "TGL_JAM_MOVE_KPL3", "TGL_JAM_MOVE_KPL4", "TGL_JAM_MOVE_KPL5", "TGL_JAM_MOVE_KPL6", "TGL_JAM_START_KPL1", "TGL_JAM_START_KPL2", "TGL_JAM_START_KPL3", "TGL_JAM_START_KPL4", "TGL_JAM_START_KPL5", "TGL_JAM_START_KPL6", "CUSTOM13", "CUSTOM14", "CUSTOM15", "CUSTOM16", "CUSTOM17", "CUSTOM18"];
 	var str = f.getValueUpdate(mstkapalcabangbkttunda, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_kapal_cabang_bkt_tunda\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

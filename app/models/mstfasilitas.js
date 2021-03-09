@@ -17,8 +17,7 @@ const MstFasilitas = function (mstfasilitas) {
 };
 
 MstFasilitas.create = async(newMstFasilitas, result) => {
-		newMstFasilitas.id = "mst_fasilitas_seq.nextval"
-		const hv = f.headerValue(newMstFasilitas);
+		const hv = await f.headerValue(newMstFasilitas, "mst_fasilitas");
 		var queryText = "INSERT INTO \"mst_fasilitas\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstFasilitas.id;
@@ -54,7 +53,7 @@ MstFasilitas.updateById = async(id, mstfasilitas, result) => {
 	var arr = ["KD_FAS", "NM_FAS", "DAYA", "KD_CABANG", "enable", "DAYA2", "STATUS_MILIK", "ASSET_NUMBER", "KD_PUSPEL_JAI", "NEW_PUSPEL_JAI", "NEW_ASSET_JAI"];
 	var str = f.getValueUpdate(mstfasilitas, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_fasilitas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

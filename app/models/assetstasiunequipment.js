@@ -31,8 +31,7 @@ const setActivity = (objects, koneksi = 1) => {
 
 AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result) => {
 		newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
-		newAssetStasiunEquipment.id = "asset_stasiun_equipment_seq.nextval"
-		const hv = f.headerValue(newAssetStasiunEquipment);
+		const hv = await f.headerValue(newAssetStasiunEquipment, "asset_stasiun_equipment");
 		var queryText = "INSERT INTO \"asset_stasiun_equipment\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newAssetStasiunEquipment.id;
@@ -40,7 +39,7 @@ AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newAssetStasiunEquipment });
@@ -57,6 +56,7 @@ AssetStasiunEquipment.findById = async (id, result) => {
 
 AssetStasiunEquipment.getAll = async (param, result) => {
     var wheres = f.getParam(param);
+	wheres = wheres.replace(`a."flag"`, `a1."flag"`);
     var query = "SELECT a.* , a1.\"flag\" as \"tipe_asset\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\" FROM \"asset_stasiun_equipment\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
@@ -76,7 +76,7 @@ AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result) => {
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -34,8 +34,7 @@ const setActivity = (objects, koneksi = 1) => {
 
 AssetRumahDinas.create = async(newAssetRumahDinas, result) => {
 		newAssetRumahDinas = setActivity(newAssetRumahDinas);
-		newAssetRumahDinas.id = "asset_rumah_dinas_seq.nextval"
-		const hv = f.headerValue(newAssetRumahDinas);
+		const hv = await f.headerValue(newAssetRumahDinas, "asset_rumah_dinas");
 		var queryText = "INSERT INTO \"asset_rumah_dinas\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newAssetRumahDinas.id;
@@ -43,7 +42,7 @@ AssetRumahDinas.create = async(newAssetRumahDinas, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newAssetRumahDinas });
@@ -79,7 +78,7 @@ AssetRumahDinas.updateById = async(id, assetrumahdinas, result) => {
 	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"asset_rumah_dinas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

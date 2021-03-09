@@ -10,6 +10,7 @@ oracledb.initOracleClient({ libDir: 'D:\\tools\\instantclient_19_10' });
 oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
+const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6"];
 module.exports = {
     toDate: function (str, formatdate = 'YYYY-MM-DD') {
         var dateString = str;
@@ -112,13 +113,31 @@ module.exports = {
             }
         }
     },
-    headerValue: function (object) {
+    getid: async function (tableName) {
+        var get_id = await this.query(`SELECT NVL(max("id"), 0) + 1 as "id" FROM "${tableName}"`, 2);
+        var id = get_id.rows[0][0];
+        return id;
+    },
+    headerValue: async function (object, tableName = '') {
         var header = "", value = "";
+        object.id = await this.getid(tableName);
         for (var a in object) {
             const val = object[a];
             header += "\"" + a + "\", ";
+
+            var ada_tgl = 0;
+            for (var c in arrDate) {
+                if (a == arrDate[c]) {
+                    ada_tgl = 1;
+                }
+            }
+
             if (a != "id") {
-                value += "'" + val + "', ";
+                if (ada_tgl == 1) {
+                    value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                } else {
+                    value += "'" + val + "', ";
+                }
             } else {
                 value += "" + val + ", ";
             }
@@ -152,14 +171,6 @@ module.exports = {
             }
 
             if (wheres.length > 7) {
-                if (i == "flag" && $db == "asset_kapal") {
-                    wheres += "a2." + i + " ='" + param[i] + "' and ";
-                } else if ((i == "flag" && $db == "asset_stasiun_equipment") || (i == "flag" && $db == "personil")) {
-                    wheres += "a2." + i + " ='" + param[i] + "' and ";
-                }
-                else {
-                    wheres += "a.\"" + i + "\" ='" + param[i] + "' and ";
-                }
                 wheres = wheres.substring(0, wheres.length - 5);
             }
         }
@@ -173,17 +184,30 @@ module.exports = {
             for (var b in arr) {
                 if (i == arr[b]) {
                     adadiTable = 1;
-                    break;
                 }
             }
             if (object[i] && adadiTable == 1) {
-                str += "\"" + i + "\" = '" + object[i] + "', ";
+                var value = object[i];
+                var ada_tgl = 0;
+                for (var c in arrDate) {
+                    if (i == arrDate[c]) {
+                        ada_tgl = 1;
+                        break;
+                    }
+                }
+
+                if (ada_tgl == 1) {
+                    str += "\"" + i + "\" = TO_DATE('" + value + "', 'yyyy/mm/dd'), ";
+                } else {
+                    str += "\"" + i + "\" = '" + value + "', ";
+                }
                 obj.push(object[i]);
             }
             no++;
         }
         obj.push(id);
         str = str.substring(0, str.length - 2);
+        // console.log(str);
         return str;
     },
     executeSertifikat: function (sertifikat, id, db, dbId) {

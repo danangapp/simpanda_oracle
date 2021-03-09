@@ -7,8 +7,7 @@ const Enable = function (enable) {
 };
 
 Enable.create = async(newEnable, result) => {
-		newEnable.id = "enable_seq.nextval"
-		const hv = f.headerValue(newEnable);
+		const hv = await f.headerValue(newEnable, "enable");
 		var queryText = "INSERT INTO \"enable\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newEnable.id;
@@ -44,7 +43,7 @@ Enable.updateById = async(id, enable, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(enable, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"enable\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

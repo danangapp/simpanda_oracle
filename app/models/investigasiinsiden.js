@@ -67,8 +67,7 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result) => {
 		const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
 		delete newInvestigasiInsiden.investigasi_insiden_tim;
 		newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
-		newInvestigasiInsiden.id = "investigasi_insiden_seq.nextval"
-		const hv = f.headerValue(newInvestigasiInsiden);
+		const hv = await f.headerValue(newInvestigasiInsiden, "investigasi_insiden");
 		var queryText = "INSERT INTO \"investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newInvestigasiInsiden.id;
@@ -96,7 +95,7 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newInvestigasiInsiden });
@@ -135,7 +134,7 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result) => {
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal"];
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

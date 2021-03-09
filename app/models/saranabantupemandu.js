@@ -29,8 +29,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result) => {
 		const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
-		newSaranaBantuPemandu.id = "sarana_bantu_pemandu_seq.nextval"
-		const hv = f.headerValue(newSaranaBantuPemandu);
+		const hv = await f.headerValue(newSaranaBantuPemandu, "sarana_bantu_pemandu");
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newSaranaBantuPemandu.id;
@@ -53,7 +52,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newSaranaBantuPemandu });
@@ -92,7 +91,7 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result) => {
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sarana_bantu_pemandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

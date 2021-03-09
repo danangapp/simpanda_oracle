@@ -8,8 +8,7 @@ const Menu = function (menu) {
 };
 
 Menu.create = async(newMenu, result) => {
-		newMenu.id = "menu_seq.nextval"
-		const hv = f.headerValue(newMenu);
+		const hv = await f.headerValue(newMenu, "menu");
 		var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMenu.id;
@@ -45,7 +44,7 @@ Menu.updateById = async(id, menu, result) => {
 	var arr = ["nama", "url"];
 	var str = f.getValueUpdate(menu, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"menu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

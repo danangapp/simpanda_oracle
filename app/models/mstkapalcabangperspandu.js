@@ -13,8 +13,7 @@ const MstKapalCabangPersPandu = function (mstkapalcabangperspandu) {
 };
 
 MstKapalCabangPersPandu.create = async(newMstKapalCabangPersPandu, result) => {
-		newMstKapalCabangPersPandu.id = "mst_kapal_cabang_pers_pandu_seq.nextval"
-		const hv = f.headerValue(newMstKapalCabangPersPandu);
+		const hv = await f.headerValue(newMstKapalCabangPersPandu, "mst_kapal_cabang_pers_pandu");
 		var queryText = "INSERT INTO \"mst_kapal_cabang_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstKapalCabangPersPandu.id;
@@ -50,7 +49,7 @@ MstKapalCabangPersPandu.updateById = async(id, mstkapalcabangperspandu, result) 
 	var arr = ["KD_PERS_PANDU", "NM_PERS_PANDU", "NIPP", "KELAS", "KD_CABANG", "ENABLE", "KD_PERS_PANDU_CBG"];
 	var str = f.getValueUpdate(mstkapalcabangperspandu, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_kapal_cabang_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

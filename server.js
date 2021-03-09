@@ -77,13 +77,18 @@ require("./app/routes/dashboard")(app);
 require("./app/routes/download")(app);
 require("./app/routes/menu")(app);
 
+
 // set port, listen for requests
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-f.query(`DELETE FROM "cabang" WHERE "id"='20'`, 2);
+// var res = f.query(`SELECT NVL(max("id"), 0) as "id" FROM "cabang"`, 1);
+// res.then((a) => {
+//   console.log(a.rows[0][0]);
+// })
+// var res = f.query(`INSERT INTO "cabang" ("nama") VALUES ('cabang danang')`, 2);
 // const select = f.select(`SELECT * FROM "cabang"`);
 // select.then((a) => {
 //   console.log(a.rows);

@@ -7,8 +7,7 @@ const Role = function (role) {
 };
 
 Role.create = async(newRole, result) => {
-		newRole.id = "role_seq.nextval"
-		const hv = f.headerValue(newRole);
+		const hv = await f.headerValue(newRole, "role");
 		var queryText = "INSERT INTO \"role\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newRole.id;
@@ -44,7 +43,7 @@ Role.updateById = async(id, role, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(role, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"role\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

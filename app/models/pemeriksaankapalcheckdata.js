@@ -12,8 +12,7 @@ const PemeriksaanKapalCheckData = function (pemeriksaankapalcheckdata) {
 };
 
 PemeriksaanKapalCheckData.create = async(newPemeriksaanKapalCheckData, result) => {
-		newPemeriksaanKapalCheckData.id = "pemeriksaan_kapal_check_data_seq.nextval"
-		const hv = f.headerValue(newPemeriksaanKapalCheckData);
+		const hv = await f.headerValue(newPemeriksaanKapalCheckData, "pemeriksaan_kapal_check_data");
 		var queryText = "INSERT INTO \"pemeriksaan_kapal_check_data\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newPemeriksaanKapalCheckData.id;
@@ -49,7 +48,7 @@ PemeriksaanKapalCheckData.updateById = async(id, pemeriksaankapalcheckdata, resu
 	var arr = ["kondisi_id", "tanggal_awal", "tanggal_akhir", "keterangan", "pemeriksaan_kapal_id", "pemeriksaan_kapal_check_id"];
 	var str = f.getValueUpdate(pemeriksaankapalcheckdata, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pemeriksaan_kapal_check_data\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

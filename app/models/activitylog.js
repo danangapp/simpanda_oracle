@@ -12,8 +12,7 @@ const ActivityLog = function (activitylog) {
 };
 
 ActivityLog.create = async(newActivityLog, result) => {
-		newActivityLog.id = "activity_log_seq.nextval"
-		const hv = f.headerValue(newActivityLog);
+		const hv = await f.headerValue(newActivityLog, "activity_log");
 		var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newActivityLog.id;
@@ -49,7 +48,7 @@ ActivityLog.updateById = async(id, activitylog, result) => {
 	var arr = ["date", "item", "action", "user_id", "remark", "koneksi"];
 	var str = f.getValueUpdate(activitylog, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"activity_log\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

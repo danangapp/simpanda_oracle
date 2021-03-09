@@ -39,8 +39,7 @@ const setActivity = (objects, koneksi = 1) => {
 
 EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result) => {
 		newEvaluasiPelimpahan = setActivity(newEvaluasiPelimpahan);
-		newEvaluasiPelimpahan.id = "evaluasi_pelimpahan_seq.nextval"
-		const hv = f.headerValue(newEvaluasiPelimpahan);
+		const hv = await f.headerValue(newEvaluasiPelimpahan, "evaluasi_pelimpahan");
 		var queryText = "INSERT INTO \"evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newEvaluasiPelimpahan.id;
@@ -48,7 +47,7 @@ EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result) => {
 
 		objek.koneksi = res.outBinds.id[0];
 		if (objek.action != null) {
-			const hv = f.headerValue(objek);
+			const hv = await f.headerValue(objek, "activity_log");
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: res.outBinds.id[0], ...newEvaluasiPelimpahan });
@@ -84,7 +83,7 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result) => {
 	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan"];
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -7,8 +7,7 @@ const Kondisi = function (kondisi) {
 };
 
 Kondisi.create = async(newKondisi, result) => {
-		newKondisi.id = "kondisi_seq.nextval"
-		const hv = f.headerValue(newKondisi);
+		const hv = await f.headerValue(newKondisi, "kondisi");
 		var queryText = "INSERT INTO \"kondisi\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newKondisi.id;
@@ -44,7 +43,7 @@ Kondisi.updateById = async(id, kondisi, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kondisi, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"kondisi\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

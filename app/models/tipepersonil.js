@@ -8,8 +8,7 @@ const TipePersonil = function (tipepersonil) {
 };
 
 TipePersonil.create = async(newTipePersonil, result) => {
-		newTipePersonil.id = "tipe_personil_seq.nextval"
-		const hv = f.headerValue(newTipePersonil);
+		const hv = await f.headerValue(newTipePersonil, "tipe_personil");
 		var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipePersonil.id;
@@ -45,7 +44,7 @@ TipePersonil.updateById = async(id, tipepersonil, result) => {
 	var arr = ["nama", "flag"];
 	var str = f.getValueUpdate(tipepersonil, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -7,8 +7,7 @@ const PemeriksaanKapalCheck = function (pemeriksaankapalcheck) {
 };
 
 PemeriksaanKapalCheck.create = async(newPemeriksaanKapalCheck, result) => {
-		newPemeriksaanKapalCheck.id = "pemeriksaan_kapal_check_seq.nextval"
-		const hv = f.headerValue(newPemeriksaanKapalCheck);
+		const hv = await f.headerValue(newPemeriksaanKapalCheck, "pemeriksaan_kapal_check");
 		var queryText = "INSERT INTO \"pemeriksaan_kapal_check\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newPemeriksaanKapalCheck.id;
@@ -44,7 +43,7 @@ PemeriksaanKapalCheck.updateById = async(id, pemeriksaankapalcheck, result) => {
 	var arr = ["question"];
 	var str = f.getValueUpdate(pemeriksaankapalcheck, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pemeriksaan_kapal_check\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

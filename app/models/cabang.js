@@ -17,8 +17,7 @@ const Cabang = function (cabang) {
 };
 
 Cabang.create = async(newCabang, result) => {
-		newCabang.id = "cabang_seq.nextval"
-		const hv = f.headerValue(newCabang);
+		const hv = await f.headerValue(newCabang, "cabang");
 		var queryText = "INSERT INTO \"cabang\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newCabang.id;
@@ -54,7 +53,7 @@ Cabang.updateById = async(id, cabang, result) => {
 	var arr = ["nama", "almt_cabang", "cabang_cms", "no_account_cabang", "nm_cabang_3digit", "kd_account_cabang", "kd_cabang_jai_puspel", "orgid", "port_code", "autospk", "kd_jenis_pelabuhan"];
 	var str = f.getValueUpdate(cabang, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"cabang\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

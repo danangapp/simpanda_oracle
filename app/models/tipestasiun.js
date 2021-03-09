@@ -7,8 +7,7 @@ const TipeStasiun = function (tipestasiun) {
 };
 
 TipeStasiun.create = async(newTipeStasiun, result) => {
-		newTipeStasiun.id = "tipe_stasiun_seq.nextval"
-		const hv = f.headerValue(newTipeStasiun);
+		const hv = await f.headerValue(newTipeStasiun, "tipe_stasiun");
 		var queryText = "INSERT INTO \"tipe_stasiun\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeStasiun.id;
@@ -44,7 +43,7 @@ TipeStasiun.updateById = async(id, tipestasiun, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(tipestasiun, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_stasiun\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

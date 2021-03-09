@@ -11,8 +11,7 @@ const InvestigasiInsidenTim = function (investigasiinsidentim) {
 };
 
 InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result) => {
-		newInvestigasiInsidenTim.id = "investigasi_insiden_tim_seq.nextval"
-		const hv = f.headerValue(newInvestigasiInsidenTim);
+		const hv = await f.headerValue(newInvestigasiInsidenTim, "investigasi_insiden_tim");
 		var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newInvestigasiInsidenTim.id;
@@ -48,7 +47,7 @@ InvestigasiInsidenTim.updateById = async(id, investigasiinsidentim, result) => {
 	var arr = ["nama", "jabatan", "tgl", "status", "investigasi_insiden_id"];
 	var str = f.getValueUpdate(investigasiinsidentim, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"investigasi_insiden_tim\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

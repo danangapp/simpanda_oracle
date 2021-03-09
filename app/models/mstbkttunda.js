@@ -46,8 +46,7 @@ const MstBktTunda = function (mstbkttunda) {
 };
 
 MstBktTunda.create = async(newMstBktTunda, result) => {
-		newMstBktTunda.id = "mst_bkt_tunda_seq.nextval"
-		const hv = f.headerValue(newMstBktTunda);
+		const hv = await f.headerValue(newMstBktTunda, "mst_bkt_tunda");
 		var queryText = "INSERT INTO \"mst_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstBktTunda.id;
@@ -83,7 +82,7 @@ MstBktTunda.updateById = async(id, mstbkttunda, result) => {
 	var arr = ["NO_BKT_TUNDA", "TGL_FORM_BKT_TUNDA", "NO_UKK", "KD_PPKB", "TUNDA_DARI", "TUNDA_KE", "TGL_JAM_ENTRY", "USERID_BKT_TUNDA", "PPKB_KE", "BIAYA_TUNDA", "TGL_JAM_MTUNDA", "TGL_JAM_STUNDA", "NO_BKT_PANDU", "KD_FAS_1", "KD_FAS_2", "KD_FAS_3", "KD_KAPAL_1", "KD_KAPAL_2", "KD_KAPAL_3", "TGL_JAM_TIBA_KPL1", "TGL_JAM_TIBA_KPL2", "TGL_JAM_TIBA_KPL3", "TGL_JAM_BRNGKT_KPL1", "TGL_JAM_BRNGKT_KPL2", "TGL_JAM_BRNGKT_KPL3", "KOREKSI_KE", "PPKB_KE_ORIGIN", "PPKB_KE_ORIGIN_AKHIR", "KD_KAPAL_4", "KD_KAPAL_5", "KD_KAPAL_6", "TGL_JAM_TIBA_KPL4", "TGL_JAM_TIBA_KPL5", "TGL_JAM_TIBA_KPL6", "TGL_JAM_BRNGKT_KPL4", "TGL_JAM_BRNGKT_KPL5", "TGL_JAM_BRNGKT_KPL6", "KD_FAS_4", "KD_FAS_5", "KD_FAS_6"];
 	var str = f.getValueUpdate(mstbkttunda, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_bkt_tunda\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

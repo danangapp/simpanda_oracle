@@ -8,8 +8,7 @@ const JenisCert = function (jeniscert) {
 };
 
 JenisCert.create = async(newJenisCert, result) => {
-		newJenisCert.id = "jenis_cert_seq.nextval"
-		const hv = f.headerValue(newJenisCert);
+		const hv = await f.headerValue(newJenisCert, "jenis_cert");
 		var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newJenisCert.id;
@@ -45,7 +44,7 @@ JenisCert.updateById = async(id, jeniscert, result) => {
 	var arr = ["nama", "remark"];
 	var str = f.getValueUpdate(jeniscert, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"jenis_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

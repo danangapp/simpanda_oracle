@@ -7,8 +7,7 @@ const KondisiUmum = function (kondisiumum) {
 };
 
 KondisiUmum.create = async(newKondisiUmum, result) => {
-		newKondisiUmum.id = "kondisi_umum_seq.nextval"
-		const hv = f.headerValue(newKondisiUmum);
+		const hv = await f.headerValue(newKondisiUmum, "kondisi_umum");
 		var queryText = "INSERT INTO \"kondisi_umum\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newKondisiUmum.id;
@@ -44,7 +43,7 @@ KondisiUmum.updateById = async(id, kondisiumum, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kondisiumum, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"kondisi_umum\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

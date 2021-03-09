@@ -7,8 +7,7 @@ const PanduBandarLaut = function (pandubandarlaut) {
 };
 
 PanduBandarLaut.create = async(newPanduBandarLaut, result) => {
-		newPanduBandarLaut.id = "pandu_bandar_laut_seq.nextval"
-		const hv = f.headerValue(newPanduBandarLaut);
+		const hv = await f.headerValue(newPanduBandarLaut, "pandu_bandar_laut");
 		var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newPanduBandarLaut.id;
@@ -44,7 +43,7 @@ PanduBandarLaut.updateById = async(id, pandubandarlaut, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(pandubandarlaut, id, arr);
 	if (objek.action != null) {
-		const hv = f.headerValue(objek);
+		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pandu_bandar_laut\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
