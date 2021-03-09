@@ -3,10 +3,13 @@ var mv = require('mv');
 const fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
 var sjcl = require('sjcl');
+require('dotenv').config();
 
 var oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig');
-oracledb.initOracleClient({ libDir: 'D:\\tools\\instantclient_19_10' });
+var objOracle = {};
+objOracle[process.env.OC_DIR] = process.env.OC;
+oracledb.initOracleClient(objOracle);
 oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
