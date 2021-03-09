@@ -23,7 +23,7 @@ exports.create = (req, res) => {
         jabatan: req.fields.jabatan,
         status_kepegawaian_id: req.fields.status_kepegawaian_id,
         cv: req.fields.cv,
-        tempat_tugas: req.fields.tempat_tugas,
+        cabang_id: req.fields.cabang_id,
         nomor_sk: req.fields.nomor_sk,
         tanggal_mulai: f.toDate(req.fields.tanggal_mulai),
         tanggal_selesai: f.toDate(req.fields.tanggal_selesai),

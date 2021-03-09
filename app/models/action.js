@@ -3,17 +3,17 @@ var objek = new Object();
 
 // constructor
 const Action = function (action) {
-	this.nama = action.nama;
+    this.nama = action.nama;
 };
 
-Action.create = async (newAction, result) => {
-	const hv = await f.headerValue(newAction, "action");
-	var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
-	const exec = f.query(queryText, 1);
-	delete newAction.id;
-	const res = await exec;
+Action.create = async(newAction, result) => {
+		const hv = await f.headerValue(newAction, "action");
+		var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
+		const exec = f.query(queryText, 1);
+		delete newAction.id;
+		const res = await exec;
 
-	result(null, { id: res.outBinds.id[0], ...newAction });
+		result(null, { id: res.outBinds.id[0], ...newAction });
 };
 
 Action.findById = async (id, result) => {
@@ -24,11 +24,11 @@ Action.findById = async (id, result) => {
 }
 
 Action.getAll = async (param, result) => {
-	var wheres = f.getParam(param);
-	var query = "SELECT a.*  FROM \"action\" a ";
+    var wheres = f.getParam(param);
+    var query = "SELECT a.*  FROM \"action\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"nama\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -38,7 +38,7 @@ Action.getAll = async (param, result) => {
 	result(null, res.rows);
 }
 
-Action.updateById = async (id, action, result) => {
+Action.updateById = async(id, action, result) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(action, id, arr);
