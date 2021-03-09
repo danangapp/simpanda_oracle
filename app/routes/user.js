@@ -7,14 +7,11 @@ module.exports = app => {
     // Retrieve all Users
     app.get("/user", user.findAll);
 
-    // Retrieve all Users
-    app.post("/login", user.getUser);
-
-    // View Design Users
-    app.options("/user", user.design);
-
     // Retrieve a single User with id
     app.get("/user/:id", user.findOne);
+
+    // Retrieve a single User with id
+    app.post("/login", user.getUser);
 
     // Update a User with id
     app.put("/user/:id", user.update);

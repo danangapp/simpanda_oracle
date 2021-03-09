@@ -13,9 +13,9 @@ exports.create = (req, res) => {
         nama: req.fields.nama,
         password: req.fields.password,
         user_group_id: req.fields.user_group_id,
-        accesToken: req.fields.accesToken,
-        refreshToken: req.fields.refreshToken,
         role_id: req.fields.role_id,
+        accessToken: req.fields.accessToken,
+        refreshToken: req.fields.refreshToken,
     };
 
     var used = {};
@@ -37,28 +37,6 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     User.getAll(req.query, (err, data) => {
-        if (err)
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving usernames."
-            });
-        else res.send(data);
-    });
-};
-
-exports.getUser = (req, res) => {
-    User.login(req.fields, (err, data) => {
-        if (err)
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving usernames."
-            });
-        else res.send(data);
-    });
-};
-
-exports.design = (req, res) => {
-    User.design((err, data) => {
         if (err)
             res.status(500).send({
                 message:
@@ -110,6 +88,17 @@ exports.update = (req, res) => {
             } else res.send(data);
         }
     );
+};
+
+exports.getUser = (req, res) => {
+    User.login(req.fields, (err, data) => {
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving usernames."
+            });
+        else res.send(data);
+    });
 };
 
 exports.delete = (req, res) => {
