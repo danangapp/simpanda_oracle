@@ -52,12 +52,47 @@ User.getAll = async (param, result) => {
 	result(null, res.rows);
 }
 
+Date.prototype.addHours = function (h) {
+	this.setHours(this.getHours() + h);
+	return this;
+}
+
 User.login = async (req, result) => {
 	req.password = f.hashCode(req.password);
-	var query = "SELECT a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\" as \"user_group\" FROM \"user\" a  LEFT JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" WHERE a.\"username\" = '" + req.username + "' AND \"password\" = '" + req.password + "' ";
+	var query = `SELECT a."id", a."username", a."nama", a."user_group_id" , a1."nama" as "user_group", a1."cabang_id" FROM "user" a  LEFT JOIN "user_group" a1 ON a."user_group_id" = a1."id" WHERE a."username" = '${req.username}' AND "password" = '${req.password}'`;
 	const exec = f.query(query);
 	const res = await exec;
-	result(null, res.rows);
+	const rows = res.rows[0];
+
+	var rand = function () {
+		return Math.random().toString(36).substr(2); // remove `0.`
+	};
+	var token = function () {
+		return rand() + rand(); // to make it longer
+	};
+
+	var obj = {}
+	obj.user_id = rows.id;
+	obj.cabang_id = rows.cabang_id;
+	obj.accessToken = f.hashCode(token());
+	obj.refreshToken = f.hashCode(token());
+	const timeExpired = f.toDate(new Date().addHours(1), "YYYY/MM/DD HH:mm:ss");
+	obj.expired = timeExpired;
+
+	const hv = await f.headerValue(obj, "authorization");
+	f.query(`INSERT INTO "authorization" ${hv}`, 2);
+
+
+	query = `SELECT c."config", c."parent", c."id" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
+	const exex = f.query(query);
+	const rex = await exex;
+	const menu = rex.rows;
+	delete obj.id;
+	obj.username = rows.username;
+	obj.nama = rows.nama;
+	let merge = { ...obj, menu }
+
+	result(null, merge);
 };
 
 User.updateById = async (id, user, result) => {

@@ -14,6 +14,7 @@ oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
 const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6"];
+const arrDateTime = ["expired"];
 module.exports = {
     toDate: function (str, formatdate = 'YYYY-MM-DD') {
         var dateString = str;
@@ -88,7 +89,6 @@ module.exports = {
         try {
             connection = await oracledb.getConnection(dbConfig);
 
-            // console.log(result.rows);
             if (insert == 1) {
                 const result = await connection.execute(
                     query,
@@ -129,15 +129,24 @@ module.exports = {
             header += "\"" + a + "\", ";
 
             var ada_tgl = 0;
+            var ada_tglTime = 0;
             for (var c in arrDate) {
                 if (a == arrDate[c]) {
                     ada_tgl = 1;
                 }
             }
 
+            for (var c in arrDateTime) {
+                if (a == arrDateTime[c]) {
+                    ada_tglTime = 1;
+                }
+            }
+
             if (a != "id") {
                 if (ada_tgl == 1) {
                     value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                } else if (ada_tglTime == 1) {
+                    value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
                 } else {
                     value += "'" + val + "', ";
                 }
