@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 var requestToken = function (req, res, next) {
   if (req.path != "/auth/login/" && req.path != "/") {
-    console.log('lewat');
+    next();
   } else {
     const resQuery = f.query(`select * from "authorization"`);
     var tokens = req.get('authorization')
