@@ -11,7 +11,7 @@ module.exports = app => {
     app.get("/armadaschedule/:id", armadaschedule.findOne);
 
     // Update a ArmadaSchedule with id
-    app.put("/armadaschedule", armadaschedule.update);
+    app.put("/armadaschedule/:id", armadaschedule.update);
 
     // Delete a ArmadaSchedule with id
     app.delete("/armadaschedule/:id", armadaschedule.delete);

@@ -8,38 +8,24 @@ exports.create = (req, res) => {
         });
     }
 
-    const fields = req.fields;
-    var armadaschedule = []
-    for (var a in fields) {
-        var b = fields[a];
-        var arr = {
-            date: f.toDate(b.date),
-            cabang: b.cabang,
-            tipe_asset_id: b.tipe_asset_id,
-            asset_kapal_id: b.asset_kapal_id,
-            status: b.status,
-            jam_pengoperasian: b.jam_pengoperasian,
-            reliability: b.reliability,
-            keterangan: b.keterangan,
-            armada_jaga_id: b.armada_jaga_id,
-            armada_jaga: b.armada_jaga,
-        };
+    var armadaschedule = {
+        date: f.toDate(req.fields.date),
+        cabang: req.fields.cabang,
+        tipe_asset_id: req.fields.tipe_asset_id,
+        asset_kapal_id: req.fields.asset_kapal_id,
+        status: req.fields.status,
+        jam_pengoperasian: req.fields.jam_pengoperasian,
+        reliability: req.fields.reliability,
+        keterangan: req.fields.keterangan,
+        armada_jaga_id: req.fields.armada_jaga_id,
+    };
 
-        armadaschedule.push(arr);
-    }
-
-    var used = {};
-    for (var i in armadaschedule) {
-        var b = armadaschedule[i];
-        for (var a in b) {
-            if (!b[a]) {
-                delete b[a];
-            }
-        }
-    }
-
-
-
+	var used = {};
+	for (var i in armadaschedule) {
+	    if (!armadaschedule[i]) {
+	        delete armadaschedule[i];
+	    }
+	}
 
     ArmadaSchedule.create(armadaschedule, (err, data) => {
         if (err)
@@ -86,19 +72,20 @@ exports.update = (req, res) => {
         });
     }
 
-    // req.fields.date = f.toDate(req.fields.date);
+	req.fields.date = f.toDate(req.fields.date);
 
     ArmadaSchedule.updateById(
+        req.params.id,
         req.fields,
         (err, data) => {
             if (err) {
                 if (err.kind === "not_found") {
                     res.status(404).send({
-                        message: `Not found ArmadaSchedule.`
+                        message: `Not found ArmadaSchedule with id ${req.params.id}.`
                     });
                 } else {
                     res.status(500).send({
-                        message: "Error updating ArmadaSchedule"
+                        message: "Error updating ArmadaSchedule with id " + req.params.id
                     });
                 }
             } else res.send(data);
