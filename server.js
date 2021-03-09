@@ -24,6 +24,32 @@ app.use((req, res, next) => {
   res.header('content-type: application/json; charset=utf-8');
   next()
 })
+
+
+var requestToken = function (req, res, next) {
+  const resQuery = f.query(`select * from "authorization"`);
+  var tokens = req.get('authorization')
+  resQuery.then((a) => {
+    // console.log(a.rows);
+    var rows = a.rows;
+    var adaToken = 0;
+    for (var i in rows) {
+      if (tokens == rows[i].accessToken) {
+        adaToken = 1
+      }
+    }
+    if (adaToken == 0) {
+      res.send('Not Authorization')
+    } else {
+      console.log('silahkan lewat');
+      next();
+    }
+  })
+  // console.log(req.get('authorization'));
+  // res.send("tester")
+}
+
+app.use(requestToken)
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Simpanda Application" });
@@ -84,6 +110,7 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
 
 // var res = f.query(`SELECT NVL(max("id"), 0) as "id" FROM "cabang"`, 1);
 // res.then((a) => {

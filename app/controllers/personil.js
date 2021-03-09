@@ -1,6 +1,5 @@
 const Personil = require("../models/personil.js");
 const f = require('./function');
-
 exports.create = (req, res) => {
     if (!req.fields) {
         res.status(400).send({
@@ -40,28 +39,28 @@ exports.create = (req, res) => {
         koneksi: req.fields.koneksi,
     };
 
-	var used = {};
-	for (var i in personil) {
-	    if (!personil[i]) {
-	        delete personil[i];
-	    }
-	}
+    var used = {};
+    for (var i in personil) {
+        if (!personil[i]) {
+            delete personil[i];
+        }
+    }
 
-	if (req.fields.cv) {
-	    personil.cv = f.uploadFile64('personil', req.fields.cv);
-	}
+    if (req.fields.cv) {
+        personil.cv = f.uploadFile64('personil', req.fields.cv);
+    }
 
-	if (req.fields.sk) {
-	    personil.sk = f.uploadFile64('personil', req.fields.sk);
-	}
+    if (req.fields.sk) {
+        personil.sk = f.uploadFile64('personil', req.fields.sk);
+    }
 
-	if (req.fields.skpp) {
-	    personil.skpp = f.uploadFile64('personil', req.fields.skpp);
-	}
+    if (req.fields.skpp) {
+        personil.skpp = f.uploadFile64('personil', req.fields.skpp);
+    }
 
-	if (req.fields.surat_kesehatan) {
-	    personil.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
-	}
+    if (req.fields.surat_kesehatan) {
+        personil.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
+    }
 
     Personil.create(personil, (err, data) => {
         if (err)
@@ -74,6 +73,10 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
+    // var token = req.rawHeaders[1];
+    // if (token != "123456") {
+    //     res.send("No Authorization");
+    // }
     Personil.getAll(req.query, (err, data) => {
         if (err)
             res.status(500).send({
@@ -108,25 +111,25 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal_lahir = f.toDate(req.fields.tanggal_lahir);
-	req.fields.tanggal_mulai = f.toDate(req.fields.tanggal_mulai);
-	req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
-	req.fields.date = f.toDate(req.fields.date);
-	if (req.fields.cv) {
-	    req.fields.cv = f.uploadFile64('personil', req.fields.cv);
-	}
+    req.fields.tanggal_lahir = f.toDate(req.fields.tanggal_lahir);
+    req.fields.tanggal_mulai = f.toDate(req.fields.tanggal_mulai);
+    req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
+    req.fields.date = f.toDate(req.fields.date);
+    if (req.fields.cv) {
+        req.fields.cv = f.uploadFile64('personil', req.fields.cv);
+    }
 
-	if (req.fields.sk) {
-	    req.fields.sk = f.uploadFile64('personil', req.fields.sk);
-	}
+    if (req.fields.sk) {
+        req.fields.sk = f.uploadFile64('personil', req.fields.sk);
+    }
 
-	if (req.fields.skpp) {
-	    req.fields.skpp = f.uploadFile64('personil', req.fields.skpp);
-	}
+    if (req.fields.skpp) {
+        req.fields.skpp = f.uploadFile64('personil', req.fields.skpp);
+    }
 
-	if (req.fields.surat_kesehatan) {
-	    req.fields.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
-	}
+    if (req.fields.surat_kesehatan) {
+        req.fields.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
+    }
 
 
     Personil.updateById(
