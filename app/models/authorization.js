@@ -3,21 +3,21 @@ var objek = new Object();
 
 // constructor
 const Authorization = function (authorization) {
-	this.user_id = authorization.user_id;
-	this.accessToken = authorization.accessToken;
-	this.refreshToken = authorization.refreshToken;
-	this.expired = authorization.expired;
-	this.cabang_id = authorization.cabang_id;
+    this.user_id = authorization.user_id;
+    this.accessToken = authorization.accessToken;
+    this.refreshToken = authorization.refreshToken;
+    this.expired = authorization.expired;
+    this.cabang_id = authorization.cabang_id;
 };
 
-Authorization.create = async (newAuthorization, result) => {
-	const hv = await f.headerValue(newAuthorization, "authorization");
-	var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
-	const exec = f.query(queryText, 1);
-	delete newAuthorization.id;
-	const res = await exec;
+Authorization.create = async(newAuthorization, result) => {
+		const hv = await f.headerValue(newAuthorization, "authorization");
+		var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
+		const exec = f.query(queryText, 1);
+		delete newAuthorization.id;
+		const res = await exec;
 
-	result(null, { id: res.outBinds.id[0], ...newAuthorization });
+		result(null, { id: res.outBinds.id[0], ...newAuthorization });
 };
 
 Authorization.findById = async (id, result) => {
@@ -28,11 +28,11 @@ Authorization.findById = async (id, result) => {
 }
 
 Authorization.getAll = async (param, result) => {
-	var wheres = f.getParam(param);
-	var query = "SELECT a.* , a1.\"nama\" as \"user\", a2.\"nama\" as \"cabang\" FROM \"authorization\" a  LEFT JOIN \"user\" a1 ON a.\"user_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\" ";
+    var wheres = f.getParam(param, "authorization");
+    var query = "SELECT a.* , a1.\"nama\" as \"user\", a2.\"nama\" as \"cabang\" FROM \"authorization\" a  LEFT JOIN \"user\" a1 ON a.\"user_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"user_id\" LIKE '%" + param.q + "%' OR a.\"accessToken\" LIKE '%" + param.q + "%' OR a.\"refreshToken\" LIKE '%" + param.q + "%' OR a.\"expired\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"user_id\" LIKE '%" + param.q + "%' OR a.\"accessToken\" LIKE '%" + param.q + "%' OR a.\"refreshToken\" LIKE '%" + param.q + "%' OR a.\"expired\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -42,7 +42,7 @@ Authorization.getAll = async (param, result) => {
 	result(null, res.rows);
 }
 
-Authorization.updateById = async (id, authorization, result) => {
+Authorization.updateById = async(id, authorization, result) => {
 
 	var arr = ["user_id", "accessToken", "refreshToken", "expired", "cabang_id"];
 	var str = f.getValueUpdate(authorization, id, arr);

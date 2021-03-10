@@ -51,7 +51,7 @@ UserGroup.findById = async (id, result) => {
 }
 
 UserGroup.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "user_group");
     var query = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

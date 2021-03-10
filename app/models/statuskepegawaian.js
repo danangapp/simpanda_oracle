@@ -24,7 +24,7 @@ StatusKepegawaian.findById = async (id, result) => {
 }
 
 StatusKepegawaian.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "status_kepegawaian");
     var query = "SELECT a.*  FROM \"status_kepegawaian\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

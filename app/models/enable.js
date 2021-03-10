@@ -24,7 +24,7 @@ Enable.findById = async (id, result) => {
 }
 
 Enable.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "enable");
     var query = "SELECT a.*  FROM \"enable\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

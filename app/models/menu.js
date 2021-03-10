@@ -25,7 +25,7 @@ Menu.findById = async (id, result) => {
 }
 
 Menu.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "menu");
     var query = "SELECT a.*  FROM \"menu\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

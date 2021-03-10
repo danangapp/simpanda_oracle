@@ -49,7 +49,7 @@ Sertifikat.findById = async (id, result) => {
 }
 
 Sertifikat.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "sertifikat");
     var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\", a2.\"nama\" as \"tipe_cert\", a3.\"*\", a4.\"nama_asset\" as \"asset_kapal\" FROM \"sertifikat\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\"  LEFT JOIN \"tipe_cert\" a2 ON a.\"tipe_cert_id\" = a2.\"id\"  LEFT JOIN \"personil\" a3 ON a.\"personil_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

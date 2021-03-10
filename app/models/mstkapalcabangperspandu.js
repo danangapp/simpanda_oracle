@@ -30,7 +30,7 @@ MstKapalCabangPersPandu.findById = async (id, result) => {
 }
 
 MstKapalCabangPersPandu.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "mst_kapal_cabang_pers_pandu");
     var query = "SELECT a.*  FROM \"mst_kapal_cabang_pers_pandu\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

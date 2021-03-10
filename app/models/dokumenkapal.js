@@ -24,7 +24,7 @@ DokumenKapal.findById = async (id, result) => {
 }
 
 DokumenKapal.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "dokumen_kapal");
     var query = "SELECT a.*  FROM \"dokumen_kapal\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

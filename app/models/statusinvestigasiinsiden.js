@@ -24,7 +24,7 @@ StatusInvestigasiInsiden.findById = async (id, result) => {
 }
 
 StatusInvestigasiInsiden.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "status_investigasi_insiden");
     var query = "SELECT a.*  FROM \"status_investigasi_insiden\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

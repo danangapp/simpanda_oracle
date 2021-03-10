@@ -24,7 +24,7 @@ PemeriksaanKapalCheck.findById = async (id, result) => {
 }
 
 PemeriksaanKapalCheck.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "pemeriksaan_kapal_check");
     var query = "SELECT a.*  FROM \"pemeriksaan_kapal_check\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

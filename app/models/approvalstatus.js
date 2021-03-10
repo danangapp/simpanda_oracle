@@ -24,7 +24,7 @@ ApprovalStatus.findById = async (id, result) => {
 }
 
 ApprovalStatus.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "approval_status");
     var query = "SELECT a.*  FROM \"approval_status\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

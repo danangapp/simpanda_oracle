@@ -29,7 +29,7 @@ PemeriksaanKapalCheckData.findById = async (id, result) => {
 }
 
 PemeriksaanKapalCheckData.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "pemeriksaan_kapal_check_data");
     var query = "SELECT a.* , a1.\"nama\" as \"kondisi\", a2.\"nama\" as \"pemeriksaan_kapal\", a3.\"nama\" as \"pemeriksaan_kapal_check\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"  LEFT JOIN \"pemeriksaan_kapal\" a2 ON a.\"pemeriksaan_kapal_id\" = a2.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check\" a3 ON a.\"pemeriksaan_kapal_check_id\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

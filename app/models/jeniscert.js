@@ -25,7 +25,7 @@ JenisCert.findById = async (id, result) => {
 }
 
 JenisCert.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "jenis_cert");
     var query = "SELECT a.*  FROM \"jenis_cert\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

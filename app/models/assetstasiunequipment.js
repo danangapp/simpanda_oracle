@@ -55,7 +55,7 @@ AssetStasiunEquipment.findById = async (id, result) => {
 }
 
 AssetStasiunEquipment.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "asset_stasiun_equipment");
 	wheres = wheres.replace(`a."flag"`, `a1."flag"`);
     var query = "SELECT a.* , a1.\"flag\" as \"tipe_asset\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\" FROM \"asset_stasiun_equipment\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\" ";
 	if (param.q) {

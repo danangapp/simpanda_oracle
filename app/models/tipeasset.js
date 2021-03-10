@@ -27,7 +27,7 @@ TipeAsset.findById = async (id, result) => {
 }
 
 TipeAsset.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "tipe_asset");
     var query = "SELECT a.*  FROM \"tipe_asset\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

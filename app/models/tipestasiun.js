@@ -24,7 +24,7 @@ TipeStasiun.findById = async (id, result) => {
 }
 
 TipeStasiun.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "tipe_stasiun");
     var query = "SELECT a.*  FROM \"tipe_stasiun\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

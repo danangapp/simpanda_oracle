@@ -24,7 +24,7 @@ PanduBandarLaut.findById = async (id, result) => {
 }
 
 PanduBandarLaut.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "pandu_bandar_laut");
     var query = "SELECT a.*  FROM \"pandu_bandar_laut\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

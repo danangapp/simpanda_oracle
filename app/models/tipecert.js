@@ -26,7 +26,7 @@ TipeCert.findById = async (id, result) => {
 }
 
 TipeCert.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "tipe_cert");
     var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\" FROM \"tipe_cert\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

@@ -24,7 +24,7 @@ KondisiUmum.findById = async (id, result) => {
 }
 
 KondisiUmum.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "kondisi_umum");
     var query = "SELECT a.*  FROM \"kondisi_umum\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

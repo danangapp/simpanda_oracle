@@ -34,7 +34,7 @@ Cabang.findById = async (id, result) => {
 }
 
 Cabang.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "cabang");
     var query = "SELECT a.*  FROM \"cabang\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

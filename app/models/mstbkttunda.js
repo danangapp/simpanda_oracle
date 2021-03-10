@@ -63,7 +63,7 @@ MstBktTunda.findById = async (id, result) => {
 }
 
 MstBktTunda.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "mst_bkt_tunda");
     var query = "SELECT a.*  FROM \"mst_bkt_tunda\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

@@ -31,7 +31,7 @@ ActionSeq.findById = async (id, result) => {
 }
 
 ActionSeq.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "action_seq");
     var query = "SELECT a.*  FROM \"action_seq\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

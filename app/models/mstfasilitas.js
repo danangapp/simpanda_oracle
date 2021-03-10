@@ -34,7 +34,7 @@ MstFasilitas.findById = async (id, result) => {
 }
 
 MstFasilitas.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "mst_fasilitas");
     var query = "SELECT a.* , a1.\"nama\" as \"ena\" FROM \"mst_fasilitas\" a  LEFT JOIN \"enable\" a1 ON a.\"enable\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";

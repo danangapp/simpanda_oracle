@@ -25,7 +25,7 @@ PanduJaga.findById = async (id, result) => {
 }
 
 PanduJaga.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
+    var wheres = f.getParam(param, "pandu_jaga");
     var query = "SELECT a.* , a1.\"*\", a2.\"*\" FROM \"pandu_jaga\" a  LEFT JOIN \"pandu_schedule\" a1 ON a.\"pandu_schedule_id\" = a1.\"id\"  LEFT JOIN \"personil\" a2 ON a.\"personil_id\" = a2.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
