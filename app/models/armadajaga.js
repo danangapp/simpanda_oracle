@@ -46,7 +46,7 @@ ArmadaJaga.updateById = async(id, armadajaga, result) => {
 	var str = f.getValueUpdate(armadajaga, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"armada_jaga\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...armadajaga });

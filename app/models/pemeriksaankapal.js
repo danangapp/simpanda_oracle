@@ -92,7 +92,7 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result) => {
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pemeriksaankapal });

@@ -44,7 +44,7 @@ Enable.updateById = async(id, enable, result) => {
 	var str = f.getValueUpdate(enable, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"enable\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...enable });

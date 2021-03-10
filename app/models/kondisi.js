@@ -44,7 +44,7 @@ Kondisi.updateById = async(id, kondisi, result) => {
 	var str = f.getValueUpdate(kondisi, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"kondisi\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...kondisi });

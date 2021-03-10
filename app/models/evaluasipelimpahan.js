@@ -84,7 +84,7 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result) => {
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...evaluasipelimpahan });

@@ -44,7 +44,7 @@ StatusIjazah.updateById = async(id, statusijazah, result) => {
 	var str = f.getValueUpdate(statusijazah, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_ijazah\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...statusijazah });

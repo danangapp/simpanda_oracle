@@ -46,7 +46,7 @@ TipeCert.updateById = async(id, tipecert, result) => {
 	var str = f.getValueUpdate(tipecert, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...tipecert });

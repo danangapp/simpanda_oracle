@@ -84,7 +84,7 @@ MstKapalCabangBktPandu.updateById = async(id, mstkapalcabangbktpandu, result) =>
 	var str = f.getValueUpdate(mstkapalcabangbktpandu, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_kapal_cabang_bkt_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstkapalcabangbktpandu });

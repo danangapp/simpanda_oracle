@@ -5,6 +5,7 @@ var objek = new Object();
 const Menu = function (menu) {
     this.nama = menu.nama;
     this.url = menu.url;
+    this.icon = menu.icon;
 };
 
 Menu.create = async(newMenu, result) => {
@@ -29,7 +30,7 @@ Menu.getAll = async (param, result) => {
     var query = "SELECT a.*  FROM \"menu\" a ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"url\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"url\" LIKE '%" + param.q + "%' OR a.\"icon\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -41,11 +42,11 @@ Menu.getAll = async (param, result) => {
 
 Menu.updateById = async(id, menu, result) => {
 
-	var arr = ["nama", "url"];
+	var arr = ["nama", "url", "icon"];
 	var str = f.getValueUpdate(menu, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"menu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...menu });

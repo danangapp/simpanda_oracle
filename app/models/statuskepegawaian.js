@@ -44,7 +44,7 @@ StatusKepegawaian.updateById = async(id, statuskepegawaian, result) => {
 	var str = f.getValueUpdate(statuskepegawaian, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_kepegawaian\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...statuskepegawaian });

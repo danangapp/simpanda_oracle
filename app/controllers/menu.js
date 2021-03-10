@@ -11,6 +11,7 @@ exports.create = (req, res) => {
     var menu = {
         nama: req.fields.nama,
         url: req.fields.url,
+        icon: req.fields.icon,
     };
 
 	var used = {};

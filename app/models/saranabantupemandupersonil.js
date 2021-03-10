@@ -49,7 +49,7 @@ SaranaBantuPemanduPersonil.updateById = async(id, saranabantupemandupersonil, re
 	var str = f.getValueUpdate(saranabantupemandupersonil, id, arr);
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sarana_bantu_pemandu_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...saranabantupemandupersonil });
