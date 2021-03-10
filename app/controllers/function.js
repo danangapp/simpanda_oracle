@@ -160,7 +160,7 @@ module.exports = {
         const headervalue = "(" + header + ") values(" + value + ")";
         return headervalue;
     },
-    getParam: function (param, $db = "") {
+    getParam: function (param, db = "") {
         const length = Object.keys(param).length;
         var wheres = "";
         if (length > 0) {
@@ -177,7 +177,19 @@ module.exports = {
                         wheres += "a.\"" + i + "\" IN (" + wherein + ")";
                         wheres += " and ";
                     } else {
-                        wheres += "a.\"" + i + "\" = '" + param[i] + "' and ";
+                        var column = i;
+                        if (db === "armada_schedule") {
+                            if (i == "cabang") {
+                                column = `a1."nama"`;
+                            }
+
+                            if (i == "tipe_asset") {
+                                column = `a2."nama"`;
+                            }
+                        } else {
+                            column = `a."` + i;
+                        }
+                        wheres += column + ` = '` + param[i] + `' and `;
                     }
                 }
             }

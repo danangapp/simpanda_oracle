@@ -47,8 +47,8 @@ ArmadaSchedule.findById = async (id, result) => {
 }
 
 ArmadaSchedule.getAll = async (param, result) => {
-    var wheres = f.getParam(param);
-    var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"status_absen\", a3.\"nama\" as \"approval_status\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"pandu_bandar_laut\" FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"status_absen\" a2 ON a.\"status_absen_id\" = a2.\"id\"  LEFT JOIN \"approval_status\" a3 ON a.\"approval_status_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a5 ON a.\"pandu_bandar_laut_id\" = a5.\"id\" ";
+    var wheres = f.getParam(param, "armada_schedule");
+    var query = `SELECT a.*, a1."nama" as "cabang", a2."nama" as "tipe_asset", a3."nama_asset" FROM "armada_schedule" a LEFT JOIN "cabang" a1 ON a."cabang_id" = a1."id" LEFT JOIN "tipe_asset" a2 ON a."tipe_asset_id" = a2."id" LEFT JOIN "asset_kapal" a3 ON a."asset_kapal_id" = a3."id"`;
     if (param.q) {
         wheres += wheres.length == 7 ? "(" : "AND (";
         wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
@@ -56,6 +56,7 @@ ArmadaSchedule.getAll = async (param, result) => {
     }
 
     query += wheres;
+    console.log(query);
     const exec = f.query(query);
     const res = await exec;
     result(null, res.rows);
