@@ -177,7 +177,7 @@ module.exports = {
                         wheres += "a.\"" + i + "\" IN (" + wherein + ")";
                         wheres += " and ";
                     } else {
-                        var column = i;
+                        var column = `a."` + i + `"`;
                         if (db === "armada_schedule") {
                             if (i == "cabang") {
                                 column = `a1."nama"`;
@@ -186,8 +186,10 @@ module.exports = {
                             if (i == "tipe_asset") {
                                 column = `a2."nama"`;
                             }
-                        } else {
-                            column = `a."` + i;
+                        } else if (db === "asset_kapal") {
+                            if (i == "flag") {
+                                column = `a2."flag"`;
+                            }
                         }
                         wheres += column + ` = '` + param[i] + `' and `;
                     }
