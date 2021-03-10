@@ -83,7 +83,7 @@ User.login = async (req, result) => {
 	f.query(`INSERT INTO "authorization" ${hv}`, 2);
 
 
-	query = `SELECT c."config", c."parent", c."id", c."url", c."nama" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
+	query = `SELECT c."config", c."parent", c."id", c."url", c."nama", c."icon" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
 	const exex = f.query(query);
 	const rex = await exex;
 	const menu = rex.rows;
