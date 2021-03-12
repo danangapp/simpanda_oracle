@@ -27,7 +27,7 @@ Authorization.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Authorization.getAll = async (param, result) => {
+Authorization.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "authorization");
     var query = "SELECT a.* , a1.\"nama\" as \"user\", a2.\"nama\" as \"cabang\" FROM \"authorization\" a  LEFT JOIN \"user\" a1 ON a.\"user_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\" ";
 	if (param.q) {
@@ -36,6 +36,7 @@ Authorization.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;

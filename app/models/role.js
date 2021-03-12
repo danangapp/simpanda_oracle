@@ -23,7 +23,7 @@ Role.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Role.getAll = async (param, result) => {
+Role.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "role");
     var query = "SELECT a.*  FROM \"role\" a ";
 	if (param.q) {

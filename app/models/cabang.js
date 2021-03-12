@@ -33,7 +33,7 @@ Cabang.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Cabang.getAll = async (param, result) => {
+Cabang.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "cabang");
     var query = "SELECT a.*  FROM \"cabang\" a ";
 	if (param.q) {

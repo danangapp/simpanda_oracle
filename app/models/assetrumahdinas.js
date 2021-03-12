@@ -57,7 +57,7 @@ AssetRumahDinas.findById = async (id, result) => {
 	let merge = { ...res.rows[0], ...activityLog }	
 }
 
-AssetRumahDinas.getAll = async (param, result) => {
+AssetRumahDinas.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "asset_rumah_dinas");
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\" FROM \"asset_rumah_dinas\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\" ";
 	if (param.q) {

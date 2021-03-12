@@ -23,7 +23,7 @@ PemeriksaanKapalCheck.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-PemeriksaanKapalCheck.getAll = async (param, result) => {
+PemeriksaanKapalCheck.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "pemeriksaan_kapal_check");
     var query = "SELECT a.*  FROM \"pemeriksaan_kapal_check\" a ";
 	if (param.q) {

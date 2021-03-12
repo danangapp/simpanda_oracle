@@ -23,7 +23,7 @@ Enable.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Enable.getAll = async (param, result) => {
+Enable.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "enable");
     var query = "SELECT a.*  FROM \"enable\" a ";
 	if (param.q) {

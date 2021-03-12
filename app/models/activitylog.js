@@ -28,7 +28,7 @@ ActivityLog.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-ActivityLog.getAll = async (param, result) => {
+ActivityLog.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "activity_log");
     var query = "SELECT a.* , a1.\"nama\" as \"user\" FROM \"activity_log\" a  LEFT JOIN \"user\" a1 ON a.\"user_id\" = a1.\"id\" ";
 	if (param.q) {

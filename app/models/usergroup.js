@@ -50,7 +50,7 @@ UserGroup.findById = async (id, result) => {
 	result(null, merge);
 }
 
-UserGroup.getAll = async (param, result) => {
+UserGroup.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "user_group");
     var query = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\" ";
 	if (param.q) {
@@ -59,6 +59,7 @@ UserGroup.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;

@@ -23,7 +23,7 @@ StatusInvestigasiInsiden.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-StatusInvestigasiInsiden.getAll = async (param, result) => {
+StatusInvestigasiInsiden.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "status_investigasi_insiden");
     var query = "SELECT a.*  FROM \"status_investigasi_insiden\" a ";
 	if (param.q) {

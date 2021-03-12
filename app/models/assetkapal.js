@@ -102,7 +102,7 @@ AssetKapal.findById = async (id, result) => {
 	result(null, merge);
 }
 
-AssetKapal.getAll = async (param, result) => {
+AssetKapal.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "asset_kapal");
 	wheres = wheres.replace(`a."flag"`, `a2."flag"`);
     var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"flag\" as \"tipe_asset\", a3.\"nama\" as \"ena\", a4.\"nama\" as \"approval_status\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"approval_status\" a4 ON a.\"approval_status_id\" = a4.\"id\" ";
@@ -112,6 +112,7 @@ AssetKapal.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;

@@ -23,7 +23,7 @@ StatusKepegawaian.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-StatusKepegawaian.getAll = async (param, result) => {
+StatusKepegawaian.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "status_kepegawaian");
     var query = "SELECT a.*  FROM \"status_kepegawaian\" a ";
 	if (param.q) {

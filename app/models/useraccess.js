@@ -24,7 +24,7 @@ UserAccess.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-UserAccess.getAll = async (param, result) => {
+UserAccess.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "user_access");
     var query = "SELECT a.* , a1.\"nama\" as \"user_group\", a2.\"nama\" as \"menu\" FROM \"user_access\" a  LEFT JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\"  LEFT JOIN \"menu\" a2 ON a.\"menu_id\" = a2.\"id\" ";
 	if (param.q) {

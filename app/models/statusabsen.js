@@ -23,7 +23,7 @@ StatusAbsen.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-StatusAbsen.getAll = async (param, result) => {
+StatusAbsen.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "status_absen");
     var query = "SELECT a.*  FROM \"status_absen\" a ";
 	if (param.q) {

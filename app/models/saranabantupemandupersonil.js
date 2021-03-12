@@ -28,7 +28,7 @@ SaranaBantuPemanduPersonil.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-SaranaBantuPemanduPersonil.getAll = async (param, result) => {
+SaranaBantuPemanduPersonil.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "sarana_bantu_pemandu_personil");
     var query = "SELECT a.* , a1.\"nama\" as \"sarana_bantu_pemandu\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"tipe_asset\", a4.\"nama\" as \"status_ijazah\" FROM \"sarana_bantu_pemandu_personil\" a  LEFT JOIN \"sarana_bantu_pemandu\" a1 ON a.\"sarana_bantu_pemandu_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"status_ijazah\" a4 ON a.\"status_ijazah_id\" = a4.\"id\" ";
 	if (param.q) {

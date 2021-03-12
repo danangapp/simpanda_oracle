@@ -24,7 +24,7 @@ JenisCert.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-JenisCert.getAll = async (param, result) => {
+JenisCert.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "jenis_cert");
     var query = "SELECT a.*  FROM \"jenis_cert\" a ";
 	if (param.q) {

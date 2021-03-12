@@ -23,7 +23,7 @@ StatusEvaluasiPelimpahan.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-StatusEvaluasiPelimpahan.getAll = async (param, result) => {
+StatusEvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "status_evaluasi_pelimpahan");
     var query = "SELECT a.*  FROM \"status_evaluasi_pelimpahan\" a ";
 	if (param.q) {

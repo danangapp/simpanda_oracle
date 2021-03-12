@@ -25,7 +25,7 @@ Menu.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Menu.getAll = async (param, result) => {
+Menu.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "menu");
     var query = "SELECT a.*  FROM \"menu\" a ";
 	if (param.q) {

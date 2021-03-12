@@ -59,7 +59,7 @@ MstBktPandu.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-MstBktPandu.getAll = async (param, result) => {
+MstBktPandu.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "mst_bkt_pandu");
     var query = "SELECT a.*  FROM \"mst_bkt_pandu\" a ";
 	if (param.q) {

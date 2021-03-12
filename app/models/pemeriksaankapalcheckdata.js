@@ -28,7 +28,7 @@ PemeriksaanKapalCheckData.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-PemeriksaanKapalCheckData.getAll = async (param, result) => {
+PemeriksaanKapalCheckData.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "pemeriksaan_kapal_check_data");
     var query = "SELECT a.* , a1.\"nama\" as \"kondisi\", a2.\"nama\" as \"pemeriksaan_kapal\", a3.\"nama\" as \"pemeriksaan_kapal_check\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"  LEFT JOIN \"pemeriksaan_kapal\" a2 ON a.\"pemeriksaan_kapal_id\" = a2.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check\" a3 ON a.\"pemeriksaan_kapal_check_id\" = a3.\"id\" ";
 	if (param.q) {

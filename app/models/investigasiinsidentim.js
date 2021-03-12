@@ -27,7 +27,7 @@ InvestigasiInsidenTim.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-InvestigasiInsidenTim.getAll = async (param, result) => {
+InvestigasiInsidenTim.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "investigasi_insiden_tim");
     var query = "SELECT a.* , a1.\"nama\" as \"investigasi_insiden\" FROM \"investigasi_insiden_tim\" a  LEFT JOIN \"investigasi_insiden\" a1 ON a.\"investigasi_insiden_id\" = a1.\"id\" ";
 	if (param.q) {

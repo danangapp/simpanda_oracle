@@ -25,7 +25,7 @@ TipeCert.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-TipeCert.getAll = async (param, result) => {
+TipeCert.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "tipe_cert");
     var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\" FROM \"tipe_cert\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\" ";
 	if (param.q) {

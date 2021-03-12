@@ -113,7 +113,7 @@ InvestigasiInsiden.findById = async (id, result) => {
 	result(null, merge);
 }
 
-InvestigasiInsiden.getAll = async (param, result) => {
+InvestigasiInsiden.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "investigasi_insiden");
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"status_investigasi_insiden\" FROM \"investigasi_insiden\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"status_investigasi_insiden\" a3 ON a.\"status_investigasi_insiden_id\" = a3.\"id\" ";
 	if (param.q) {

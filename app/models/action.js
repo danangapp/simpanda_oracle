@@ -23,7 +23,7 @@ Action.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-Action.getAll = async (param, result) => {
+Action.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "action");
     var query = "SELECT a.*  FROM \"action\" a ";
 	if (param.q) {

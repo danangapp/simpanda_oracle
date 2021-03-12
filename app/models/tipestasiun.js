@@ -23,7 +23,7 @@ TipeStasiun.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-TipeStasiun.getAll = async (param, result) => {
+TipeStasiun.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "tipe_stasiun");
     var query = "SELECT a.*  FROM \"tipe_stasiun\" a ";
 	if (param.q) {

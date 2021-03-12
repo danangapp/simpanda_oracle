@@ -303,6 +303,7 @@ module.exports = {
     whereCabang: function (cabang_id, column, lengths) {
         var wheres = "";
         if (cabang_id != 1) {
+            console.log('kemari ya');
             wheres += lengths == 0 ? ` WHERE ${column} = '${cabang_id}'` : wheres += ` AND ${column} = '${cabang_id}'`
         } else {
             wheres = "";

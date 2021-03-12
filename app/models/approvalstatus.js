@@ -23,7 +23,7 @@ ApprovalStatus.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-ApprovalStatus.getAll = async (param, result) => {
+ApprovalStatus.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "approval_status");
     var query = "SELECT a.*  FROM \"approval_status\" a ";
 	if (param.q) {

@@ -23,7 +23,7 @@ DokumenKapal.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-DokumenKapal.getAll = async (param, result) => {
+DokumenKapal.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "dokumen_kapal");
     var query = "SELECT a.*  FROM \"dokumen_kapal\" a ";
 	if (param.q) {

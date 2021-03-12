@@ -23,7 +23,7 @@ PanduBandarLaut.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-PanduBandarLaut.getAll = async (param, result) => {
+PanduBandarLaut.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "pandu_bandar_laut");
     var query = "SELECT a.*  FROM \"pandu_bandar_laut\" a ";
 	if (param.q) {

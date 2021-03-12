@@ -23,7 +23,7 @@ KondisiUmum.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-KondisiUmum.getAll = async (param, result) => {
+KondisiUmum.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "kondisi_umum");
     var query = "SELECT a.*  FROM \"kondisi_umum\" a ";
 	if (param.q) {

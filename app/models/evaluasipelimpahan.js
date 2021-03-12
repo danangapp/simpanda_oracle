@@ -62,7 +62,7 @@ EvaluasiPelimpahan.findById = async (id, result) => {
 	let merge = { ...res.rows[0], ...activityLog }	
 }
 
-EvaluasiPelimpahan.getAll = async (param, result) => {
+EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "evaluasi_pelimpahan");
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"evaluasi_pelimpahan\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\" ";
 	if (param.q) {
@@ -71,6 +71,7 @@ EvaluasiPelimpahan.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;

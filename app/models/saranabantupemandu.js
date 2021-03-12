@@ -70,7 +70,7 @@ SaranaBantuPemandu.findById = async (id, result) => {
 	result(null, merge);
 }
 
-SaranaBantuPemandu.getAll = async (param, result) => {
+SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "sarana_bantu_pemandu");
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\" ";
 	if (param.q) {
@@ -79,6 +79,7 @@ SaranaBantuPemandu.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;

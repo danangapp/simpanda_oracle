@@ -29,7 +29,7 @@ MstPersPandu.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-MstPersPandu.getAll = async (param, result) => {
+MstPersPandu.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "mst_pers_pandu");
     var query = "SELECT a.* , a1.\"nama\" as \"ena\" FROM \"mst_pers_pandu\" a  LEFT JOIN \"enable\" a1 ON a.\"enable\" = a1.\"id\" ";
 	if (param.q) {

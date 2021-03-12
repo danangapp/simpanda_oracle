@@ -89,7 +89,7 @@ SaranaBantuPemanduKapal.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-SaranaBantuPemanduKapal.getAll = async (param, result) => {
+SaranaBantuPemanduKapal.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "sarana_bantu_pemandu_kapal");
     var query = "SELECT a.* , a1.\"nama\" as \"sarana_bantu_pemandu\", a2.\"nama\" as \"tipe_sarana_pemandu_kapal\" FROM \"sarana_bantu_pemandu_kapal\" a  LEFT JOIN \"sarana_bantu_pemandu\" a1 ON a.\"sarana_bantu_pemandu_id\" = a1.\"id\"  LEFT JOIN \"tipe_sarana_pemandu_kapal\" a2 ON a.\"tipe_sarana_pemandu_kapal_id\" = a2.\"id\" ";
 	if (param.q) {

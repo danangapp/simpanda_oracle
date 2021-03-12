@@ -26,7 +26,7 @@ TipeAsset.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-TipeAsset.getAll = async (param, result) => {
+TipeAsset.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "tipe_asset");
     var query = "SELECT a.*  FROM \"tipe_asset\" a ";
 	if (param.q) {

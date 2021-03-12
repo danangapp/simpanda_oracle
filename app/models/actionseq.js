@@ -30,7 +30,7 @@ ActionSeq.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-ActionSeq.getAll = async (param, result) => {
+ActionSeq.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "action_seq");
     var query = "SELECT a.*  FROM \"action_seq\" a ";
 	if (param.q) {

@@ -23,7 +23,7 @@ StatusIjazah.findById = async (id, result) => {
 	result(null, res.rows[0]);
 }
 
-StatusIjazah.getAll = async (param, result) => {
+StatusIjazah.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "status_ijazah");
     var query = "SELECT a.*  FROM \"status_ijazah\" a ";
 	if (param.q) {
