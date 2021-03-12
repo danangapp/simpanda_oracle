@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 
 var requestToken = function (req, res, next) {
-  if (req.path != "/auth/login/" && req.path != "/") {
+  if (req.path === "/auth/login/" || req.path === "/login" || req.path === "/") {
     next();
   } else {
     const resQuery = f.query(`select * from "authorization"`);
@@ -44,7 +44,7 @@ var requestToken = function (req, res, next) {
       if (adaToken == 0) {
         res.send('Not Authorization')
       } else {
-        console.log('silahkan lewat');
+        // console.log('silahkan lewat');
         next();
       }
     })
