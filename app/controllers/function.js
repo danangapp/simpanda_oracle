@@ -160,6 +160,45 @@ module.exports = {
         const headervalue = "(" + header + ") values(" + value + ")";
         return headervalue;
     },
+    customWhere: function (db, i, param) {
+        var column = `a."` + i + `"`;
+        var wheres = "";
+        var adaTgl = 0;
+
+        if (db === "armada_schedule") {
+            if (i == "cabang") {
+                column = `a1."nama"`;
+            }
+
+            if (i == "tipe_asset") {
+                column = `a2."nama"`;
+            }
+        } else if (db === "asset_kapal") {
+            if (i == "flag") {
+                column = `a2."flag"`;
+            }
+        } else if (db === "pandu_jaga") {
+            if (i == "pandu_bandar_laut_id") {
+                column = `a1."pandu_bandar_laut_id"`;
+            }
+
+            if (i == "date") {
+                column = `trunc(a1."date")`;
+                adaTgl = 1;
+            }
+
+            if (i == "cabang_id") {
+                column = `a1."cabang_id"`;
+            }
+        }
+
+        if (adaTgl == 0) {
+            wheres = column + ` = '` + param[i] + `' and `;
+        } else {
+            wheres = column + ` = TO_DATE('` + param[i] + `', 'YY-MM-DD') and `;
+        }
+        return wheres;
+    },
     getParam: function (param, db = "") {
         const length = Object.keys(param).length;
         var wheres = "";
@@ -177,21 +216,7 @@ module.exports = {
                         wheres += "a.\"" + i + "\" IN (" + wherein + ")";
                         wheres += " and ";
                     } else {
-                        var column = `a."` + i + `"`;
-                        if (db === "armada_schedule") {
-                            if (i == "cabang") {
-                                column = `a1."nama"`;
-                            }
-
-                            if (i == "tipe_asset") {
-                                column = `a2."nama"`;
-                            }
-                        } else if (db === "asset_kapal") {
-                            if (i == "flag") {
-                                column = `a2."flag"`;
-                            }
-                        }
-                        wheres += column + ` = '` + param[i] + `' and `;
+                        wheres += this.customWhere(db, i, param);
                     }
                 }
             }

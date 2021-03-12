@@ -50,10 +50,6 @@ var requestToken = function (req, res, next) {
     })
   }
 
-
-
-
-
   // res.send("tester")
 }
 
