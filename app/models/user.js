@@ -68,31 +68,36 @@ User.login = async (req, result) => {
 		return Math.random().toString(36).substr(2); // remove `0.`
 	};
 	var token = function () {
-		return rand() + rand(); // to make it longer
+		return rand() + rand();
 	};
 
-	var obj = {}
-	obj.user_id = rows.id;
-	obj.cabang_id = rows.cabang_id;
-	obj.accessToken = f.hashCode(token());
-	obj.refreshToken = f.hashCode(token());
-	const timeExpired = f.toDate(new Date().addHours(1), "YYYY/MM/DD HH:mm:ss");
-	obj.expired = timeExpired;
+	if (rows) {
+		var obj = {}
+		obj.user_id = rows.id;
+		obj.cabang_id = rows.cabang_id;
+		obj.accessToken = f.hashCode(token());
+		obj.refreshToken = f.hashCode(token());
+		const timeExpired = f.toDate(new Date().addHours(1), "YYYY/MM/DD HH:mm:ss");
+		obj.expired = timeExpired;
 
-	const hv = await f.headerValue(obj, "authorization");
-	f.query(`INSERT INTO "authorization" ${hv}`, 2);
+		const hv = await f.headerValue(obj, "authorization");
+		f.query(`INSERT INTO "authorization" ${hv}`, 2);
 
 
-	query = `SELECT c."config", c."parent", c."id", c."url", c."nama", c."icon" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
-	const exex = f.query(query);
-	const rex = await exex;
-	const menu = rex.rows;
-	delete obj.id;
-	obj.username = rows.username;
-	obj.nama = rows.nama;
-	let merge = { ...obj, menu }
+		query = `SELECT c."config", c."parent", c."id", c."url", c."nama", c."icon" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
+		const exex = f.query(query);
+		const rex = await exex;
+		const menu = rex.rows;
+		delete obj.id;
+		obj.username = rows.username;
+		obj.nama = rows.nama;
+		let merge = { ...obj, menu }
 
-	result(null, merge);
+		result(null, merge);
+	} else {
+		result(null, "Cannot Get Login Data");
+	}
+
 };
 
 User.updateById = async (id, user, result) => {
