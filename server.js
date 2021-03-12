@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 
 var requestToken = async function (req, res, next) {
-  if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/") {
+  if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/login" || req.path === "/") {
     next();
   } else {
     var tokens = req.get('authorization');
