@@ -81,6 +81,7 @@ User.login = async (req, result) => {
 		obj.expired = timeExpired;
 
 		const hv = await f.headerValue(obj, "authorization");
+		f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
 		f.query(`INSERT INTO "authorization" ${hv}`, 2);
 
 
