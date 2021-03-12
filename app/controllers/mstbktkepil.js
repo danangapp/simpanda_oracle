@@ -54,7 +54,7 @@ exports.findAll = (req, res) => {
                     err.message || "Some error occurred while retrieving mstbktkepilnames."
             });
         else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.findOne = (req, res) => {
@@ -70,7 +70,7 @@ exports.findOne = (req, res) => {
                 });
             }
         } else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.update = (req, res) => {

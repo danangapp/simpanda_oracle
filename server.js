@@ -26,28 +26,22 @@ app.use((req, res, next) => {
 })
 
 
-var requestToken = function (req, res, next) {
-  if (req.path === "/auth/login/" || req.path === "/login" || req.path === "/") {
+var requestToken = async function (req, res, next) {
+  if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/") {
     next();
   } else {
-    const resQuery = f.query(`select * from "authorization"`);
-    var tokens = req.get('authorization')
-    resQuery.then((a) => {
-      // console.log(a.rows);
-      var rows = a.rows;
-      var adaToken = 0;
-      for (var i in rows) {
-        if (tokens == rows[i].accessToken) {
-          adaToken = 1
-        }
-      }
-      if (adaToken == 0) {
-        res.send('Not Authorization')
-      } else {
-        // console.log('silahkan lewat');
+    var tokens = req.get('authorization');
+    const resQuery = await f.query(`select * from "authorization" WHERE "accessToken" = '${tokens}'`);
+    if (resQuery) {
+      if (resQuery.rows.length > 0) {
+        req.cabang_id = resQuery.rows[0].cabang_id;
         next();
+      } else {
+        res.send('Not Authorization')
       }
-    })
+    } else {
+      res.send('Not Authorization')
+    }
   }
 
   // res.send("tester")
