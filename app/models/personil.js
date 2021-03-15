@@ -61,12 +61,12 @@ Personil.create = async (newPersonil, result, cabang_id) => {
 	delete newPersonil.id;
 	const res = await exec;
 
-	f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	objek.koneksi = id;
 	if (objek.action != null) {
 		var id = await f.getid("activity_log");
 		const hv = await f.headerValue(objek, id);
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
+		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	result(null, { id: id, ...newPersonil });
 };
@@ -103,7 +103,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 Personil.updateById = async (id, personil, result) => {
 	const sertifikat = personil.sertifikat;
 	f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
-	f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	delete personil.sertifikat;
 	personil = await setActivity(personil, id);
 

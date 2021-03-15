@@ -35,7 +35,7 @@ Sertifikat.create = async(newSertifikat, result, cabang_id) => {
 		delete newSertifikat.id;
 		const res = await exec;
 
-		f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 		result(null, { id: id, ...newSertifikat });
 };
 

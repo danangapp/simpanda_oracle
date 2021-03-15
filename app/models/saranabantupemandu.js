@@ -55,7 +55,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id) => {
 		if (objek.action != null) {
 			var id = await f.getid("activity_log");
 			const hv = await f.headerValue(objek, id);
-			f.query("INSERT INTO \"activity_log\" " + hv, 2);
+			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: id, ...newSaranaBantuPemandu });
 };

@@ -270,7 +270,7 @@ module.exports = {
         // console.log(str);
         return str;
     },
-    executeSertifikat: function (sertifikat, id, db, dbId) {
+    executeSertifikat: async function (sertifikat, id, db, dbId) {
         var header = "", value = "";
         var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id"]
         for (var i in sertifikat) {
@@ -290,14 +290,14 @@ module.exports = {
 
                 if (adadiTable == 1) {
                     if (a === "tanggal_keluar_sertifikat" || a === "tanggal_expire" || a === "reminder_date1" || a === "reminder_date3" || a === "reminder_date6") {
-                        val = f.toDate(val);
+                        val = this.toDate(val);
                     }
                     if (val) {
                         header += a + ", ";
                         if (a != "sertifikat") {
                             value += "'" + val + "', ";
                         } else {
-                            var fileName = f.uploadFile64('personil', val);
+                            var fileName = this.uploadFile64('personil', val);
                             value += "'" + fileName + "', ";
                         }
                     }
@@ -306,7 +306,7 @@ module.exports = {
             value = value.substring(0, value.length - 2);
             header = header.substring(0, header.length - 2);
             const headervalue = "(" + header + ") values(" + value + ")";
-            this.query("INSERT INTO sertifikat " + headervalue);
+            await this.query("INSERT INTO sertifikat " + headervalue);
         }
     },
     whereCabang: function (cabang_id, column, lengths) {

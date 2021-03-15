@@ -83,12 +83,12 @@ AssetKapal.create = async(newAssetKapal, result, cabang_id) => {
 		delete newAssetKapal.id;
 		const res = await exec;
 
-		f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 		objek.koneksi = id;
 		if (objek.action != null) {
 			var id = await f.getid("activity_log");
 			const hv = await f.headerValue(objek, id);
-			f.query("INSERT INTO \"activity_log\" " + hv, 2);
+			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
 		result(null, { id: id, ...newAssetKapal });
 };
@@ -125,7 +125,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 AssetKapal.updateById = async(id, assetkapal, result) => {
 	const sertifikat = assetkapal.sertifikat;
 	f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
-	f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	delete assetkapal.sertifikat;
 		assetkapal = await setActivity(assetkapal, id);
 
