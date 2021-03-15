@@ -126,7 +126,7 @@ module.exports = {
         object.id = id;
         for (var a in object) {
             const val = object[a];
-            if (val) {
+            if (val != undefined) {
                 header += "\"" + a + "\", ";
 
                 var ada_tgl = 0;
