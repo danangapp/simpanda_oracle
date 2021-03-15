@@ -16,7 +16,7 @@ const Cabang = function (cabang) {
     this.kd_jenis_pelabuhan = cabang.kd_jenis_pelabuhan;
 };
 
-Cabang.create = async(newCabang, result, cabang_id) => {
+Cabang.create = async(newCabang, result, cabang_id, user_id) => {
 		var id = await f.getid("cabang");
 		const hv = await f.headerValue(newCabang, id);
 		var queryText = "INSERT INTO \"cabang\" " + hv + " RETURN \"id\" INTO :id";
@@ -50,15 +50,16 @@ Cabang.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-Cabang.updateById = async(id, cabang, result) => {
+Cabang.updateById = async(id, cabang, result, user_id) => {
 
 	var arr = ["nama", "almt_cabang", "cabang_cms", "no_account_cabang", "nm_cabang_3digit", "kd_account_cabang", "kd_cabang_jai_puspel", "orgid", "port_code", "autospk", "kd_jenis_pelabuhan"];
 	var str = f.getValueUpdate(cabang, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"cabang\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...cabang });
 };

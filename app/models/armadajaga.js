@@ -8,7 +8,7 @@ const ArmadaJaga = function (armadajaga) {
     this.armada_schedule_id = armadajaga.armada_schedule_id;
 };
 
-ArmadaJaga.create = async(newArmadaJaga, result, cabang_id) => {
+ArmadaJaga.create = async(newArmadaJaga, result, cabang_id, user_id) => {
 		var id = await f.getid("armada_jaga");
 		const hv = await f.headerValue(newArmadaJaga, id);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
@@ -41,15 +41,16 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-ArmadaJaga.updateById = async(id, armadajaga, result) => {
+ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
 
 	var arr = ["tipe_asset_id", "asset_kapal_id", "armada_schedule_id"];
 	var str = f.getValueUpdate(armadajaga, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"armada_jaga\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...armadajaga });
 };

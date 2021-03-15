@@ -72,7 +72,7 @@ const SaranaBantuPemanduKapal = function (saranabantupemandukapal) {
     this.pemeriksaan_fisik_f4 = saranabantupemandukapal.pemeriksaan_fisik_f4;
 };
 
-SaranaBantuPemanduKapal.create = async(newSaranaBantuPemanduKapal, result, cabang_id) => {
+SaranaBantuPemanduKapal.create = async(newSaranaBantuPemanduKapal, result, cabang_id, user_id) => {
 		var id = await f.getid("sarana_bantu_pemandu_kapal");
 		const hv = await f.headerValue(newSaranaBantuPemanduKapal, id);
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
@@ -105,15 +105,16 @@ SaranaBantuPemanduKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-SaranaBantuPemanduKapal.updateById = async(id, saranabantupemandukapal, result) => {
+SaranaBantuPemanduKapal.updateById = async(id, saranabantupemandukapal, result, user_id) => {
 
 	var arr = ["sarana_bantu_pemandu_id", "tipe_sarana_pemandu_kapal_id", "dokumen_kapal_q1", "dokumen_kapal_q2", "dokumen_kapal_q3", "dokumen_kapal_q4", "dokumen_kapal_q5", "dokumen_kapal_q6", "dokumen_kapal_q7", "dokumen_kapal_q8", "dokumen_kapal_q9", "dokumen_kapal_q10", "dokumen_kapal_q11", "dokumen_kapal_q12", "dokumen_kapal_q13", "dokumen_kapal_q14", "dokumen_kapal_q15", "kondisi_umum_q1", "kondisi_umum_q2", "kondisi_umum_q3", "kondisi_umum_q4", "kondisi_umum_q5", "kondisi_umum_q6", "pemeriksaan_performa_q1", "pemeriksaan_performa_q2", "pemeriksaan_performa_q3", "pemeriksaan_performa_q4", "pemeriksaan_performa_q5", "pemeriksaan_fisik_a1", "pemeriksaan_fisik_a2", "pemeriksaan_fisik_a3", "pemeriksaan_fisik_a4", "pemeriksaan_fisik_a5", "pemeriksaan_fisik_a6", "pemeriksaan_fisik_a7", "pemeriksaan_fisik_b1", "pemeriksaan_fisik_b2", "pemeriksaan_fisik_b3", "pemeriksaan_fisik_b4", "pemeriksaan_fisik_b5", "pemeriksaan_fisik_b6", "pemeriksaan_fisik_b7", "pemeriksaan_fisik_b8", "pemeriksaan_fisik_b9", "pemeriksaan_fisik_c1", "pemeriksaan_fisik_c2", "pemeriksaan_fisik_c3", "pemeriksaan_fisik_c4", "pemeriksaan_fisik_c5", "pemeriksaan_fisik_c6", "pemeriksaan_fisik_c7", "pemeriksaan_fisik_d1", "pemeriksaan_fisik_d2", "pemeriksaan_fisik_d3", "pemeriksaan_fisik_d4", "pemeriksaan_fisik_d5", "pemeriksaan_fisik_d6", "pemeriksaan_fisik_d7", "pemeriksaan_fisik_d8", "pemeriksaan_fisik_d9", "pemeriksaan_fisik_e1", "pemeriksaan_fisik_e2", "pemeriksaan_fisik_e3", "pemeriksaan_fisik_f1", "pemeriksaan_fisik_f2", "pemeriksaan_fisik_f3", "pemeriksaan_fisik_f4"];
 	var str = f.getValueUpdate(saranabantupemandukapal, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"sarana_bantu_pemandu_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...saranabantupemandukapal });
 };

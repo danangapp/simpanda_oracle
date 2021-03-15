@@ -126,32 +126,34 @@ module.exports = {
         object.id = id;
         for (var a in object) {
             const val = object[a];
-            header += "\"" + a + "\", ";
+            if (val) {
+                header += "\"" + a + "\", ";
 
-            var ada_tgl = 0;
-            var ada_tglTime = 0;
-            for (var c in arrDate) {
-                if (a == arrDate[c]) {
-                    ada_tgl = 1;
+                var ada_tgl = 0;
+                var ada_tglTime = 0;
+                for (var c in arrDate) {
+                    if (a == arrDate[c]) {
+                        ada_tgl = 1;
+                    }
                 }
-            }
 
-            for (var c in arrDateTime) {
-                if (a == arrDateTime[c]) {
-                    ada_tglTime = 1;
+                for (var c in arrDateTime) {
+                    if (a == arrDateTime[c]) {
+                        ada_tglTime = 1;
+                    }
                 }
-            }
 
-            if (a != "id") {
-                if (ada_tgl == 1) {
-                    value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
-                } else if (ada_tglTime == 1) {
-                    value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
+                if (a != "id") {
+                    if (ada_tgl == 1) {
+                        value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                    } else if (ada_tglTime == 1) {
+                        value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
+                    } else {
+                        value += "'" + val + "', ";
+                    }
                 } else {
-                    value += "'" + val + "', ";
+                    value += "" + val + ", ";
                 }
-            } else {
-                value += "" + val + ", ";
             }
         }
 
@@ -272,15 +274,17 @@ module.exports = {
     },
     executeSertifikat: async function (sertifikat, id, db, dbId) {
         var header = "", value = "";
-        var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id"]
+        var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id", "id"]
         for (var i in sertifikat) {
             const x = sertifikat[i];
+            x.id = await this.getid("sertifikat");
             x[dbId] = id;
 
             var header = "", value = "";
             for (var a in x) {
                 var val = x[a];
                 var adadiTable = 0
+                var adaTgl = 0;
                 for (var b in arr) {
                     if (a == arr[b]) {
                         adadiTable = 1;
@@ -290,12 +294,18 @@ module.exports = {
 
                 if (adadiTable == 1) {
                     if (a === "tanggal_keluar_sertifikat" || a === "tanggal_expire" || a === "reminder_date1" || a === "reminder_date3" || a === "reminder_date6") {
+                        adaTgl = 1;
                         val = this.toDate(val);
+                        val = "TO_DATE('" + val + "', 'yyyy-mm-dd')";
                     }
                     if (val) {
-                        header += a + ", ";
+                        header += "\"" + a + "\"" + ", ";
                         if (a != "sertifikat") {
-                            value += "'" + val + "', ";
+                            if (adaTgl == 0) {
+                                value += "'" + val + "', ";
+                            } else {
+                                value += "" + val + ", ";
+                            }
                         } else {
                             var fileName = this.uploadFile64('personil', val);
                             value += "'" + fileName + "', ";
@@ -306,7 +316,7 @@ module.exports = {
             value = value.substring(0, value.length - 2);
             header = header.substring(0, header.length - 2);
             const headervalue = "(" + header + ") values(" + value + ")";
-            await this.query("INSERT INTO sertifikat " + headervalue);
+            await this.query("INSERT INTO \"sertifikat\" " + headervalue);
         }
     },
     whereCabang: function (cabang_id, column, lengths) {

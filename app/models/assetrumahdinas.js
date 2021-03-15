@@ -32,7 +32,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-AssetRumahDinas.create = async(newAssetRumahDinas, result, cabang_id) => {
+AssetRumahDinas.create = async(newAssetRumahDinas, result, cabang_id, user_id) => {
 		newAssetRumahDinas = setActivity(newAssetRumahDinas);
 		var id = await f.getid("asset_rumah_dinas");
 		const hv = await f.headerValue(newAssetRumahDinas, id);
@@ -42,11 +42,12 @@ AssetRumahDinas.create = async(newAssetRumahDinas, result, cabang_id) => {
 		const res = await exec;
 
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newAssetRumahDinas });
 };
 
@@ -74,16 +75,17 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-AssetRumahDinas.updateById = async(id, assetrumahdinas, result) => {
+AssetRumahDinas.updateById = async(id, assetrumahdinas, result, user_id) => {
 		assetrumahdinas = await setActivity(assetrumahdinas, id);
 
 	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"asset_rumah_dinas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...assetrumahdinas });
 };

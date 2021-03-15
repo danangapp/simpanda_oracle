@@ -8,7 +8,7 @@ const Menu = function (menu) {
     this.icon = menu.icon;
 };
 
-Menu.create = async(newMenu, result, cabang_id) => {
+Menu.create = async(newMenu, result, cabang_id, user_id) => {
 		var id = await f.getid("menu");
 		const hv = await f.headerValue(newMenu, id);
 		var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
@@ -41,15 +41,16 @@ Menu.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-Menu.updateById = async(id, menu, result) => {
+Menu.updateById = async(id, menu, result, user_id) => {
 
 	var arr = ["nama", "url", "icon"];
 	var str = f.getValueUpdate(menu, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"menu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...menu });
 };

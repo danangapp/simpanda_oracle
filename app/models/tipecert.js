@@ -8,7 +8,7 @@ const TipeCert = function (tipecert) {
     this.jenis_cert_id = tipecert.jenis_cert_id;
 };
 
-TipeCert.create = async(newTipeCert, result, cabang_id) => {
+TipeCert.create = async(newTipeCert, result, cabang_id, user_id) => {
 		var id = await f.getid("tipe_cert");
 		const hv = await f.headerValue(newTipeCert, id);
 		var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
@@ -41,15 +41,16 @@ TipeCert.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-TipeCert.updateById = async(id, tipecert, result) => {
+TipeCert.updateById = async(id, tipecert, result, user_id) => {
 
 	var arr = ["nama", "remark", "jenis_cert_id"];
 	var str = f.getValueUpdate(tipecert, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"tipe_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...tipecert });
 };

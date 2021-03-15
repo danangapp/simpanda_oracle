@@ -10,7 +10,7 @@ const InvestigasiInsidenTim = function (investigasiinsidentim) {
     this.investigasi_insiden_id = investigasiinsidentim.investigasi_insiden_id;
 };
 
-InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result, cabang_id) => {
+InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result, cabang_id, user_id) => {
 		var id = await f.getid("investigasi_insiden_tim");
 		const hv = await f.headerValue(newInvestigasiInsidenTim, id);
 		var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv + " RETURN \"id\" INTO :id";
@@ -43,15 +43,16 @@ InvestigasiInsidenTim.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-InvestigasiInsidenTim.updateById = async(id, investigasiinsidentim, result) => {
+InvestigasiInsidenTim.updateById = async(id, investigasiinsidentim, result, user_id) => {
 
 	var arr = ["nama", "jabatan", "tgl", "status", "investigasi_insiden_id"];
 	var str = f.getValueUpdate(investigasiinsidentim, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"investigasi_insiden_tim\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...investigasiinsidentim });
 };

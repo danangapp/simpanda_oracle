@@ -63,7 +63,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id) => {
+InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user_id) => {
 		const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
 		delete newInvestigasiInsiden.investigasi_insiden_tim;
 		newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
@@ -95,11 +95,12 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id) => {
 		}
 
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newInvestigasiInsiden });
 };
 
@@ -130,16 +131,17 @@ InvestigasiInsiden.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-InvestigasiInsiden.updateById = async(id, investigasiinsiden, result) => {
+InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) => {
 		investigasiinsiden = await setActivity(investigasiinsiden, id);
 
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal"];
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...investigasiinsiden });
 };

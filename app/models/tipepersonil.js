@@ -7,7 +7,7 @@ const TipePersonil = function (tipepersonil) {
     this.flag = tipepersonil.flag;
 };
 
-TipePersonil.create = async(newTipePersonil, result, cabang_id) => {
+TipePersonil.create = async(newTipePersonil, result, cabang_id, user_id) => {
 		var id = await f.getid("tipe_personil");
 		const hv = await f.headerValue(newTipePersonil, id);
 		var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
@@ -40,15 +40,16 @@ TipePersonil.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-TipePersonil.updateById = async(id, tipepersonil, result) => {
+TipePersonil.updateById = async(id, tipepersonil, result, user_id) => {
 
 	var arr = ["nama", "flag"];
 	var str = f.getValueUpdate(tipepersonil, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"tipe_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...tipepersonil });
 };

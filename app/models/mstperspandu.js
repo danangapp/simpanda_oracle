@@ -12,7 +12,7 @@ const MstPersPandu = function (mstperspandu) {
     this.KD_PERS_PANDU_1 = mstperspandu.KD_PERS_PANDU_1;
 };
 
-MstPersPandu.create = async(newMstPersPandu, result, cabang_id) => {
+MstPersPandu.create = async(newMstPersPandu, result, cabang_id, user_id) => {
 		var id = await f.getid("mst_pers_pandu");
 		const hv = await f.headerValue(newMstPersPandu, id);
 		var queryText = "INSERT INTO \"mst_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
@@ -45,15 +45,16 @@ MstPersPandu.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-MstPersPandu.updateById = async(id, mstperspandu, result) => {
+MstPersPandu.updateById = async(id, mstperspandu, result, user_id) => {
 
 	var arr = ["KD_PERS_PANDU", "NM_PERS_PANDU", "NIPP", "KELAS", "KD_CABANG", "enable", "KD_PERS_PANDU_1"];
 	var str = f.getValueUpdate(mstperspandu, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"mst_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstperspandu });
 };

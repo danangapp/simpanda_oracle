@@ -25,7 +25,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id) => {
+PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id) => {
 		newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
 		var check = newPemeriksaanKapal.check;
 		delete newPemeriksaanKapal.check;
@@ -40,11 +40,12 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id) => {
 		}
 
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newPemeriksaanKapal });
 };
 
@@ -76,7 +77,7 @@ PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result) => {
+PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 		pemeriksaankapal = await setActivity(pemeriksaankapal, id);
 
 		var check = pemeriksaankapal.check;
@@ -92,11 +93,12 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result) => {
 
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pemeriksaankapal });
 };

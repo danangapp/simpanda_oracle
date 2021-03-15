@@ -10,7 +10,7 @@ const Authorization = function (authorization) {
     this.cabang_id = authorization.cabang_id;
 };
 
-Authorization.create = async(newAuthorization, result, cabang_id) => {
+Authorization.create = async(newAuthorization, result, cabang_id, user_id) => {
 		var id = await f.getid("authorization");
 		const hv = await f.headerValue(newAuthorization, id);
 		var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
@@ -44,15 +44,16 @@ Authorization.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-Authorization.updateById = async(id, authorization, result) => {
+Authorization.updateById = async(id, authorization, result, user_id) => {
 
 	var arr = ["user_id", "accessToken", "refreshToken", "expired", "cabang_id"];
 	var str = f.getValueUpdate(authorization, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"authorization\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...authorization });
 };

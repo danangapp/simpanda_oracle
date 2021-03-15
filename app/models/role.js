@@ -6,7 +6,7 @@ const Role = function (role) {
     this.nama = role.nama;
 };
 
-Role.create = async(newRole, result, cabang_id) => {
+Role.create = async(newRole, result, cabang_id, user_id) => {
 		var id = await f.getid("role");
 		const hv = await f.headerValue(newRole, id);
 		var queryText = "INSERT INTO \"role\" " + hv + " RETURN \"id\" INTO :id";
@@ -39,15 +39,16 @@ Role.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-Role.updateById = async(id, role, result) => {
+Role.updateById = async(id, role, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(role, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"role\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...role });
 };

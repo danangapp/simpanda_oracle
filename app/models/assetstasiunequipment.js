@@ -29,7 +29,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id) => {
+AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id, user_id) => {
 		newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
 		var id = await f.getid("asset_stasiun_equipment");
 		const hv = await f.headerValue(newAssetStasiunEquipment, id);
@@ -39,11 +39,12 @@ AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id
 		const res = await exec;
 
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newAssetStasiunEquipment });
 };
 
@@ -72,16 +73,17 @@ AssetStasiunEquipment.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result) => {
+AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result, user_id) => {
 		assetstasiunequipment = await setActivity(assetstasiunequipment, id);
 
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...assetstasiunequipment });
 };

@@ -71,7 +71,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-AssetKapal.create = async(newAssetKapal, result, cabang_id) => {
+AssetKapal.create = async(newAssetKapal, result, cabang_id, user_id) => {
 		const sertifikat = newAssetKapal.sertifikat;
 		delete newAssetKapal.sertifikat;
 		newAssetKapal = setActivity(newAssetKapal);
@@ -85,11 +85,12 @@ AssetKapal.create = async(newAssetKapal, result, cabang_id) => {
 
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newAssetKapal });
 };
 
@@ -122,7 +123,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-AssetKapal.updateById = async(id, assetkapal, result) => {
+AssetKapal.updateById = async(id, assetkapal, result, user_id) => {
 	const sertifikat = assetkapal.sertifikat;
 	f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
@@ -131,11 +132,12 @@ AssetKapal.updateById = async(id, assetkapal, result) => {
 
 	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id"];
 	var str = f.getValueUpdate(assetkapal, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...assetkapal });
 };

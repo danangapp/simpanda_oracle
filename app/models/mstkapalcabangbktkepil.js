@@ -21,7 +21,7 @@ const MstKapalCabangBktKepil = function (mstkapalcabangbktkepil) {
     this.KOREKSI_KE = mstkapalcabangbktkepil.KOREKSI_KE;
 };
 
-MstKapalCabangBktKepil.create = async(newMstKapalCabangBktKepil, result, cabang_id) => {
+MstKapalCabangBktKepil.create = async(newMstKapalCabangBktKepil, result, cabang_id, user_id) => {
 		var id = await f.getid("mst_kapal_cabang_bkt_kepil");
 		const hv = await f.headerValue(newMstKapalCabangBktKepil, id);
 		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
@@ -54,15 +54,16 @@ MstKapalCabangBktKepil.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-MstKapalCabangBktKepil.updateById = async(id, mstkapalcabangbktkepil, result) => {
+MstKapalCabangBktKepil.updateById = async(id, mstkapalcabangbktkepil, result, user_id) => {
 
 	var arr = ["NO_BKT_KEPIL", "TGL_FORM_BKT_KEPIL", "NO_UKK", "KD_PPKB", "KD_KADE", "KD_MST_KEPIL", "KD_FAS", "TGL_JAM_BKT_KEPIL", "TGL_JAM_ENTRY", "JAM_TOLAK", "JAM_TIBA", "USERID_BKT_KEPIL", "PPKB_KE", "BIAYA_KEPIL", "KD_MORING", "KOREKSI_KE"];
 	var str = f.getValueUpdate(mstkapalcabangbktkepil, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"mst_kapal_cabang_bkt_kepil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstkapalcabangbktkepil });
 };

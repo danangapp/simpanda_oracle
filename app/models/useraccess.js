@@ -7,7 +7,7 @@ const UserAccess = function (useraccess) {
     this.menu_id = useraccess.menu_id;
 };
 
-UserAccess.create = async(newUserAccess, result, cabang_id) => {
+UserAccess.create = async(newUserAccess, result, cabang_id, user_id) => {
 		var id = await f.getid("user_access");
 		const hv = await f.headerValue(newUserAccess, id);
 		var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
@@ -40,15 +40,16 @@ UserAccess.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-UserAccess.updateById = async(id, useraccess, result) => {
+UserAccess.updateById = async(id, useraccess, result, user_id) => {
 
 	var arr = ["user_group_id", "menu_id"];
 	var str = f.getValueUpdate(useraccess, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"user_access\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...useraccess });
 };

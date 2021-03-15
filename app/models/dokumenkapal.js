@@ -6,7 +6,7 @@ const DokumenKapal = function (dokumenkapal) {
     this.nama = dokumenkapal.nama;
 };
 
-DokumenKapal.create = async(newDokumenKapal, result, cabang_id) => {
+DokumenKapal.create = async(newDokumenKapal, result, cabang_id, user_id) => {
 		var id = await f.getid("dokumen_kapal");
 		const hv = await f.headerValue(newDokumenKapal, id);
 		var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
@@ -39,15 +39,16 @@ DokumenKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-DokumenKapal.updateById = async(id, dokumenkapal, result) => {
+DokumenKapal.updateById = async(id, dokumenkapal, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(dokumenkapal, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"dokumen_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...dokumenkapal });
 };

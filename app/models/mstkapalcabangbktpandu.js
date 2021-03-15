@@ -46,7 +46,7 @@ const MstKapalCabangBktPandu = function (mstkapalcabangbktpandu) {
     this.SHIFTING = mstkapalcabangbktpandu.SHIFTING;
 };
 
-MstKapalCabangBktPandu.create = async(newMstKapalCabangBktPandu, result, cabang_id) => {
+MstKapalCabangBktPandu.create = async(newMstKapalCabangBktPandu, result, cabang_id, user_id) => {
 		var id = await f.getid("mst_kapal_cabang_bkt_pandu");
 		const hv = await f.headerValue(newMstKapalCabangBktPandu, id);
 		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_pandu\" " + hv + " RETURN \"id\" INTO :id";
@@ -79,15 +79,16 @@ MstKapalCabangBktPandu.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-MstKapalCabangBktPandu.updateById = async(id, mstkapalcabangbktpandu, result) => {
+MstKapalCabangBktPandu.updateById = async(id, mstkapalcabangbktpandu, result, user_id) => {
 
 	var arr = ["NO_BKT_PANDU", "TGL_FORM_BKT_PANDU", "NO_UKK", "KD_PERS_PANDU", "KD_FAS", "KD_PPKB", "KD_NM_NAHKODA", "PANDU_DARI", "PANDU_KE", "TGL_MPANDU", "TGL_SPANDU", "KD_GERAKAN", "KET_PANDU", "KD_PERAIRAN", "TGL_JAM_ENTRY", "JAM_PANDU_NAIK", "JAM_KAPAL_GERAK", "JAM_SPANDU", "JAM_PANDU_TURUN", "USERID_BKT_PANDU", "PPKB_KE", "BIAYA_PANDU", "NO_UKK1", "NO_UKK2", "NO_UKK3", "DRAFT_DEPAN", "DRAFT_BELAKANG", "NO_UKK_TK1", "NO_UKK_TK2", "PPKB_KE_ORIGIN", "KOREKSI_KE", "PANDU_X", "CAP_KEAGENAN", "NO_BA", "KETERANGAN_BA", "TGL_BA", "BERMUATAN", "STATUS_WS", "IS_PAKET", "JML_LABUH", "SHIFTING"];
 	var str = f.getValueUpdate(mstkapalcabangbktpandu, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"mst_kapal_cabang_bkt_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstkapalcabangbktpandu });
 };

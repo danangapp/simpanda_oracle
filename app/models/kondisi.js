@@ -6,7 +6,7 @@ const Kondisi = function (kondisi) {
     this.nama = kondisi.nama;
 };
 
-Kondisi.create = async(newKondisi, result, cabang_id) => {
+Kondisi.create = async(newKondisi, result, cabang_id, user_id) => {
 		var id = await f.getid("kondisi");
 		const hv = await f.headerValue(newKondisi, id);
 		var queryText = "INSERT INTO \"kondisi\" " + hv + " RETURN \"id\" INTO :id";
@@ -39,15 +39,16 @@ Kondisi.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-Kondisi.updateById = async(id, kondisi, result) => {
+Kondisi.updateById = async(id, kondisi, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kondisi, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"kondisi\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...kondisi });
 };

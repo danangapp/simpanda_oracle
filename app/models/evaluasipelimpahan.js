@@ -37,7 +37,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id) => {
+EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id, user_id) => {
 		newEvaluasiPelimpahan = setActivity(newEvaluasiPelimpahan);
 		var id = await f.getid("evaluasi_pelimpahan");
 		const hv = await f.headerValue(newEvaluasiPelimpahan, id);
@@ -47,11 +47,12 @@ EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id) => {
 		const res = await exec;
 
 		objek.koneksi = id;
-		if (objek.action != null) {
-			var id = await f.getid("activity_log");
-			const hv = await f.headerValue(objek, id);
-			await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-		}
+		objek.action = "1";
+		objek.user_id = user_id;
+		var id = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 		result(null, { id: id, ...newEvaluasiPelimpahan });
 };
 
@@ -80,16 +81,17 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result) => {
+EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) => {
 		evaluasipelimpahan = await setActivity(evaluasipelimpahan, id);
 
 	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan"];
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
-	if (objek.action != null) {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(objek, id);
-		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	var id = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = "2";
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	f.query("UPDATE \"evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...evaluasipelimpahan });
 };

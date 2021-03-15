@@ -35,6 +35,7 @@ var requestToken = async function (req, res, next) {
     if (resQuery) {
       if (resQuery.rows.length > 0) {
         req.cabang_id = resQuery.rows[0].cabang_id;
+        req.user_id = resQuery.rows[0].user_id;
         next();
       } else {
         res.send({ "status": "Not Authorization", "code": "403" })

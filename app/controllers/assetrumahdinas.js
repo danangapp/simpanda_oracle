@@ -42,7 +42,7 @@ exports.create = (req, res) => {
                     err.message || "Some error occurred while creating the AssetRumahDinas."
             });
         else res.send(data);
-    }, req.cabang_id);
+    }, req.cabang_id, req.user_id);
 };
 
 exports.findAll = (req, res) => {
@@ -97,7 +97,8 @@ exports.update = (req, res) => {
                     });
                 }
             } else res.send(data);
-        }
+        },
+        req.user_id
     );
 };
 
