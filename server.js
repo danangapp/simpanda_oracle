@@ -27,7 +27,6 @@ app.use((req, res, next) => {
 
 
 var requestToken = async function (req, res, next) {
-  console.log('lewat dimari');
   if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/login" || req.path === "/") {
     next();
   } else {
