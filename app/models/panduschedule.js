@@ -29,11 +29,12 @@ const setActivity = (objects, koneksi = 1) => {
 	return objects
 };
 
-PanduSchedule.create = async (newPanduSchedule, result) => {
+PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
 	for (var a in newPanduSchedule) {
 		var c = newPanduSchedule[a];
 
-		const hv = await f.headerValue(newPanduSchedule, "pandu_schedule");
+		var id = await f.getid("pandu_schedule");
+		const hv = await f.headerValue(newPanduSchedule, id);
 		var res = await f.query("INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id", 1);
 
 		for (var b in c) {
@@ -41,21 +42,22 @@ PanduSchedule.create = async (newPanduSchedule, result) => {
 				var e = c[b];
 				for (var d in e) {
 					var g = e[d];
-					g['pandu_schedule_id'] = res.outBinds.id[0];
-					const hv2 = await f.headerValue(g, "pandu_jaga");
+					g['pandu_schedule_id'] = id;
+					var id_pandu_jaga = await f.getid("pandu_jaga");
+					const hv2 = await f.headerValue(g, id_pandu_jaga);
 					await f.query("INSERT INTO \"pandu_jaga\"" + hv2, 1);
 				}
 			}
 		}
 	}
 
-	objek.koneksi = res.outBinds.id[0];
+	objek.koneksi = id;
 	if (objek.action != null) {
 		const hv = await f.headerValue(objek, "activity_log");
 		f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 
-	result(null, { id: res.outBinds.id[0], ...newPanduSchedule });
+	result(null, { id: id, ...newPanduSchedule });
 };
 
 PanduSchedule.findById = async (id, result) => {
@@ -104,7 +106,8 @@ PanduSchedule.updateById = async (id, panduschedule, result) => {
 				for (var d in e) {
 					var g = e[d];
 					g['pandu_schedule_id'] = c['pandu_schedule_id'];
-					const hv = await f.headerValue(g, "pandu_jaga");
+					var id_pandu_jaga = await f.getid("pandu_jaga");
+					const hv = await f.headerValue(g, id_pandu_jaga);
 					await f.query("INSERT INTO \"pandu_jaga\" " + hv, 2);
 				}
 			}
