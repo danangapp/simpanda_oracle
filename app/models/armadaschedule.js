@@ -14,9 +14,10 @@ const ArmadaSchedule = function (armadaschedule) {
     this.armada_jaga_id = armadaschedule.armada_jaga_id;
 };
 
-ArmadaSchedule.create = async (newArmadaSchedule, result) => {
+ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) => {
     for (var a in newArmadaSchedule) {
-        const hv = await f.headerValue(newArmadaSchedule);
+        var id = await f.getid("armada_schedule");
+        const hv = await f.headerValue(newArmadaSchedule, id);
         var res = await f.query("INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id", 1);
 
         for (var b in c) {
@@ -25,7 +26,8 @@ ArmadaSchedule.create = async (newArmadaSchedule, result) => {
                 for (var d in e) {
                     var g = e[d];
                     g['armada_schedule_id'] = res.outBinds.id[0];
-                    const hv2 = f.headerValue(g);
+                    var id_armada_jaga = await f.getid("armada_jaga");
+                    const hv2 = f.headerValue(g, id_armada_jaga);
                     await f.query("INSERT INTO \"armada_jaga\"" + hv2, 1);
                 }
             }

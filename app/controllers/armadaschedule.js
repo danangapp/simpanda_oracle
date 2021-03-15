@@ -20,12 +20,12 @@ exports.create = (req, res) => {
         armada_jaga_id: req.fields.armada_jaga_id,
     };
 
-	var used = {};
-	for (var i in armadaschedule) {
-	    if (!armadaschedule[i]) {
-	        delete armadaschedule[i];
-	    }
-	}
+    var used = {};
+    for (var i in armadaschedule) {
+        if (!armadaschedule[i]) {
+            delete armadaschedule[i];
+        }
+    }
 
     ArmadaSchedule.create(armadaschedule, (err, data) => {
         if (err)
@@ -34,7 +34,7 @@ exports.create = (req, res) => {
                     err.message || "Some error occurred while creating the ArmadaSchedule."
             });
         else res.send(data);
-    });
+    }, req.cabang_id, req.user_id);
 };
 
 exports.findAll = (req, res) => {
@@ -72,7 +72,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.date = f.toDate(req.fields.date);
+    req.fields.date = f.toDate(req.fields.date);
 
     ArmadaSchedule.updateById(
         req.params.id,
@@ -89,7 +89,8 @@ exports.update = (req, res) => {
                     });
                 }
             } else res.send(data);
-        }
+        },
+        req.user_id
     );
 };
 

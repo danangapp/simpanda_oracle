@@ -25,12 +25,12 @@ exports.create = (req, res) => {
         koneksi: req.fields.koneksi,
     };
 
-	var used = {};
-	for (var i in panduschedule) {
-	    if (!panduschedule[i]) {
-	        delete panduschedule[i];
-	    }
-	}
+    var used = {};
+    for (var i in panduschedule) {
+        if (!panduschedule[i]) {
+            delete panduschedule[i];
+        }
+    }
 
     PanduSchedule.create(panduschedule, (err, data) => {
         if (err)
@@ -39,7 +39,7 @@ exports.create = (req, res) => {
                     err.message || "Some error occurred while creating the PanduSchedule."
             });
         else res.send(data);
-    });
+    }, req.cabang_id, req.user_id);
 };
 
 exports.findAll = (req, res) => {
@@ -77,7 +77,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.date = f.toDate(req.fields.date);
+    req.fields.date = f.toDate(req.fields.date);
 
     PanduSchedule.updateById(
         req.params.id,
@@ -94,7 +94,8 @@ exports.update = (req, res) => {
                     });
                 }
             } else res.send(data);
-        }
+        },
+        req.user_id
     );
 };
 
