@@ -97,8 +97,8 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 		objek.koneksi = id;
 		objek.action = "1";
 		objek.user_id = user_id;
-		var id = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id);
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
 		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 		result(null, { id: id, ...newInvestigasiInsiden });
@@ -136,13 +136,13 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal"];
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...investigasiinsiden });
 };
 

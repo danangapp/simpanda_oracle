@@ -49,13 +49,13 @@ MstKapalCabangPersPandu.updateById = async(id, mstkapalcabangperspandu, result, 
 
 	var arr = ["KD_PERS_PANDU", "NM_PERS_PANDU", "NIPP", "KELAS", "KD_CABANG", "ENABLE", "KD_PERS_PANDU_CBG"];
 	var str = f.getValueUpdate(mstkapalcabangperspandu, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"mst_kapal_cabang_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"mst_kapal_cabang_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstkapalcabangperspandu });
 };
 

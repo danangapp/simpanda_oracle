@@ -307,7 +307,7 @@ module.exports = {
                                 value += "" + val + ", ";
                             }
                         } else {
-                            var fileName = this.uploadFile64('personil', val);
+                            var fileName = this.uploadFile64(db, val);
                             value += "'" + fileName + "', ";
                         }
                     }

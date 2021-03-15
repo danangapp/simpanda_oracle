@@ -48,13 +48,13 @@ SaranaBantuPemanduPersonil.updateById = async(id, saranabantupemandupersonil, re
 
 	var arr = ["sarana_bantu_pemandu_id", "nama", "jabatan", "asset_kapal_id", "tipe_asset_id", "status_ijazah_id"];
 	var str = f.getValueUpdate(saranabantupemandupersonil, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"sarana_bantu_pemandu_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"sarana_bantu_pemandu_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...saranabantupemandupersonil });
 };
 

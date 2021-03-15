@@ -41,8 +41,8 @@ AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id
 		objek.koneksi = id;
 		objek.action = "1";
 		objek.user_id = user_id;
-		var id = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id);
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
 		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 		result(null, { id: id, ...newAssetStasiunEquipment });
@@ -78,13 +78,13 @@ AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result, user
 
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...assetstasiunequipment });
 };
 

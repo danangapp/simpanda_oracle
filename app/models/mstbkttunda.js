@@ -82,13 +82,13 @@ MstBktTunda.updateById = async(id, mstbkttunda, result, user_id) => {
 
 	var arr = ["NO_BKT_TUNDA", "TGL_FORM_BKT_TUNDA", "NO_UKK", "KD_PPKB", "TUNDA_DARI", "TUNDA_KE", "TGL_JAM_ENTRY", "USERID_BKT_TUNDA", "PPKB_KE", "BIAYA_TUNDA", "TGL_JAM_MTUNDA", "TGL_JAM_STUNDA", "NO_BKT_PANDU", "KD_FAS_1", "KD_FAS_2", "KD_FAS_3", "KD_KAPAL_1", "KD_KAPAL_2", "KD_KAPAL_3", "TGL_JAM_TIBA_KPL1", "TGL_JAM_TIBA_KPL2", "TGL_JAM_TIBA_KPL3", "TGL_JAM_BRNGKT_KPL1", "TGL_JAM_BRNGKT_KPL2", "TGL_JAM_BRNGKT_KPL3", "KOREKSI_KE", "PPKB_KE_ORIGIN", "PPKB_KE_ORIGIN_AKHIR", "KD_KAPAL_4", "KD_KAPAL_5", "KD_KAPAL_6", "TGL_JAM_TIBA_KPL4", "TGL_JAM_TIBA_KPL5", "TGL_JAM_TIBA_KPL6", "TGL_JAM_BRNGKT_KPL4", "TGL_JAM_BRNGKT_KPL5", "TGL_JAM_BRNGKT_KPL6", "KD_FAS_4", "KD_FAS_5", "KD_FAS_6"];
 	var str = f.getValueUpdate(mstbkttunda, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"mst_bkt_tunda\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"mst_bkt_tunda\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstbkttunda });
 };
 

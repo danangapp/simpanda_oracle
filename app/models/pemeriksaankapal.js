@@ -42,8 +42,8 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 		objek.koneksi = id;
 		objek.action = "1";
 		objek.user_id = user_id;
-		var id = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id);
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
 		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 		result(null, { id: id, ...newPemeriksaanKapal });
@@ -87,19 +87,19 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 		    const tanggal_awal = f.toDate(check[i].tanggal_awal);
 		    const tanggal_akhir = f.toDate(check[i].tanggal_akhir);
 		    const keterangan = check[i].keterangan;
-		    f.query("UPDATE pemeriksaan_kapal_check_data SET pemeriksaan_kapal_check_id='" + pemeriksaan_kapal_check_id + "', kondisi_id='" + kondisi_id + "', tanggal_awal='" + tanggal_awal + "', tanggal_akhir='" + tanggal_akhir + "', keterangan='" + keterangan + "' WHERE kondisi_id='" + kondisi_id + "' AND pemeriksaan_kapal_id='" + id + "'");
+		    await f.query("UPDATE pemeriksaan_kapal_check_data SET pemeriksaan_kapal_check_id='" + pemeriksaan_kapal_check_id + "', kondisi_id='" + kondisi_id + "', tanggal_awal='" + tanggal_awal + "', tanggal_akhir='" + tanggal_akhir + "', keterangan='" + keterangan + "' WHERE kondisi_id='" + kondisi_id + "' AND pemeriksaan_kapal_id='" + id + "'");
 		}
 		delete pemeriksaankapal.check;
 
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pemeriksaankapal });
 };
 

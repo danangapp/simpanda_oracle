@@ -60,13 +60,13 @@ MstBktKepil.updateById = async(id, mstbktkepil, result, user_id) => {
 
 	var arr = ["NO_BKT_KEPIL", "TGL_FORM_BKT_KEPIL", "NO_UKK", "KD_PPKB", "KD_KADE", "KD_MST_KEPIL", "KD_FAS", "TGL_JAM_BKT_KEPIL", "TGL_JAM_ENTRY", "JAM_TOLAK", "JAM_TIBA", "USERID_BKT_KEPIL", "PPKB_KE", "BIAYA_KEPIL", "KD_MORING", "KOREKSI_KE", "PPKB_KE_ORIGIN", "PPKB_KE_ORIGIN_AKHIR"];
 	var str = f.getValueUpdate(mstbktkepil, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"mst_bkt_kepil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"mst_bkt_kepil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstbktkepil });
 };
 

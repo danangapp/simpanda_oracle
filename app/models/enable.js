@@ -43,13 +43,13 @@ Enable.updateById = async(id, enable, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(enable, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"enable\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"enable\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...enable });
 };
 

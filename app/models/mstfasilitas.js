@@ -53,13 +53,13 @@ MstFasilitas.updateById = async(id, mstfasilitas, result, user_id) => {
 
 	var arr = ["KD_FAS", "NM_FAS", "DAYA", "KD_CABANG", "enable", "DAYA2", "STATUS_MILIK", "ASSET_NUMBER", "KD_PUSPEL_JAI", "NEW_PUSPEL_JAI", "NEW_ASSET_JAI"];
 	var str = f.getValueUpdate(mstfasilitas, id, arr);
-	var id = await f.getid("activity_log");
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = "2";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.query("UPDATE \"mst_fasilitas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("UPDATE \"mst_fasilitas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstfasilitas });
 };
 
