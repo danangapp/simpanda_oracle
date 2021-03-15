@@ -45,7 +45,7 @@ Role.updateById = async(id, role, result, user_id) => {
 	var str = f.getValueUpdate(role, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = role.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

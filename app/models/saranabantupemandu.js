@@ -52,7 +52,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 		}
 
 		objek.koneksi = id;
-		objek.action = "1";
+		objek.action = "0";
 		objek.user_id = user_id;
 		var id_activity_log = await f.getid("activity_log");
 		const hval = await f.headerValue(objek, id_activity_log);
@@ -68,7 +68,7 @@ SaranaBantuPemandu.findById = async (id, result) => {
 	const exec = f.query(queryText);
 	const res = await exec;
 		const sarana_bantu_pemandu_personil = { "sarana_bantu_pemandu_personil": resQuery }
-	const activityLog = { "activityLog": resActivityLog.rows[0] }
+	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...sarana_bantu_pemandu_personil, ...activityLog }	
 	result(null, merge);
 }
@@ -96,7 +96,7 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) =
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = saranabantupemandu.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

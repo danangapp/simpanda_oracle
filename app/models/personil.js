@@ -62,7 +62,7 @@ Personil.create = async(newPersonil, result, cabang_id, user_id) => {
 
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 		objek.koneksi = id;
-		objek.action = "1";
+		objek.action = "0";
 		objek.user_id = user_id;
 		var id_activity_log = await f.getid("activity_log");
 		const hval = await f.headerValue(objek, id_activity_log);
@@ -78,7 +78,7 @@ Personil.findById = async (id, result) => {
 	const exec = f.query(queryText);
 	const res = await exec;
 	const sertifikat = { "sertifikat": resQuery.rows }
-	const activityLog = { "activityLog": resActivityLog.rows[0] }
+	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...sertifikat, ...activityLog }	
 	result(null, merge);
 }
@@ -111,7 +111,7 @@ Personil.updateById = async(id, personil, result, user_id) => {
 	var str = f.getValueUpdate(personil, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = personil.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

@@ -45,7 +45,7 @@ ApprovalStatus.updateById = async(id, approvalstatus, result, user_id) => {
 	var str = f.getValueUpdate(approvalstatus, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = approvalstatus.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

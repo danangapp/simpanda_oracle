@@ -95,7 +95,7 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 		}
 
 		objek.koneksi = id;
-		objek.action = "1";
+		objek.action = "0";
 		objek.user_id = user_id;
 		var id_activity_log = await f.getid("activity_log");
 		const hval = await f.headerValue(objek, id_activity_log);
@@ -111,7 +111,7 @@ InvestigasiInsiden.findById = async (id, result) => {
 	const exec = f.query(queryText);
 	const res = await exec;
 		const investigasi_insiden_tim = { "investigasi_insiden_tim": resQuery }
-	const activityLog = { "activityLog": resActivityLog.rows[0] }
+	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...investigasi_insiden_tim, ...activityLog }	
 	result(null, merge);
 }
@@ -138,7 +138,7 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = investigasiinsiden.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

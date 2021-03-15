@@ -47,7 +47,7 @@ EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id, user
 		const res = await exec;
 
 		objek.koneksi = id;
-		objek.action = "1";
+		objek.action = "0";
 		objek.user_id = user_id;
 		var id_activity_log = await f.getid("activity_log");
 		const hval = await f.headerValue(objek, id_activity_log);
@@ -61,7 +61,7 @@ EvaluasiPelimpahan.findById = async (id, result) => {
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"evaluasi_pelimpahan\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const activityLog = { "activityLog": resActivityLog.rows[0] }
+	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...activityLog }	
 	result(null, merge);
 }
@@ -89,7 +89,7 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) =
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
-	objek.action = "2";
+	objek.action = evaluasipelimpahan.approval_status_id;
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
