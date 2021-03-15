@@ -190,6 +190,15 @@ module.exports = {
             if (i == "cabang_id") {
                 column = `a1."cabang_id"`;
             }
+        } else if (db === "armada_jaga") {
+            if (i == "cabang_id") {
+                column = `a2."cabang_id"`;
+            }
+
+            if (i == "date") {
+                column = `a3."date"`;
+                adaTgl = 1;
+            }
         }
 
         if (adaTgl == 0) {
@@ -303,7 +312,6 @@ module.exports = {
     whereCabang: function (cabang_id, column, lengths) {
         var wheres = "";
         if (cabang_id != 0) {
-            console.log('kemari ya');
             wheres += lengths == 0 ? ` WHERE ${column} = '${cabang_id}'` : wheres += ` AND ${column} = '${cabang_id}'`
         } else {
             wheres = "";
