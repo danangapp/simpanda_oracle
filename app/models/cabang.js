@@ -42,7 +42,7 @@ Cabang.getAll = async (param, result, cabang_id) => {
 		wheres += ")";
 	}
 
-	// wheres += f.whereCabang(cabang_id, `"cabang_id"`, wheres.length);
+	wheres += f.whereCabang(cabang_id, `a."id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;
