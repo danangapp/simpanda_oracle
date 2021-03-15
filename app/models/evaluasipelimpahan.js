@@ -63,6 +63,7 @@ EvaluasiPelimpahan.findById = async (id, result) => {
 	const res = await exec;
 	const activityLog = { "activityLog": resActivityLog.rows[0] }
 	let merge = { ...res.rows[0], ...activityLog }	
+	result(null, merge);
 }
 
 EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
