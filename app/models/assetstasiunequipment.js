@@ -49,11 +49,11 @@ AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id
 };
 
 AssetStasiunEquipment.findById = async (id, result) => {
-	const resActivityLog = f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_stasiun_equipment\" b ON a.\"item\" = 'asset_stasiun_equipment' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_stasiun_equipment\" b ON a.\"item\" = 'asset_stasiun_equipment' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"flag\" as \"tipe_asset\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\" FROM \"asset_stasiun_equipment\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const activityLog = { "activityLog": resActivityLog }
+	const activityLog = { "activityLog": resActivityLog.rows[0] }
 	let merge = { ...res.rows[0], ...activityLog }	
 }
 

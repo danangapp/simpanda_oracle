@@ -94,13 +94,13 @@ AssetKapal.create = async(newAssetKapal, result, cabang_id, user_id) => {
 };
 
 AssetKapal.findById = async (id, result) => {
-	const resQuery = f.query("SELECT a.*, c.\"nama\" as \"tipe_cert\", d.\"nama\" as \"jenis_cert\" FROM \"sertifikat\" a INNER JOIN \"asset_kapal\" b ON a.\"asset_kapal_id\" = b.\"id\" INNER JOIN \"tipe_cert\" c ON a.\"tipe_cert_id\" = c.\"id\" INNER JOIN \"jenis_cert\" d ON c.\"jenis_cert_id\" = d.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	const resActivityLog = f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_kapal\" b ON a.\"item\" = 'asset_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resQuery = await f.query("SELECT a.*, c.\"nama\" as \"tipe_cert\", d.\"nama\" as \"jenis_cert\" FROM \"sertifikat\" a INNER JOIN \"asset_kapal\" b ON a.\"asset_kapal_id\" = b.\"id\" INNER JOIN \"tipe_cert\" c ON a.\"tipe_cert_id\" = c.\"id\" INNER JOIN \"jenis_cert\" d ON c.\"jenis_cert_id\" = d.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_kapal\" b ON a.\"item\" = 'asset_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"flag\" as \"tipe_asset\", a3.\"nama\" as \"ena\", a4.\"nama\" as \"approval_status\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"approval_status\" a4 ON a.\"approval_status_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const sertifikat = { "sertifikat": resQuery }
-	const activityLog = { "activityLog": resActivityLog }
+	const sertifikat = { "sertifikat": resQuery.rows }
+	const activityLog = { "activityLog": resActivityLog.rows[0] }
 	let merge = { ...res.rows[0], ...sertifikat, ...activityLog }	
 	result(null, merge);
 }

@@ -63,12 +63,12 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 
 SaranaBantuPemandu.findById = async (id, result) => {
 	const resQuery = f.query("SELECT * FROM \"sarana_bantu_pemandu_personil\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "'");
-	const resActivityLog = f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 		const sarana_bantu_pemandu_personil = { "sarana_bantu_pemandu_personil": resQuery }
-	const activityLog = { "activityLog": resActivityLog }
+	const activityLog = { "activityLog": resActivityLog.rows[0] }
 	let merge = { ...res.rows[0], ...sarana_bantu_pemandu_personil, ...activityLog }	
 	result(null, merge);
 }
