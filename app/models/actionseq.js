@@ -13,7 +13,7 @@ const ActionSeq = function (actionseq) {
     this.cycle_count = actionseq.cycle_count;
 };
 
-ActionSeq.create = async(newActionSeq, result) => {
+ActionSeq.create = async(newActionSeq, result, cabang_id) => {
 		const hv = await f.headerValue(newActionSeq, "action_seq");
 		var queryText = "INSERT INTO \"action_seq\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

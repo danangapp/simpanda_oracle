@@ -6,7 +6,7 @@ const Action = function (action) {
     this.nama = action.nama;
 };
 
-Action.create = async(newAction, result) => {
+Action.create = async(newAction, result, cabang_id) => {
 		const hv = await f.headerValue(newAction, "action");
 		var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

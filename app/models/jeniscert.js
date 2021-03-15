@@ -7,7 +7,7 @@ const JenisCert = function (jeniscert) {
     this.remark = jeniscert.remark;
 };
 
-JenisCert.create = async(newJenisCert, result) => {
+JenisCert.create = async(newJenisCert, result, cabang_id) => {
 		const hv = await f.headerValue(newJenisCert, "jenis_cert");
 		var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

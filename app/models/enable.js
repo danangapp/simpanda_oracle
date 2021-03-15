@@ -6,7 +6,7 @@ const Enable = function (enable) {
     this.nama = enable.nama;
 };
 
-Enable.create = async(newEnable, result) => {
+Enable.create = async(newEnable, result, cabang_id) => {
 		const hv = await f.headerValue(newEnable, "enable");
 		var queryText = "INSERT INTO \"enable\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

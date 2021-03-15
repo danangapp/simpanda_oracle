@@ -6,7 +6,7 @@ const StatusEvaluasiPelimpahan = function (statusevaluasipelimpahan) {
     this.nama = statusevaluasipelimpahan.nama;
 };
 
-StatusEvaluasiPelimpahan.create = async(newStatusEvaluasiPelimpahan, result) => {
+StatusEvaluasiPelimpahan.create = async(newStatusEvaluasiPelimpahan, result, cabang_id) => {
 		const hv = await f.headerValue(newStatusEvaluasiPelimpahan, "status_evaluasi_pelimpahan");
 		var queryText = "INSERT INTO \"status_evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

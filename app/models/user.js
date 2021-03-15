@@ -81,8 +81,8 @@ User.login = async (req, result) => {
 		obj.expired = timeExpired;
 
 		const hv = await f.headerValue(obj, "authorization");
-		f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
-		f.query(`INSERT INTO "authorization" ${hv}`, 2);
+		await f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
+		await f.query(`INSERT INTO "authorization" ${hv}`, 2);
 
 
 		query = `SELECT c."config", c."parent", c."id", c."url", c."nama", c."icon" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;

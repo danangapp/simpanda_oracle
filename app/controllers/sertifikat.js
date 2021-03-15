@@ -40,7 +40,7 @@ exports.create = (req, res) => {
                     err.message || "Some error occurred while creating the Sertifikat."
             });
         else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.findAll = (req, res) => {

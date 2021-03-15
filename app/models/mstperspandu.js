@@ -12,7 +12,7 @@ const MstPersPandu = function (mstperspandu) {
     this.KD_PERS_PANDU_1 = mstperspandu.KD_PERS_PANDU_1;
 };
 
-MstPersPandu.create = async(newMstPersPandu, result) => {
+MstPersPandu.create = async(newMstPersPandu, result, cabang_id) => {
 		const hv = await f.headerValue(newMstPersPandu, "mst_pers_pandu");
 		var queryText = "INSERT INTO \"mst_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

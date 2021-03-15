@@ -6,7 +6,7 @@ const DokumenKapal = function (dokumenkapal) {
     this.nama = dokumenkapal.nama;
 };
 
-DokumenKapal.create = async(newDokumenKapal, result) => {
+DokumenKapal.create = async(newDokumenKapal, result, cabang_id) => {
 		const hv = await f.headerValue(newDokumenKapal, "dokumen_kapal");
 		var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

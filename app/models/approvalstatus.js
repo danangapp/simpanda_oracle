@@ -6,7 +6,7 @@ const ApprovalStatus = function (approvalstatus) {
     this.nama = approvalstatus.nama;
 };
 
-ApprovalStatus.create = async(newApprovalStatus, result) => {
+ApprovalStatus.create = async(newApprovalStatus, result, cabang_id) => {
 		const hv = await f.headerValue(newApprovalStatus, "approval_status");
 		var queryText = "INSERT INTO \"approval_status\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

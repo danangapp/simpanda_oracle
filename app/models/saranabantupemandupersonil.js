@@ -11,7 +11,7 @@ const SaranaBantuPemanduPersonil = function (saranabantupemandupersonil) {
     this.status_ijazah_id = saranabantupemandupersonil.status_ijazah_id;
 };
 
-SaranaBantuPemanduPersonil.create = async(newSaranaBantuPemanduPersonil, result) => {
+SaranaBantuPemanduPersonil.create = async(newSaranaBantuPemanduPersonil, result, cabang_id) => {
 		const hv = await f.headerValue(newSaranaBantuPemanduPersonil, "sarana_bantu_pemandu_personil");
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu_personil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

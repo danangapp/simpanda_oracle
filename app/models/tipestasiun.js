@@ -6,7 +6,7 @@ const TipeStasiun = function (tipestasiun) {
     this.nama = tipestasiun.nama;
 };
 
-TipeStasiun.create = async(newTipeStasiun, result) => {
+TipeStasiun.create = async(newTipeStasiun, result, cabang_id) => {
 		const hv = await f.headerValue(newTipeStasiun, "tipe_stasiun");
 		var queryText = "INSERT INTO \"tipe_stasiun\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

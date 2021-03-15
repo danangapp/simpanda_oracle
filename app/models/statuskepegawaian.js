@@ -6,7 +6,7 @@ const StatusKepegawaian = function (statuskepegawaian) {
     this.nama = statuskepegawaian.nama;
 };
 
-StatusKepegawaian.create = async(newStatusKepegawaian, result) => {
+StatusKepegawaian.create = async(newStatusKepegawaian, result, cabang_id) => {
 		const hv = await f.headerValue(newStatusKepegawaian, "status_kepegawaian");
 		var queryText = "INSERT INTO \"status_kepegawaian\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

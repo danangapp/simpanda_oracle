@@ -6,7 +6,7 @@ const PanduBandarLaut = function (pandubandarlaut) {
     this.nama = pandubandarlaut.nama;
 };
 
-PanduBandarLaut.create = async(newPanduBandarLaut, result) => {
+PanduBandarLaut.create = async(newPanduBandarLaut, result, cabang_id) => {
 		const hv = await f.headerValue(newPanduBandarLaut, "pandu_bandar_laut");
 		var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

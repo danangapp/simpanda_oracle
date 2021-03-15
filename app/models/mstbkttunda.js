@@ -45,7 +45,7 @@ const MstBktTunda = function (mstbkttunda) {
     this.KD_FAS_6 = mstbkttunda.KD_FAS_6;
 };
 
-MstBktTunda.create = async(newMstBktTunda, result) => {
+MstBktTunda.create = async(newMstBktTunda, result, cabang_id) => {
 		const hv = await f.headerValue(newMstBktTunda, "mst_bkt_tunda");
 		var queryText = "INSERT INTO \"mst_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

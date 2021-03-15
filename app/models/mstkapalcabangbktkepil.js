@@ -21,7 +21,7 @@ const MstKapalCabangBktKepil = function (mstkapalcabangbktkepil) {
     this.KOREKSI_KE = mstkapalcabangbktkepil.KOREKSI_KE;
 };
 
-MstKapalCabangBktKepil.create = async(newMstKapalCabangBktKepil, result) => {
+MstKapalCabangBktKepil.create = async(newMstKapalCabangBktKepil, result, cabang_id) => {
 		const hv = await f.headerValue(newMstKapalCabangBktKepil, "mst_kapal_cabang_bkt_kepil");
 		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

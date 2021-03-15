@@ -10,7 +10,7 @@ const InvestigasiInsidenTim = function (investigasiinsidentim) {
     this.investigasi_insiden_id = investigasiinsidentim.investigasi_insiden_id;
 };
 
-InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result) => {
+InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result, cabang_id) => {
 		const hv = await f.headerValue(newInvestigasiInsidenTim, "investigasi_insiden_tim");
 		var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

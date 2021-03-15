@@ -9,7 +9,7 @@ const TipeAsset = function (tipeasset) {
     this.flag = tipeasset.flag;
 };
 
-TipeAsset.create = async(newTipeAsset, result) => {
+TipeAsset.create = async(newTipeAsset, result, cabang_id) => {
 		const hv = await f.headerValue(newTipeAsset, "tipe_asset");
 		var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

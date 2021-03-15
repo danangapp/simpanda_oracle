@@ -7,7 +7,7 @@ const PanduJaga = function (pandujaga) {
     this.personil_id = pandujaga.personil_id;
 };
 
-PanduJaga.create = async(newPanduJaga, result) => {
+PanduJaga.create = async(newPanduJaga, result, cabang_id) => {
 		const hv = await f.headerValue(newPanduJaga, "pandu_jaga");
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

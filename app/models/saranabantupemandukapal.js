@@ -72,7 +72,7 @@ const SaranaBantuPemanduKapal = function (saranabantupemandukapal) {
     this.pemeriksaan_fisik_f4 = saranabantupemandukapal.pemeriksaan_fisik_f4;
 };
 
-SaranaBantuPemanduKapal.create = async(newSaranaBantuPemanduKapal, result) => {
+SaranaBantuPemanduKapal.create = async(newSaranaBantuPemanduKapal, result, cabang_id) => {
 		const hv = await f.headerValue(newSaranaBantuPemanduKapal, "sarana_bantu_pemandu_kapal");
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

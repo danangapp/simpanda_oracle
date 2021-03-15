@@ -63,7 +63,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-InvestigasiInsiden.create = async(newInvestigasiInsiden, result) => {
+InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id) => {
 		const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
 		delete newInvestigasiInsiden.investigasi_insiden_tim;
 		newInvestigasiInsiden = setActivity(newInvestigasiInsiden);

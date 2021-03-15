@@ -37,7 +37,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result) => {
+EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id) => {
 		newEvaluasiPelimpahan = setActivity(newEvaluasiPelimpahan);
 		const hv = await f.headerValue(newEvaluasiPelimpahan, "evaluasi_pelimpahan");
 		var queryText = "INSERT INTO \"evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";

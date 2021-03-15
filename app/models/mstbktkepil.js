@@ -23,7 +23,7 @@ const MstBktKepil = function (mstbktkepil) {
     this.PPKB_KE_ORIGIN_AKHIR = mstbktkepil.PPKB_KE_ORIGIN_AKHIR;
 };
 
-MstBktKepil.create = async(newMstBktKepil, result) => {
+MstBktKepil.create = async(newMstBktKepil, result, cabang_id) => {
 		const hv = await f.headerValue(newMstBktKepil, "mst_bkt_kepil");
 		var queryText = "INSERT INTO \"mst_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

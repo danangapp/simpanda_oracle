@@ -3,19 +3,19 @@ var objek = new Object();
 
 // constructor
 const ArmadaJaga = function (armadajaga) {
-	this.tipe_asset_id = armadajaga.tipe_asset_id;
-	this.asset_kapal_id = armadajaga.asset_kapal_id;
-	this.armada_schedule_id = armadajaga.armada_schedule_id;
+    this.tipe_asset_id = armadajaga.tipe_asset_id;
+    this.asset_kapal_id = armadajaga.asset_kapal_id;
+    this.armada_schedule_id = armadajaga.armada_schedule_id;
 };
 
-ArmadaJaga.create = async (newArmadaJaga, result) => {
-	const hv = await f.headerValue(newArmadaJaga, "armada_jaga");
-	var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
-	const exec = f.query(queryText, 1);
-	delete newArmadaJaga.id;
-	const res = await exec;
+ArmadaJaga.create = async(newArmadaJaga, result, cabang_id) => {
+		const hv = await f.headerValue(newArmadaJaga, "armada_jaga");
+		var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
+		const exec = f.query(queryText, 1);
+		delete newArmadaJaga.id;
+		const res = await exec;
 
-	result(null, { id: res.outBinds.id[0], ...newArmadaJaga });
+		result(null, { id: res.outBinds.id[0], ...newArmadaJaga });
 };
 
 ArmadaJaga.findById = async (id, result) => {
@@ -26,11 +26,11 @@ ArmadaJaga.findById = async (id, result) => {
 }
 
 ArmadaJaga.getAll = async (param, result, cabang_id) => {
-	var wheres = f.getParam(param, "armada_jaga");
-	var query = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"keterangan\" as \"armada_schedule\" FROM \"armada_jaga\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_schedule\" a3 ON a.\"armada_schedule_id\" = a3.\"id\" ";
+    var wheres = f.getParam(param, "armada_jaga");
+    var query = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"keterangan\" as \"armada_schedule\" FROM \"armada_jaga\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_schedule\" a3 ON a.\"armada_schedule_id\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -40,7 +40,7 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-ArmadaJaga.updateById = async (id, armadajaga, result) => {
+ArmadaJaga.updateById = async(id, armadajaga, result) => {
 
 	var arr = ["tipe_asset_id", "asset_kapal_id", "armada_schedule_id"];
 	var str = f.getValueUpdate(armadajaga, id, arr);

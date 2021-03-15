@@ -6,7 +6,7 @@ const StatusAbsen = function (statusabsen) {
     this.nama = statusabsen.nama;
 };
 
-StatusAbsen.create = async(newStatusAbsen, result) => {
+StatusAbsen.create = async(newStatusAbsen, result, cabang_id) => {
 		const hv = await f.headerValue(newStatusAbsen, "status_absen");
 		var queryText = "INSERT INTO \"status_absen\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

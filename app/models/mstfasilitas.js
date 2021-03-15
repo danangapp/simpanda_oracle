@@ -16,7 +16,7 @@ const MstFasilitas = function (mstfasilitas) {
     this.NEW_ASSET_JAI = mstfasilitas.NEW_ASSET_JAI;
 };
 
-MstFasilitas.create = async(newMstFasilitas, result) => {
+MstFasilitas.create = async(newMstFasilitas, result, cabang_id) => {
 		const hv = await f.headerValue(newMstFasilitas, "mst_fasilitas");
 		var queryText = "INSERT INTO \"mst_fasilitas\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

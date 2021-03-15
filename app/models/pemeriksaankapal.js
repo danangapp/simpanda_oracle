@@ -25,7 +25,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-PemeriksaanKapal.create = async(newPemeriksaanKapal, result) => {
+PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id) => {
 		newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
 		var check = newPemeriksaanKapal.check;
 		delete newPemeriksaanKapal.check;

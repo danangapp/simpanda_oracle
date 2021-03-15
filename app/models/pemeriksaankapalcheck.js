@@ -6,7 +6,7 @@ const PemeriksaanKapalCheck = function (pemeriksaankapalcheck) {
     this.question = pemeriksaankapalcheck.question;
 };
 
-PemeriksaanKapalCheck.create = async(newPemeriksaanKapalCheck, result) => {
+PemeriksaanKapalCheck.create = async(newPemeriksaanKapalCheck, result, cabang_id) => {
 		const hv = await f.headerValue(newPemeriksaanKapalCheck, "pemeriksaan_kapal_check");
 		var queryText = "INSERT INTO \"pemeriksaan_kapal_check\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

@@ -42,7 +42,7 @@ const MstBktPandu = function (mstbktpandu) {
     this.KD_FAS_JEMPUT = mstbktpandu.KD_FAS_JEMPUT;
 };
 
-MstBktPandu.create = async(newMstBktPandu, result) => {
+MstBktPandu.create = async(newMstBktPandu, result, cabang_id) => {
 		const hv = await f.headerValue(newMstBktPandu, "mst_bkt_pandu");
 		var queryText = "INSERT INTO \"mst_bkt_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

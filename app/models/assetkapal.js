@@ -71,7 +71,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-AssetKapal.create = async(newAssetKapal, result) => {
+AssetKapal.create = async(newAssetKapal, result, cabang_id) => {
 		const sertifikat = newAssetKapal.sertifikat;
 		delete newAssetKapal.sertifikat;
 		newAssetKapal = setActivity(newAssetKapal);

@@ -7,7 +7,7 @@ const UserAccess = function (useraccess) {
     this.menu_id = useraccess.menu_id;
 };
 
-UserAccess.create = async(newUserAccess, result) => {
+UserAccess.create = async(newUserAccess, result, cabang_id) => {
 		const hv = await f.headerValue(newUserAccess, "user_access");
 		var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

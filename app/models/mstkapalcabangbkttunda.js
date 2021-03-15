@@ -68,7 +68,7 @@ const MstKapalCabangBktTunda = function (mstkapalcabangbkttunda) {
     this.CUSTOM18 = mstkapalcabangbkttunda.CUSTOM18;
 };
 
-MstKapalCabangBktTunda.create = async(newMstKapalCabangBktTunda, result) => {
+MstKapalCabangBktTunda.create = async(newMstKapalCabangBktTunda, result, cabang_id) => {
 		const hv = await f.headerValue(newMstKapalCabangBktTunda, "mst_kapal_cabang_bkt_tunda");
 		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

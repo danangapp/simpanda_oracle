@@ -6,7 +6,7 @@ const Role = function (role) {
     this.nama = role.nama;
 };
 
-Role.create = async(newRole, result) => {
+Role.create = async(newRole, result, cabang_id) => {
 		const hv = await f.headerValue(newRole, "role");
 		var queryText = "INSERT INTO \"role\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

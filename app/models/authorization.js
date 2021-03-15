@@ -10,7 +10,7 @@ const Authorization = function (authorization) {
     this.cabang_id = authorization.cabang_id;
 };
 
-Authorization.create = async(newAuthorization, result) => {
+Authorization.create = async(newAuthorization, result, cabang_id) => {
 		const hv = await f.headerValue(newAuthorization, "authorization");
 		var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

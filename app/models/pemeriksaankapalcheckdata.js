@@ -11,7 +11,7 @@ const PemeriksaanKapalCheckData = function (pemeriksaankapalcheckdata) {
     this.pemeriksaan_kapal_check_id = pemeriksaankapalcheckdata.pemeriksaan_kapal_check_id;
 };
 
-PemeriksaanKapalCheckData.create = async(newPemeriksaanKapalCheckData, result) => {
+PemeriksaanKapalCheckData.create = async(newPemeriksaanKapalCheckData, result, cabang_id) => {
 		const hv = await f.headerValue(newPemeriksaanKapalCheckData, "pemeriksaan_kapal_check_data");
 		var queryText = "INSERT INTO \"pemeriksaan_kapal_check_data\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

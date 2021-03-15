@@ -11,7 +11,7 @@ const ActivityLog = function (activitylog) {
     this.koneksi = activitylog.koneksi;
 };
 
-ActivityLog.create = async(newActivityLog, result) => {
+ActivityLog.create = async(newActivityLog, result, cabang_id) => {
 		const hv = await f.headerValue(newActivityLog, "activity_log");
 		var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

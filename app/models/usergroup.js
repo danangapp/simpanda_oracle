@@ -8,7 +8,7 @@ const UserGroup = function (usergroup) {
     this.cabang_id = usergroup.cabang_id;
 };
 
-UserGroup.create = async(newUserGroup, result) => {
+UserGroup.create = async(newUserGroup, result, cabang_id) => {
 		const user_access = newUserGroup.user_access;
 		delete newUserGroup.user_access;
 		const hv = await f.headerValue(newUserGroup, "user_group");

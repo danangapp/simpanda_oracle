@@ -32,7 +32,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-AssetRumahDinas.create = async(newAssetRumahDinas, result) => {
+AssetRumahDinas.create = async(newAssetRumahDinas, result, cabang_id) => {
 		newAssetRumahDinas = setActivity(newAssetRumahDinas);
 		const hv = await f.headerValue(newAssetRumahDinas, "asset_rumah_dinas");
 		var queryText = "INSERT INTO \"asset_rumah_dinas\" " + hv + " RETURN \"id\" INTO :id";

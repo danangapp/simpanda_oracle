@@ -7,7 +7,7 @@ const TipePersonil = function (tipepersonil) {
     this.flag = tipepersonil.flag;
 };
 
-TipePersonil.create = async(newTipePersonil, result) => {
+TipePersonil.create = async(newTipePersonil, result, cabang_id) => {
 		const hv = await f.headerValue(newTipePersonil, "tipe_personil");
 		var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

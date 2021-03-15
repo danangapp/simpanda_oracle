@@ -8,7 +8,7 @@ const Menu = function (menu) {
     this.icon = menu.icon;
 };
 
-Menu.create = async(newMenu, result) => {
+Menu.create = async(newMenu, result, cabang_id) => {
 		const hv = await f.headerValue(newMenu, "menu");
 		var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

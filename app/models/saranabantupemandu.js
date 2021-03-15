@@ -25,7 +25,7 @@ const setActivity = (objects, koneksi = 1) => {
 		return objects
 };
 
-SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result) => {
+SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id) => {
 		const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);

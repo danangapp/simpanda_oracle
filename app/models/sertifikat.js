@@ -25,7 +25,7 @@ const Sertifikat = function (sertifikat) {
     this.koneksi = sertifikat.koneksi;
 };
 
-Sertifikat.create = async(newSertifikat, result) => {
+Sertifikat.create = async(newSertifikat, result, cabang_id) => {
 		const sertifikat = newSertifikat.sertifikat;
 		delete newSertifikat.sertifikat;
 		const hv = await f.headerValue(newSertifikat, "sertifikat");

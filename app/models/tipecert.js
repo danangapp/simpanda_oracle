@@ -8,7 +8,7 @@ const TipeCert = function (tipecert) {
     this.jenis_cert_id = tipecert.jenis_cert_id;
 };
 
-TipeCert.create = async(newTipeCert, result) => {
+TipeCert.create = async(newTipeCert, result, cabang_id) => {
 		const hv = await f.headerValue(newTipeCert, "tipe_cert");
 		var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

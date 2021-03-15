@@ -6,7 +6,7 @@ const KondisiUmum = function (kondisiumum) {
     this.nama = kondisiumum.nama;
 };
 
-KondisiUmum.create = async(newKondisiUmum, result) => {
+KondisiUmum.create = async(newKondisiUmum, result, cabang_id) => {
 		const hv = await f.headerValue(newKondisiUmum, "kondisi_umum");
 		var queryText = "INSERT INTO \"kondisi_umum\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

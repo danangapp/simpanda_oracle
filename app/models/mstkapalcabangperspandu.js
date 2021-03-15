@@ -12,7 +12,7 @@ const MstKapalCabangPersPandu = function (mstkapalcabangperspandu) {
     this.KD_PERS_PANDU_CBG = mstkapalcabangperspandu.KD_PERS_PANDU_CBG;
 };
 
-MstKapalCabangPersPandu.create = async(newMstKapalCabangPersPandu, result) => {
+MstKapalCabangPersPandu.create = async(newMstKapalCabangPersPandu, result, cabang_id) => {
 		const hv = await f.headerValue(newMstKapalCabangPersPandu, "mst_kapal_cabang_pers_pandu");
 		var queryText = "INSERT INTO \"mst_kapal_cabang_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

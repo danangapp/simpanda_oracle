@@ -6,7 +6,7 @@ const TipeSaranaPemanduKapal = function (tipesaranapemandukapal) {
     this.nama = tipesaranapemandukapal.nama;
 };
 
-TipeSaranaPemanduKapal.create = async(newTipeSaranaPemanduKapal, result) => {
+TipeSaranaPemanduKapal.create = async(newTipeSaranaPemanduKapal, result, cabang_id) => {
 		const hv = await f.headerValue(newTipeSaranaPemanduKapal, "tipe_sarana_pemandu_kapal");
 		var queryText = "INSERT INTO \"tipe_sarana_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);

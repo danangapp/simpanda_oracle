@@ -6,7 +6,7 @@ const StatusIjazah = function (statusijazah) {
     this.nama = statusijazah.nama;
 };
 
-StatusIjazah.create = async(newStatusIjazah, result) => {
+StatusIjazah.create = async(newStatusIjazah, result, cabang_id) => {
 		const hv = await f.headerValue(newStatusIjazah, "status_ijazah");
 		var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
