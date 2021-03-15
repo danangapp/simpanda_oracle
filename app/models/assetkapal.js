@@ -136,9 +136,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	objek.action = "2";
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
-	console.log(assetkapal);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'");
 	await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...assetkapal });
 };

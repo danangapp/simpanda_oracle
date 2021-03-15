@@ -248,7 +248,7 @@ module.exports = {
                     adadiTable = 1;
                 }
             }
-            if (object[i] && adadiTable == 1) {
+            if (object[i] != undefined && adadiTable == 1) {
                 var value = object[i];
                 var ada_tgl = 0;
                 for (var c in arrDate) {
