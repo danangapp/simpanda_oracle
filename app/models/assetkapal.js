@@ -127,7 +127,6 @@ AssetKapal.updateById = async(id, assetkapal, result, user_id) => {
 	f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
 	delete assetkapal.sertifikat;
-		assetkapal = await setActivity(assetkapal, id);
 
 	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id"];
 	var str = f.getValueUpdate(assetkapal, id, arr);

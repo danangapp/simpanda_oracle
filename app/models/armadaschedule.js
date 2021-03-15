@@ -14,98 +14,84 @@ const ArmadaSchedule = function (armadaschedule) {
     this.armada_jaga_id = armadaschedule.armada_jaga_id;
 };
 
-ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) => {
-    for (var a in newArmadaSchedule) {
-        var id = await f.getid("armada_schedule");
-        const hv = await f.headerValue(newArmadaSchedule, id);
-        var res = await f.query("INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id", 1);
+ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
+	var pandu_jaga = newArmadaSchedule.armada_jaga;
+	delete newArmadaSchedule.armada_jaga;
+		var id = await f.getid("armada_schedule");
+		const hv = await f.headerValue(newArmadaSchedule, id);
+		var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
+		const exec = f.query(queryText, 1);
+		delete newArmadaSchedule.id;
+		const res = await exec;
 
-        for (var b in c) {
-            if (b === "armada_jaga") {
-                var e = c[b];
-                for (var d in e) {
-                    var g = e[d];
-                    g['armada_schedule_id'] = res.outBinds.id[0];
-                    var id_armada_jaga = await f.getid("armada_jaga");
-                    const hv2 = f.headerValue(g, id_armada_jaga);
-                    await f.query("INSERT INTO \"armada_jaga\"" + hv2, 1);
-                }
-            }
-        }
-    }
-
-    result(null, newArmadaSchedule);
+		for (var a in armada_jaga) {
+			armada_jaga[a].pandu_schedule_id = id;
+			armada_jaga[a].personil_id = armada_jaga[a].id;
+			delete armada_jaga[a].id;
+			var id_pj = await f.getid("armada_jaga");
+			var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
+			var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+			await f.query(queryText, 2);
+		}
+		result(null, { id: id, ...newArmadaSchedule });
 };
 
 ArmadaSchedule.findById = async (id, result) => {
-    const resQuery = await f.query("SELECT * FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
-    var queryText = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"armada_jaga\" FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
-    const exec = f.query(queryText);
-    const res = await exec;
-    const armada_jaga = { "pandu_jaga": resQuery }
-    let merge = { ...res.rows[0], ...armada_jaga }
-
-    result(null, merge);
+	const resQuery = await f.query("SELECT * FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
+	var queryText = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"armada_jaga\" FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	const exec = f.query(queryText);
+	const res = await exec;
+	const armada_jaga = { "armada_jaga": resQuery.rows }
+	result(null, merge);
 }
 
-ArmadaSchedule.getAll = async (param, result) => {
+ArmadaSchedule.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "armada_schedule");
-    var query = `SELECT a.*, a1."nama" as "cabang", a2."nama" as "tipe_asset", a3."nama_asset" FROM "armada_schedule" a LEFT JOIN "cabang" a1 ON a."cabang_id" = a1."id" LEFT JOIN "tipe_asset" a2 ON a."tipe_asset_id" = a2."id" LEFT JOIN "asset_kapal" a3 ON a."asset_kapal_id" = a3."id"`;
-    if (param.q) {
-        wheres += wheres.length == 7 ? "(" : "AND (";
-        wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
-        wheres += ")";
-    }
+    var query = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"armada_jaga\" FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\" ";
+	if (param.q) {
+		wheres += wheres.length == 7 ? "(" : "AND (";
+		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";	
+		wheres += ")";
+	}
 
-    query += wheres;
-    const exec = f.query(query);
-    const res = await exec;
-    result(null, res.rows);
+	query += wheres;
+	const exec = f.query(query);
+	const res = await exec;
+	result(null, res.rows);
 }
 
-ArmadaSchedule.updateById = async (id, armadaschedule, result) => {
+ArmadaSchedule.updateById = async(id, armadaschedule, result, user_id) => {
+	var armada_jaga = armadaschedule.armada_jaga;
+	delete armadaschedule.armada_jaga;
 
-    var arr = ["date", "cabang", "tipe_asset_id", "asset_kapal_id", "status", "jam_pengoperasian", "reliability", "keterangan", "armada_jaga_id"];
-    var str = f.getValueUpdate(armadaschedule, id, arr);
-    if (objek.action != null) {
-        const hv = await f.headerValue(objek, "activity_log");
-        f.query("INSERT INTO \"activity_log\" " + hv, 2);
-    }
-    f.query("UPDATE \"armada_schedule\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-    result(null, { id: id, ...armadaschedule });
+	await f.query(`DELETE FROM "armada_jaga" WHERE "armada_schedule_id" = '${id}'`, 2);
+	for (var a in armada_jaga) {
+		armada_jaga[a].armada_schedule_id = id;
+		armada_jaga[a].personil_id = armada_jaga[a].id;
+		delete armada_jaga[a].id;
+		delete armada_jaga[a].nama;
+		var id_pj = await f.getid("armada_jaga");
+		var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
 
-
-
-    for (var a in armadaschedule) {
-        var c = armadaschedule[a];
-        var str = "";
-        for (var b in c) {
-            if (b != "armada_jaga" && b != "armada_schedule_id") {
-                str += b + "='" + c[b] + "', ";
-            }
-        }
-
-        str = str.substring(0, str.length - 2);
-        await query("UPDATE armada_schedule SET " + str + " WHERE id = '" + c['armada_schedule_id'] + "'");
-        await query("DELETE FROM armada_jaga WHERE armada_schedule_id = '" + c['armada_schedule_id'] + "'");
-
-        for (var b in c) {
-            if (b === "armada_jaga") {
-                var e = c[b];
-                for (var d in e) {
-                    var g = e[d];
-                    g['armada_schedule_id'] = c['armada_schedule_id'];
-                    const hv = await f.headerValue(g, "armada_jaga");
-                    await query("INSERT INTO armada_jaga " + hv);
-                }
-            }
-        }
-    }
+	var arr = ["date", "cabang", "tipe_asset_id", "asset_kapal_id", "status", "jam_pengoperasian", "reliability", "keterangan", "armada_jaga_id"];
+	var str = f.getValueUpdate(armadaschedule, id, arr);
+	var id_activity_log = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = armadaschedule.approval_status_id;
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.query("UPDATE \"armada_schedule\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	result(null, { id: id, ...armadaschedule });
 };
 
 ArmadaSchedule.remove = (id, result) => {
-    f.query("DELETE FROM \"armada_schedule\" WHERE \"id\" = '" + id + "'", 2);
-    result(null, { id: id });
+	f.query("DELETE FROM \"armada_schedule\" WHERE \"id\" = '" + id + "'", 2);
+	result(null, { id: id });
 };
 
 module.exports = ArmadaSchedule;
+

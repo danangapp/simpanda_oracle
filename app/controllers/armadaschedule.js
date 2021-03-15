@@ -18,14 +18,15 @@ exports.create = (req, res) => {
         reliability: req.fields.reliability,
         keterangan: req.fields.keterangan,
         armada_jaga_id: req.fields.armada_jaga_id,
+        pandu_jaga: req.fields.pandu_jaga,
     };
 
-    var used = {};
-    for (var i in armadaschedule) {
-        if (!armadaschedule[i]) {
-            delete armadaschedule[i];
-        }
-    }
+	var used = {};
+	for (var i in armadaschedule) {
+	    if (!armadaschedule[i]) {
+	        delete armadaschedule[i];
+	    }
+	}
 
     ArmadaSchedule.create(armadaschedule, (err, data) => {
         if (err)
@@ -45,7 +46,7 @@ exports.findAll = (req, res) => {
                     err.message || "Some error occurred while retrieving armadaschedulenames."
             });
         else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.findOne = (req, res) => {
@@ -61,7 +62,7 @@ exports.findOne = (req, res) => {
                 });
             }
         } else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.update = (req, res) => {
@@ -72,7 +73,7 @@ exports.update = (req, res) => {
         });
     }
 
-    req.fields.date = f.toDate(req.fields.date);
+	req.fields.date = f.toDate(req.fields.date);
 
     ArmadaSchedule.updateById(
         req.params.id,

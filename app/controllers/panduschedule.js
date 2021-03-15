@@ -23,14 +23,15 @@ exports.create = (req, res) => {
         user_id: req.fields.user_id,
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
+        pandu_jaga: req.fields.pandu_jaga,
     };
 
-    var used = {};
-    for (var i in panduschedule) {
-        if (!panduschedule[i]) {
-            delete panduschedule[i];
-        }
-    }
+	var used = {};
+	for (var i in panduschedule) {
+	    if (!panduschedule[i]) {
+	        delete panduschedule[i];
+	    }
+	}
 
     PanduSchedule.create(panduschedule, (err, data) => {
         if (err)
@@ -50,7 +51,7 @@ exports.findAll = (req, res) => {
                     err.message || "Some error occurred while retrieving panduschedulenames."
             });
         else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.findOne = (req, res) => {
@@ -66,7 +67,7 @@ exports.findOne = (req, res) => {
                 });
             }
         } else res.send(data);
-    });
+    }, req.cabang_id);
 };
 
 exports.update = (req, res) => {
@@ -77,7 +78,7 @@ exports.update = (req, res) => {
         });
     }
 
-    req.fields.date = f.toDate(req.fields.date);
+	req.fields.date = f.toDate(req.fields.date);
 
     PanduSchedule.updateById(
         req.params.id,

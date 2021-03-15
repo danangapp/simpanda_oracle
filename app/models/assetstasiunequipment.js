@@ -75,7 +75,6 @@ AssetStasiunEquipment.getAll = async (param, result, cabang_id) => {
 }
 
 AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result, user_id) => {
-		assetstasiunequipment = await setActivity(assetstasiunequipment, id);
 
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);

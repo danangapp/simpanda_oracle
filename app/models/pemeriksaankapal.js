@@ -78,7 +78,6 @@ PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
 }
 
 PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
-		pemeriksaankapal = await setActivity(pemeriksaankapal, id);
 
 		var check = pemeriksaankapal.check;
 		for (var i in check) {

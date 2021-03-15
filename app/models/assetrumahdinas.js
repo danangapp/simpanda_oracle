@@ -77,7 +77,6 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 }
 
 AssetRumahDinas.updateById = async(id, assetrumahdinas, result, user_id) => {
-		assetrumahdinas = await setActivity(assetrumahdinas, id);
 
 	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);

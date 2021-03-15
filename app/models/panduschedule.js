@@ -30,49 +30,49 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
-	for (var a in newPanduSchedule) {
-		var c = newPanduSchedule[a];
+	var pandu_jaga = newPanduSchedule.pandu_jaga;
+	delete newPanduSchedule.pandu_jaga;
+	newPanduSchedule = setActivity(newPanduSchedule);
+	var id = await f.getid("pandu_schedule");
+	const hv = await f.headerValue(newPanduSchedule, id);
+	var queryText = "INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPanduSchedule.id;
+	const res = await exec;
 
-		var id = await f.getid("pandu_schedule");
-		const hv = await f.headerValue(newPanduSchedule, id);
-		var res = await f.query("INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id", 1);
-
-		for (var b in c) {
-			if (b === "pandu_jaga") {
-				var e = c[b];
-				for (var d in e) {
-					var g = e[d];
-					g['pandu_schedule_id'] = id;
-					var id_pandu_jaga = await f.getid("pandu_jaga");
-					const hv2 = await f.headerValue(g, id_pandu_jaga);
-					await f.query("INSERT INTO \"pandu_jaga\"" + hv2, 1);
-				}
-			}
-		}
+	for (var a in pandu_jaga) {
+		pandu_jaga[a].pandu_schedule_id = id;
+		pandu_jaga[a].personil_id = pandu_jaga[a].id;
+		delete pandu_jaga[a].id;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
 	}
-
 	objek.koneksi = id;
-	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newPanduSchedule });
 };
 
 PanduSchedule.findById = async (id, result) => {
-	const resActivityLog = f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pandu_schedule\" b ON a.\"item\" = 'pandu_schedule' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resQuery = await f.query("SELECT a.\"id\", b.\"nama\" FROM \"pandu_jaga\" a INNER JOIN \"personil\" b ON a.\"personil_id\" = b.\"id\" WHERE a.\"pandu_schedule_id\" = '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pandu_schedule\" b ON a.\"item\" = 'pandu_schedule' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"status_absen\", a3.\"nama\" as \"approval_status\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"pandu_bandar_laut\" FROM \"pandu_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"status_absen\" a2 ON a.\"status_absen_id\" = a2.\"id\"  LEFT JOIN \"approval_status\" a3 ON a.\"approval_status_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a5 ON a.\"pandu_bandar_laut_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const activityLog = { "activityLog": resActivityLog }
-	const pandu_jaga = { "pandu_jaga": resQuery }
-	let merge = { ...res.rows[0], ...activityLog, ...pandu_jaga }
+	const pandu_jaga = { "pandu_jaga": resQuery.rows }
+	const activityLog = { "activityLog": resActivityLog.rows }
+	let merge = { ...res.rows[0], ...pandu_jaga, ...activityLog }
 	result(null, merge);
 }
 
-PanduSchedule.getAll = async (param, result) => {
-	var wheres = f.getParam(param);
+PanduSchedule.getAll = async (param, result, cabang_id) => {
+	var wheres = f.getParam(param, "pandu_schedule");
 	var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"status_absen\", a3.\"nama\" as \"approval_status\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"pandu_bandar_laut\" FROM \"pandu_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"status_absen\" a2 ON a.\"status_absen_id\" = a2.\"id\"  LEFT JOIN \"approval_status\" a3 ON a.\"approval_status_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a5 ON a.\"pandu_bandar_laut_id\" = a5.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
@@ -80,41 +80,39 @@ PanduSchedule.getAll = async (param, result) => {
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
 }
 
-PanduSchedule.updateById = async (id, panduschedule, result) => {
-	for (var a in panduschedule) {
-		var c = panduschedule[a];
-		var str = "";
-		for (var b in c) {
-			if (b != "pandu_jaga" && b != "pandu_schedule_id") {
-				str += "\"" + b + "\"='" + c[b] + "', ";
-			}
-		}
+PanduSchedule.updateById = async (id, panduschedule, result, user_id) => {
+	var pandu_jaga = panduschedule.pandu_jaga;
+	delete panduschedule.pandu_jaga;
 
-		str = str.substring(0, str.length - 2);
-		await f.query("UPDATE \"pandu_schedule\" SET " + str + " WHERE \"id\" = '" + c['pandu_schedule_id'] + "'", 2);
-		await f.query("DELETE FROM \"pandu_jaga\" WHERE \"pandu_schedule_id\" = '" + c['pandu_schedule_id'] + "'", 2);
-
-		for (var b in c) {
-			if (b === "pandu_jaga") {
-				var e = c[b];
-				for (var d in e) {
-					var g = e[d];
-					g['pandu_schedule_id'] = c['pandu_schedule_id'];
-					var id_pandu_jaga = await f.getid("pandu_jaga");
-					const hv = await f.headerValue(g, id_pandu_jaga);
-					await f.query("INSERT INTO \"pandu_jaga\" " + hv, 2);
-				}
-			}
-		}
+	await f.query(`DELETE FROM "pandu_jaga" WHERE "pandu_schedule_id" = '${id}'`, 2);
+	for (var a in pandu_jaga) {
+		pandu_jaga[a].pandu_schedule_id = id;
+		pandu_jaga[a].personil_id = pandu_jaga[a].id;
+		delete pandu_jaga[a].id;
+		delete pandu_jaga[a].nama;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
 	}
 
-	result(null, { ...panduschedule });
+	var arr = ["date", "cabang_id", "status_absen_id", "keterangan", "approval_status_id", "enable", "pandu_jaga_id", "pandu_bandar_laut_id"];
+	var str = f.getValueUpdate(panduschedule, id, arr);
+	var id_activity_log = await f.getid("activity_log");
+	objek.koneksi = id;
+	objek.action = panduschedule.approval_status_id;
+	objek.user_id = user_id;
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.query("UPDATE \"pandu_schedule\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	result(null, { id: id, ...panduschedule });
 };
 
 PanduSchedule.remove = (id, result) => {
@@ -123,3 +121,4 @@ PanduSchedule.remove = (id, result) => {
 };
 
 module.exports = PanduSchedule;
+

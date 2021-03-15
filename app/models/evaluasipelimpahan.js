@@ -83,7 +83,6 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 }
 
 EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) => {
-		evaluasipelimpahan = await setActivity(evaluasipelimpahan, id);
 
 	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan"];
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);

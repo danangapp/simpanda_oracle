@@ -241,6 +241,7 @@ module.exports = {
     },
     getValueUpdate: function (object, id, arr) {
         var str = "", obj = [], no = 1;
+        // console.log("value", arr);
         for (var i in object) {
             var adadiTable = 0
             for (var b in arr) {
@@ -248,6 +249,7 @@ module.exports = {
                     adadiTable = 1;
                 }
             }
+            // console.log("value", i, adadiTable);
             if (object[i] != undefined && adadiTable == 1) {
                 var value = object[i];
                 var ada_tgl = 0;

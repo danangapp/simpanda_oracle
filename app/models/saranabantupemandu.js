@@ -90,7 +90,6 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 }
 
 SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) => {
-		saranabantupemandu = await setActivity(saranabantupemandu, id);
 
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
