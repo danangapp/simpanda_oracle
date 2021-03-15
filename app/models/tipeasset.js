@@ -10,13 +10,14 @@ const TipeAsset = function (tipeasset) {
 };
 
 TipeAsset.create = async(newTipeAsset, result, cabang_id) => {
-		const hv = await f.headerValue(newTipeAsset, "tipe_asset");
+		var id = await f.getid("tipe_asset");
+		const hv = await f.headerValue(newTipeAsset, id);
 		var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeAsset.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newTipeAsset });
+		result(null, { id: id, ...newTipeAsset });
 };
 
 TipeAsset.findById = async (id, result) => {
@@ -46,7 +47,8 @@ TipeAsset.updateById = async(id, tipeasset, result) => {
 	var arr = ["nama", "type", "sarana_config_question", "flag"];
 	var str = f.getValueUpdate(tipeasset, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_asset\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

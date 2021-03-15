@@ -7,13 +7,14 @@ const StatusKepegawaian = function (statuskepegawaian) {
 };
 
 StatusKepegawaian.create = async(newStatusKepegawaian, result, cabang_id) => {
-		const hv = await f.headerValue(newStatusKepegawaian, "status_kepegawaian");
+		var id = await f.getid("status_kepegawaian");
+		const hv = await f.headerValue(newStatusKepegawaian, id);
 		var queryText = "INSERT INTO \"status_kepegawaian\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusKepegawaian.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newStatusKepegawaian });
+		result(null, { id: id, ...newStatusKepegawaian });
 };
 
 StatusKepegawaian.findById = async (id, result) => {
@@ -43,7 +44,8 @@ StatusKepegawaian.updateById = async(id, statuskepegawaian, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statuskepegawaian, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_kepegawaian\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

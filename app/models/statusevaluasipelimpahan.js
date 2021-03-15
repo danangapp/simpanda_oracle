@@ -7,13 +7,14 @@ const StatusEvaluasiPelimpahan = function (statusevaluasipelimpahan) {
 };
 
 StatusEvaluasiPelimpahan.create = async(newStatusEvaluasiPelimpahan, result, cabang_id) => {
-		const hv = await f.headerValue(newStatusEvaluasiPelimpahan, "status_evaluasi_pelimpahan");
+		var id = await f.getid("status_evaluasi_pelimpahan");
+		const hv = await f.headerValue(newStatusEvaluasiPelimpahan, id);
 		var queryText = "INSERT INTO \"status_evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusEvaluasiPelimpahan.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newStatusEvaluasiPelimpahan });
+		result(null, { id: id, ...newStatusEvaluasiPelimpahan });
 };
 
 StatusEvaluasiPelimpahan.findById = async (id, result) => {
@@ -43,7 +44,8 @@ StatusEvaluasiPelimpahan.updateById = async(id, statusevaluasipelimpahan, result
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusevaluasipelimpahan, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

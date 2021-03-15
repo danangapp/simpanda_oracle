@@ -9,13 +9,14 @@ const ArmadaJaga = function (armadajaga) {
 };
 
 ArmadaJaga.create = async(newArmadaJaga, result, cabang_id) => {
-		const hv = await f.headerValue(newArmadaJaga, "armada_jaga");
+		var id = await f.getid("armada_jaga");
+		const hv = await f.headerValue(newArmadaJaga, id);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newArmadaJaga.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newArmadaJaga });
+		result(null, { id: id, ...newArmadaJaga });
 };
 
 ArmadaJaga.findById = async (id, result) => {
@@ -45,7 +46,8 @@ ArmadaJaga.updateById = async(id, armadajaga, result) => {
 	var arr = ["tipe_asset_id", "asset_kapal_id", "armada_schedule_id"];
 	var str = f.getValueUpdate(armadajaga, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"armada_jaga\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

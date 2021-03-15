@@ -8,13 +8,14 @@ const TipePersonil = function (tipepersonil) {
 };
 
 TipePersonil.create = async(newTipePersonil, result, cabang_id) => {
-		const hv = await f.headerValue(newTipePersonil, "tipe_personil");
+		var id = await f.getid("tipe_personil");
+		const hv = await f.headerValue(newTipePersonil, id);
 		var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipePersonil.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newTipePersonil });
+		result(null, { id: id, ...newTipePersonil });
 };
 
 TipePersonil.findById = async (id, result) => {
@@ -44,7 +45,8 @@ TipePersonil.updateById = async(id, tipepersonil, result) => {
 	var arr = ["nama", "flag"];
 	var str = f.getValueUpdate(tipepersonil, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

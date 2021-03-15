@@ -7,13 +7,14 @@ const ApprovalStatus = function (approvalstatus) {
 };
 
 ApprovalStatus.create = async(newApprovalStatus, result, cabang_id) => {
-		const hv = await f.headerValue(newApprovalStatus, "approval_status");
+		var id = await f.getid("approval_status");
+		const hv = await f.headerValue(newApprovalStatus, id);
 		var queryText = "INSERT INTO \"approval_status\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newApprovalStatus.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newApprovalStatus });
+		result(null, { id: id, ...newApprovalStatus });
 };
 
 ApprovalStatus.findById = async (id, result) => {
@@ -43,7 +44,8 @@ ApprovalStatus.updateById = async(id, approvalstatus, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(approvalstatus, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"approval_status\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

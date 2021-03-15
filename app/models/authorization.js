@@ -11,13 +11,14 @@ const Authorization = function (authorization) {
 };
 
 Authorization.create = async(newAuthorization, result, cabang_id) => {
-		const hv = await f.headerValue(newAuthorization, "authorization");
+		var id = await f.getid("authorization");
+		const hv = await f.headerValue(newAuthorization, id);
 		var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newAuthorization.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newAuthorization });
+		result(null, { id: id, ...newAuthorization });
 };
 
 Authorization.findById = async (id, result) => {
@@ -48,7 +49,8 @@ Authorization.updateById = async(id, authorization, result) => {
 	var arr = ["user_id", "accessToken", "refreshToken", "expired", "cabang_id"];
 	var str = f.getValueUpdate(authorization, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"authorization\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

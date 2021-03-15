@@ -29,7 +29,8 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id) => {
 		const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 		newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
-		const hv = await f.headerValue(newSaranaBantuPemandu, "sarana_bantu_pemandu");
+		var id = await f.getid("sarana_bantu_pemandu");
+		const hv = await f.headerValue(newSaranaBantuPemandu, id);
 		var queryText = "INSERT INTO \"sarana_bantu_pemandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newSaranaBantuPemandu.id;
@@ -50,12 +51,13 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id) => {
 			f.query("INSERT INTO sarana_bantu_pemandu_personil (" + header + ") values (" + value + ")");
 		}
 
-		objek.koneksi = res.outBinds.id[0];
+		objek.koneksi = id;
 		if (objek.action != null) {
-			const hv = await f.headerValue(objek, "activity_log");
+			var id = await f.getid("activity_log");
+			const hv = await f.headerValue(objek, id);
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
-		result(null, { id: res.outBinds.id[0], ...newSaranaBantuPemandu });
+		result(null, { id: id, ...newSaranaBantuPemandu });
 };
 
 SaranaBantuPemandu.findById = async (id, result) => {
@@ -92,7 +94,8 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result) => {
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sarana_bantu_pemandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

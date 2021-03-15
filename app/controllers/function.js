@@ -121,9 +121,9 @@ module.exports = {
         var id = get_id.rows[0][0];
         return id;
     },
-    headerValue: async function (object, tableName = '') {
+    headerValue: async function (object, id = 1) {
         var header = "", value = "";
-        object.id = await this.getid(tableName);
+        object.id = id;
         for (var a in object) {
             const val = object[a];
             header += "\"" + a + "\", ";

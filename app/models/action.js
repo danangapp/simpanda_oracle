@@ -7,13 +7,14 @@ const Action = function (action) {
 };
 
 Action.create = async(newAction, result, cabang_id) => {
-		const hv = await f.headerValue(newAction, "action");
+		var id = await f.getid("action");
+		const hv = await f.headerValue(newAction, id);
 		var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newAction.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newAction });
+		result(null, { id: id, ...newAction });
 };
 
 Action.findById = async (id, result) => {
@@ -43,7 +44,8 @@ Action.updateById = async(id, action, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(action, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"action\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

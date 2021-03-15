@@ -9,13 +9,14 @@ const Menu = function (menu) {
 };
 
 Menu.create = async(newMenu, result, cabang_id) => {
-		const hv = await f.headerValue(newMenu, "menu");
+		var id = await f.getid("menu");
+		const hv = await f.headerValue(newMenu, id);
 		var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMenu.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newMenu });
+		result(null, { id: id, ...newMenu });
 };
 
 Menu.findById = async (id, result) => {
@@ -45,7 +46,8 @@ Menu.updateById = async(id, menu, result) => {
 	var arr = ["nama", "url", "icon"];
 	var str = f.getValueUpdate(menu, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"menu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

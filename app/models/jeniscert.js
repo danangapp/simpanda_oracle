@@ -8,13 +8,14 @@ const JenisCert = function (jeniscert) {
 };
 
 JenisCert.create = async(newJenisCert, result, cabang_id) => {
-		const hv = await f.headerValue(newJenisCert, "jenis_cert");
+		var id = await f.getid("jenis_cert");
+		const hv = await f.headerValue(newJenisCert, id);
 		var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newJenisCert.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newJenisCert });
+		result(null, { id: id, ...newJenisCert });
 };
 
 JenisCert.findById = async (id, result) => {
@@ -44,7 +45,8 @@ JenisCert.updateById = async(id, jeniscert, result) => {
 	var arr = ["nama", "remark"];
 	var str = f.getValueUpdate(jeniscert, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"jenis_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

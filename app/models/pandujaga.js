@@ -8,13 +8,14 @@ const PanduJaga = function (pandujaga) {
 };
 
 PanduJaga.create = async(newPanduJaga, result, cabang_id) => {
-		const hv = await f.headerValue(newPanduJaga, "pandu_jaga");
+		var id = await f.getid("pandu_jaga");
+		const hv = await f.headerValue(newPanduJaga, id);
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newPanduJaga.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newPanduJaga });
+		result(null, { id: id, ...newPanduJaga });
 };
 
 PanduJaga.findById = async (id, result) => {
@@ -44,7 +45,8 @@ PanduJaga.updateById = async(id, pandujaga, result) => {
 	var arr = ["pandu_schedule_id", "personil_id"];
 	var str = f.getValueUpdate(pandujaga, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pandu_jaga\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -31,18 +31,20 @@ const setActivity = (objects, koneksi = 1) => {
 
 AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id) => {
 		newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
-		const hv = await f.headerValue(newAssetStasiunEquipment, "asset_stasiun_equipment");
+		var id = await f.getid("asset_stasiun_equipment");
+		const hv = await f.headerValue(newAssetStasiunEquipment, id);
 		var queryText = "INSERT INTO \"asset_stasiun_equipment\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newAssetStasiunEquipment.id;
 		const res = await exec;
 
-		objek.koneksi = res.outBinds.id[0];
+		objek.koneksi = id;
 		if (objek.action != null) {
-			const hv = await f.headerValue(objek, "activity_log");
+			var id = await f.getid("activity_log");
+			const hv = await f.headerValue(objek, id);
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
-		result(null, { id: res.outBinds.id[0], ...newAssetStasiunEquipment });
+		result(null, { id: id, ...newAssetStasiunEquipment });
 };
 
 AssetStasiunEquipment.findById = async (id, result) => {
@@ -76,7 +78,8 @@ AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result) => {
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

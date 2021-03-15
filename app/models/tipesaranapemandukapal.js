@@ -7,13 +7,14 @@ const TipeSaranaPemanduKapal = function (tipesaranapemandukapal) {
 };
 
 TipeSaranaPemanduKapal.create = async(newTipeSaranaPemanduKapal, result, cabang_id) => {
-		const hv = await f.headerValue(newTipeSaranaPemanduKapal, "tipe_sarana_pemandu_kapal");
+		var id = await f.getid("tipe_sarana_pemandu_kapal");
+		const hv = await f.headerValue(newTipeSaranaPemanduKapal, id);
 		var queryText = "INSERT INTO \"tipe_sarana_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeSaranaPemanduKapal.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newTipeSaranaPemanduKapal });
+		result(null, { id: id, ...newTipeSaranaPemanduKapal });
 };
 
 TipeSaranaPemanduKapal.findById = async (id, result) => {
@@ -43,7 +44,8 @@ TipeSaranaPemanduKapal.updateById = async(id, tipesaranapemandukapal, result) =>
 	var arr = ["nama"];
 	var str = f.getValueUpdate(tipesaranapemandukapal, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_sarana_pemandu_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

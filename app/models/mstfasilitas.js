@@ -17,13 +17,14 @@ const MstFasilitas = function (mstfasilitas) {
 };
 
 MstFasilitas.create = async(newMstFasilitas, result, cabang_id) => {
-		const hv = await f.headerValue(newMstFasilitas, "mst_fasilitas");
+		var id = await f.getid("mst_fasilitas");
+		const hv = await f.headerValue(newMstFasilitas, id);
 		var queryText = "INSERT INTO \"mst_fasilitas\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstFasilitas.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newMstFasilitas });
+		result(null, { id: id, ...newMstFasilitas });
 };
 
 MstFasilitas.findById = async (id, result) => {
@@ -53,7 +54,8 @@ MstFasilitas.updateById = async(id, mstfasilitas, result) => {
 	var arr = ["KD_FAS", "NM_FAS", "DAYA", "KD_CABANG", "enable", "DAYA2", "STATUS_MILIK", "ASSET_NUMBER", "KD_PUSPEL_JAI", "NEW_PUSPEL_JAI", "NEW_ASSET_JAI"];
 	var str = f.getValueUpdate(mstfasilitas, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_fasilitas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

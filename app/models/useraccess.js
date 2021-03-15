@@ -8,13 +8,14 @@ const UserAccess = function (useraccess) {
 };
 
 UserAccess.create = async(newUserAccess, result, cabang_id) => {
-		const hv = await f.headerValue(newUserAccess, "user_access");
+		var id = await f.getid("user_access");
+		const hv = await f.headerValue(newUserAccess, id);
 		var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newUserAccess.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newUserAccess });
+		result(null, { id: id, ...newUserAccess });
 };
 
 UserAccess.findById = async (id, result) => {
@@ -44,7 +45,8 @@ UserAccess.updateById = async(id, useraccess, result) => {
 	var arr = ["user_group_id", "menu_id"];
 	var str = f.getValueUpdate(useraccess, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"user_access\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

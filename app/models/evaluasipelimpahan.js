@@ -39,18 +39,20 @@ const setActivity = (objects, koneksi = 1) => {
 
 EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id) => {
 		newEvaluasiPelimpahan = setActivity(newEvaluasiPelimpahan);
-		const hv = await f.headerValue(newEvaluasiPelimpahan, "evaluasi_pelimpahan");
+		var id = await f.getid("evaluasi_pelimpahan");
+		const hv = await f.headerValue(newEvaluasiPelimpahan, id);
 		var queryText = "INSERT INTO \"evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newEvaluasiPelimpahan.id;
 		const res = await exec;
 
-		objek.koneksi = res.outBinds.id[0];
+		objek.koneksi = id;
 		if (objek.action != null) {
-			const hv = await f.headerValue(objek, "activity_log");
+			var id = await f.getid("activity_log");
+			const hv = await f.headerValue(objek, id);
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
-		result(null, { id: res.outBinds.id[0], ...newEvaluasiPelimpahan });
+		result(null, { id: id, ...newEvaluasiPelimpahan });
 };
 
 EvaluasiPelimpahan.findById = async (id, result) => {
@@ -84,7 +86,8 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result) => {
 	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan"];
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"evaluasi_pelimpahan\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -9,13 +9,14 @@ const TipeCert = function (tipecert) {
 };
 
 TipeCert.create = async(newTipeCert, result, cabang_id) => {
-		const hv = await f.headerValue(newTipeCert, "tipe_cert");
+		var id = await f.getid("tipe_cert");
+		const hv = await f.headerValue(newTipeCert, id);
 		var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newTipeCert.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newTipeCert });
+		result(null, { id: id, ...newTipeCert });
 };
 
 TipeCert.findById = async (id, result) => {
@@ -45,7 +46,8 @@ TipeCert.updateById = async(id, tipecert, result) => {
 	var arr = ["nama", "remark", "jenis_cert_id"];
 	var str = f.getValueUpdate(tipecert, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"tipe_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

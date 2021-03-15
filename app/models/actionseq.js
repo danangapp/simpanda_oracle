@@ -14,13 +14,14 @@ const ActionSeq = function (actionseq) {
 };
 
 ActionSeq.create = async(newActionSeq, result, cabang_id) => {
-		const hv = await f.headerValue(newActionSeq, "action_seq");
+		var id = await f.getid("action_seq");
+		const hv = await f.headerValue(newActionSeq, id);
 		var queryText = "INSERT INTO \"action_seq\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newActionSeq.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newActionSeq });
+		result(null, { id: id, ...newActionSeq });
 };
 
 ActionSeq.findById = async (id, result) => {
@@ -50,7 +51,8 @@ ActionSeq.updateById = async(id, actionseq, result) => {
 	var arr = ["next_not_cached_value", "minimum_value", "maximum_value", "start_value", "increment", "cache_size", "cycle_option", "cycle_count"];
 	var str = f.getValueUpdate(actionseq, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"action_seq\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

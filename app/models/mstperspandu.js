@@ -13,13 +13,14 @@ const MstPersPandu = function (mstperspandu) {
 };
 
 MstPersPandu.create = async(newMstPersPandu, result, cabang_id) => {
-		const hv = await f.headerValue(newMstPersPandu, "mst_pers_pandu");
+		var id = await f.getid("mst_pers_pandu");
+		const hv = await f.headerValue(newMstPersPandu, id);
 		var queryText = "INSERT INTO \"mst_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newMstPersPandu.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newMstPersPandu });
+		result(null, { id: id, ...newMstPersPandu });
 };
 
 MstPersPandu.findById = async (id, result) => {
@@ -49,7 +50,8 @@ MstPersPandu.updateById = async(id, mstperspandu, result) => {
 	var arr = ["KD_PERS_PANDU", "NM_PERS_PANDU", "NIPP", "KELAS", "KD_CABANG", "enable", "KD_PERS_PANDU_1"];
 	var str = f.getValueUpdate(mstperspandu, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"mst_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

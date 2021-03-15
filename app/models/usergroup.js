@@ -11,7 +11,8 @@ const UserGroup = function (usergroup) {
 UserGroup.create = async(newUserGroup, result, cabang_id) => {
 		const user_access = newUserGroup.user_access;
 		delete newUserGroup.user_access;
-		const hv = await f.headerValue(newUserGroup, "user_group");
+		var id = await f.getid("user_group");
+		const hv = await f.headerValue(newUserGroup, id);
 		var queryText = "INSERT INTO \"user_group\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newUserGroup.id;
@@ -37,7 +38,7 @@ UserGroup.create = async(newUserGroup, result, cabang_id) => {
 			f.query("INSERT INTO user_access (" + header + ") values (" + value + ")");
 		}
 
-		result(null, { id: res.outBinds.id[0], ...newUserGroup });
+		result(null, { id: id, ...newUserGroup });
 };
 
 UserGroup.findById = async (id, result) => {
@@ -100,7 +101,8 @@ UserGroup.updateById = async(id, usergroup, result) => {
 	var arr = ["nama", "keterangan", "cabang_id"];
 	var str = f.getValueUpdate(usergroup, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"user_group\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

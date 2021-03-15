@@ -7,13 +7,14 @@ const DokumenKapal = function (dokumenkapal) {
 };
 
 DokumenKapal.create = async(newDokumenKapal, result, cabang_id) => {
-		const hv = await f.headerValue(newDokumenKapal, "dokumen_kapal");
+		var id = await f.getid("dokumen_kapal");
+		const hv = await f.headerValue(newDokumenKapal, id);
 		var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newDokumenKapal.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newDokumenKapal });
+		result(null, { id: id, ...newDokumenKapal });
 };
 
 DokumenKapal.findById = async (id, result) => {
@@ -43,7 +44,8 @@ DokumenKapal.updateById = async(id, dokumenkapal, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(dokumenkapal, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"dokumen_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

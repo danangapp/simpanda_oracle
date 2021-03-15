@@ -12,13 +12,14 @@ const ActivityLog = function (activitylog) {
 };
 
 ActivityLog.create = async(newActivityLog, result, cabang_id) => {
-		const hv = await f.headerValue(newActivityLog, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(newActivityLog, id);
 		var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newActivityLog.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newActivityLog });
+		result(null, { id: id, ...newActivityLog });
 };
 
 ActivityLog.findById = async (id, result) => {
@@ -48,7 +49,8 @@ ActivityLog.updateById = async(id, activitylog, result) => {
 	var arr = ["date", "item", "action", "user_id", "remark", "koneksi"];
 	var str = f.getValueUpdate(activitylog, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"activity_log\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

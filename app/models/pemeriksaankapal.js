@@ -39,12 +39,13 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id) => {
 		    f.query("INSERT INTO pemeriksaan_kapal_check_data (pemeriksaan_kapal_check_id, kondisi_id, tanggal_awal, tanggal_akhir, keterangan, pemeriksaan_kapal_id) VALUES (" + pemeriksaan_kapal_check_id + ", " + kondisi_id + ", '" + tanggal_awal + "', '" + tanggal_akhir + "', '" + keterangan + "', '" + res.insertId + "')");
 		}
 
-		objek.koneksi = res.outBinds.id[0];
+		objek.koneksi = id;
 		if (objek.action != null) {
-			const hv = await f.headerValue(objek, "activity_log");
+			var id = await f.getid("activity_log");
+			const hv = await f.headerValue(objek, id);
 			f.query("INSERT INTO \"activity_log\" " + hv, 2);
 		}
-		result(null, { id: res.outBinds.id[0], ...newPemeriksaanKapal });
+		result(null, { id: id, ...newPemeriksaanKapal });
 };
 
 PemeriksaanKapal.findById = async (id, result) => {
@@ -92,7 +93,8 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result) => {
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

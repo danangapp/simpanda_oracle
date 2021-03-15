@@ -7,13 +7,14 @@ const PanduBandarLaut = function (pandubandarlaut) {
 };
 
 PanduBandarLaut.create = async(newPanduBandarLaut, result, cabang_id) => {
-		const hv = await f.headerValue(newPanduBandarLaut, "pandu_bandar_laut");
+		var id = await f.getid("pandu_bandar_laut");
+		const hv = await f.headerValue(newPanduBandarLaut, id);
 		var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newPanduBandarLaut.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newPanduBandarLaut });
+		result(null, { id: id, ...newPanduBandarLaut });
 };
 
 PanduBandarLaut.findById = async (id, result) => {
@@ -43,7 +44,8 @@ PanduBandarLaut.updateById = async(id, pandubandarlaut, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(pandubandarlaut, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"pandu_bandar_laut\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -28,14 +28,15 @@ const Sertifikat = function (sertifikat) {
 Sertifikat.create = async(newSertifikat, result, cabang_id) => {
 		const sertifikat = newSertifikat.sertifikat;
 		delete newSertifikat.sertifikat;
-		const hv = await f.headerValue(newSertifikat, "sertifikat");
+		var id = await f.getid("sertifikat");
+		const hv = await f.headerValue(newSertifikat, id);
 		var queryText = "INSERT INTO \"sertifikat\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newSertifikat.id;
 		const res = await exec;
 
-		f.executeSertifikat(sertifikat, res.outBinds.id[0], "personil", "personil_id");
-		result(null, { id: res.outBinds.id[0], ...newSertifikat });
+		f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+		result(null, { id: id, ...newSertifikat });
 };
 
 Sertifikat.findById = async (id, result) => {
@@ -68,7 +69,8 @@ Sertifikat.updateById = async(id, sertifikat, result) => {
 	var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id"];
 	var str = f.getValueUpdate(sertifikat, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"sertifikat\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

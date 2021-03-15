@@ -7,13 +7,14 @@ const StatusIjazah = function (statusijazah) {
 };
 
 StatusIjazah.create = async(newStatusIjazah, result, cabang_id) => {
-		const hv = await f.headerValue(newStatusIjazah, "status_ijazah");
+		var id = await f.getid("status_ijazah");
+		const hv = await f.headerValue(newStatusIjazah, id);
 		var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
 		const exec = f.query(queryText, 1);
 		delete newStatusIjazah.id;
 		const res = await exec;
 
-		result(null, { id: res.outBinds.id[0], ...newStatusIjazah });
+		result(null, { id: id, ...newStatusIjazah });
 };
 
 StatusIjazah.findById = async (id, result) => {
@@ -43,7 +44,8 @@ StatusIjazah.updateById = async(id, statusijazah, result) => {
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusijazah, id, arr);
 	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
+		var id = await f.getid("activity_log");
+		const hv = await f.headerValue(objek, id);
 		await f.query("INSERT INTO \"activity_log\" " + hv, 2);
 	}
 	f.query("UPDATE \"status_ijazah\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
