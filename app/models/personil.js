@@ -52,7 +52,7 @@ const setActivity = (objects, koneksi = 1) => {
 Personil.create = async(newPersonil, result, cabang_id, user_id) => {
 	const sertifikat = newPersonil.sertifikat;
 	delete newPersonil.sertifikat;
-		newPersonil = setActivity(newPersonil);
+	newPersonil = setActivity(newPersonil);
 	var id = await f.getid("personil");
 	const hv = await f.headerValue(newPersonil, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";

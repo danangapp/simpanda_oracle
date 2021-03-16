@@ -28,7 +28,7 @@ const setActivity = (objects, koneksi = 1) => {
 SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user_id) => {
 	const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 	delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
-		newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
+	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
 	var id = await f.getid("sarana_bantu_pemandu");
 	const hv = await f.headerValue(newSaranaBantuPemandu, id);
 	var queryText = "INSERT INTO \"sarana_bantu_pemandu\" " + hv + " RETURN \"id\" INTO :id";

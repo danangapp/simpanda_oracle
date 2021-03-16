@@ -26,7 +26,7 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id) => {
-		newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
+	newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
 	var check = newPemeriksaanKapal.check;
 	delete newPemeriksaanKapal.check;
 	const res = f.query("INSERT INTO pemeriksaan_kapal SET ?", newPemeriksaanKapal);

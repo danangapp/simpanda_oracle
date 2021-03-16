@@ -66,7 +66,7 @@ const setActivity = (objects, koneksi = 1) => {
 InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user_id) => {
 	const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
 	delete newInvestigasiInsiden.investigasi_insiden_tim;
-		newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
+	newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
 	var id = await f.getid("investigasi_insiden");
 	const hv = await f.headerValue(newInvestigasiInsiden, id);
 	var queryText = "INSERT INTO \"investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
