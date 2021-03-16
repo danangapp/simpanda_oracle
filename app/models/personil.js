@@ -103,8 +103,10 @@ Personil.getAll = async (param, result, cabang_id) => {
 
 Personil.updateById = async(id, personil, result, user_id) => {
 	const sertifikat = personil.sertifikat;
-	f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
+	if (personil.sertifikat) {
+		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	}
 	delete personil.sertifikat;
 
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id"];
