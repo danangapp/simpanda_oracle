@@ -10,7 +10,7 @@ exports.create = (req, res) => {
 
     var armadaschedule = {
         date: f.toDate(req.fields.date),
-        cabang: req.fields.cabang,
+        cabang_id: req.fields.cabang_id,
         tipe_asset_id: req.fields.tipe_asset_id,
         asset_kapal_id: req.fields.asset_kapal_id,
         status: req.fields.status,

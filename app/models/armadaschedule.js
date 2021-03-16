@@ -4,7 +4,7 @@ var objek = new Object();
 // constructor
 const ArmadaSchedule = function (armadaschedule) {
 	this.date = armadaschedule.date;
-	this.cabang = armadaschedule.cabang;
+	this.cabang_id = armadaschedule.cabang_id;
 	this.tipe_asset_id = armadaschedule.tipe_asset_id;
 	this.asset_kapal_id = armadaschedule.asset_kapal_id;
 	this.status = armadaschedule.status;
@@ -36,23 +36,24 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 
 ArmadaSchedule.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT * FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
-	var queryText = "SELECT a.*  , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"from\", a3.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\" , a3.\"nama_asset\" as \"asset_kapal\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const armada_jaga = { "armada_jaga": resQuery.rows }
+	const armada_jaga = { "available": resQuery.rows }
 	let merge = { ...res.rows[0], ...armada_jaga }
 	result(null, merge);
 }
 
 ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "armada_schedule");
-	var query = "SELECT a.*  , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"from\", a3.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\" ";
+	var query = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\" , a3.\"nama_asset\" as \"asset_kapal\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
+	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	const exec = f.query(query);
 	const res = await exec;
@@ -72,7 +73,7 @@ ArmadaSchedule.updateById = async (id, armadaschedule, result, user_id) => {
 		await f.query(queryText, 2);
 	}
 
-	var arr = ["date", "cabang", "tipe_asset_id", "asset_kapal_id", "status", "jam_pengoperasian", "reliability", "keterangan", "armada_jaga_id"];
+	var arr = ["date", "cabang_id", "tipe_asset_id", "asset_kapal_id", "status", "jam_pengoperasian", "reliability", "keterangan", "armada_jaga_id"];
 	var str = f.getValueUpdate(armadaschedule, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
