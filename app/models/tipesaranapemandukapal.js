@@ -46,6 +46,8 @@ TipeSaranaPemanduKapal.updateById = async(id, tipesaranapemandukapal, result, us
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = tipesaranapemandukapal.approval_status_id;
+	objek.item = "tipesaranapemandukapal";
+	objek.remark = tipesaranapemandukapal.activityLog ? tipesaranapemandukapal.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

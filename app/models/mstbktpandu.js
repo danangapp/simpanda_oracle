@@ -82,6 +82,8 @@ MstBktPandu.updateById = async(id, mstbktpandu, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstbktpandu.approval_status_id;
+	objek.item = "mstbktpandu";
+	objek.remark = mstbktpandu.activityLog ? mstbktpandu.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

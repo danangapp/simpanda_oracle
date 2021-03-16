@@ -89,6 +89,8 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) =
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = evaluasipelimpahan.approval_status_id;
+	objek.item = "evaluasipelimpahan";
+	objek.remark = evaluasipelimpahan.activityLog ? evaluasipelimpahan.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

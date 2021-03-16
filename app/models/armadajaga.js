@@ -48,6 +48,8 @@ ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = armadajaga.approval_status_id;
+	objek.item = "armadajaga";
+	objek.remark = armadajaga.activityLog ? armadajaga.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

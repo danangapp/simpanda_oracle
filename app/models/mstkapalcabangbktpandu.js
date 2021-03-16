@@ -86,6 +86,8 @@ MstKapalCabangBktPandu.updateById = async(id, mstkapalcabangbktpandu, result, us
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstkapalcabangbktpandu.approval_status_id;
+	objek.item = "mstkapalcabangbktpandu";
+	objek.remark = mstkapalcabangbktpandu.activityLog ? mstkapalcabangbktpandu.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

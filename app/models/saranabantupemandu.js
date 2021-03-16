@@ -96,6 +96,8 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) =
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = saranabantupemandu.approval_status_id;
+	objek.item = "saranabantupemandu";
+	objek.remark = saranabantupemandu.activityLog ? saranabantupemandu.activityLog.remark : '';
 	objek.user_id = user_id;
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
