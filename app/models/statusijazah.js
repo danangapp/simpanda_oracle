@@ -7,14 +7,14 @@ const StatusIjazah = function (statusijazah) {
 };
 
 StatusIjazah.create = async(newStatusIjazah, result, cabang_id, user_id) => {
-		var id = await f.getid("status_ijazah");
-		const hv = await f.headerValue(newStatusIjazah, id);
-		var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newStatusIjazah.id;
-		const res = await exec;
+	var id = await f.getid("status_ijazah");
+	const hv = await f.headerValue(newStatusIjazah, id);
+	var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newStatusIjazah.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newStatusIjazah });
+	result(null, { id: id, ...newStatusIjazah });
 };
 
 StatusIjazah.findById = async (id, result) => {

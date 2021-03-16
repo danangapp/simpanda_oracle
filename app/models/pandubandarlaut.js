@@ -7,14 +7,14 @@ const PanduBandarLaut = function (pandubandarlaut) {
 };
 
 PanduBandarLaut.create = async(newPanduBandarLaut, result, cabang_id, user_id) => {
-		var id = await f.getid("pandu_bandar_laut");
-		const hv = await f.headerValue(newPanduBandarLaut, id);
-		var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newPanduBandarLaut.id;
-		const res = await exec;
+	var id = await f.getid("pandu_bandar_laut");
+	const hv = await f.headerValue(newPanduBandarLaut, id);
+	var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPanduBandarLaut.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newPanduBandarLaut });
+	result(null, { id: id, ...newPanduBandarLaut });
 };
 
 PanduBandarLaut.findById = async (id, result) => {

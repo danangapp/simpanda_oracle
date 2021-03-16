@@ -9,14 +9,14 @@ const TipeCert = function (tipecert) {
 };
 
 TipeCert.create = async(newTipeCert, result, cabang_id, user_id) => {
-		var id = await f.getid("tipe_cert");
-		const hv = await f.headerValue(newTipeCert, id);
-		var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newTipeCert.id;
-		const res = await exec;
+	var id = await f.getid("tipe_cert");
+	const hv = await f.headerValue(newTipeCert, id);
+	var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newTipeCert.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newTipeCert });
+	result(null, { id: id, ...newTipeCert });
 };
 
 TipeCert.findById = async (id, result) => {

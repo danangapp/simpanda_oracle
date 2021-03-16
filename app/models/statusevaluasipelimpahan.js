@@ -7,14 +7,14 @@ const StatusEvaluasiPelimpahan = function (statusevaluasipelimpahan) {
 };
 
 StatusEvaluasiPelimpahan.create = async(newStatusEvaluasiPelimpahan, result, cabang_id, user_id) => {
-		var id = await f.getid("status_evaluasi_pelimpahan");
-		const hv = await f.headerValue(newStatusEvaluasiPelimpahan, id);
-		var queryText = "INSERT INTO \"status_evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newStatusEvaluasiPelimpahan.id;
-		const res = await exec;
+	var id = await f.getid("status_evaluasi_pelimpahan");
+	const hv = await f.headerValue(newStatusEvaluasiPelimpahan, id);
+	var queryText = "INSERT INTO \"status_evaluasi_pelimpahan\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newStatusEvaluasiPelimpahan.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newStatusEvaluasiPelimpahan });
+	result(null, { id: id, ...newStatusEvaluasiPelimpahan });
 };
 
 StatusEvaluasiPelimpahan.findById = async (id, result) => {

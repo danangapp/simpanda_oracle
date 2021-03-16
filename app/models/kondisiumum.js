@@ -7,14 +7,14 @@ const KondisiUmum = function (kondisiumum) {
 };
 
 KondisiUmum.create = async(newKondisiUmum, result, cabang_id, user_id) => {
-		var id = await f.getid("kondisi_umum");
-		const hv = await f.headerValue(newKondisiUmum, id);
-		var queryText = "INSERT INTO \"kondisi_umum\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newKondisiUmum.id;
-		const res = await exec;
+	var id = await f.getid("kondisi_umum");
+	const hv = await f.headerValue(newKondisiUmum, id);
+	var queryText = "INSERT INTO \"kondisi_umum\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newKondisiUmum.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newKondisiUmum });
+	result(null, { id: id, ...newKondisiUmum });
 };
 
 KondisiUmum.findById = async (id, result) => {

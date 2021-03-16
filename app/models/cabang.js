@@ -17,14 +17,14 @@ const Cabang = function (cabang) {
 };
 
 Cabang.create = async(newCabang, result, cabang_id, user_id) => {
-		var id = await f.getid("cabang");
-		const hv = await f.headerValue(newCabang, id);
-		var queryText = "INSERT INTO \"cabang\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newCabang.id;
-		const res = await exec;
+	var id = await f.getid("cabang");
+	const hv = await f.headerValue(newCabang, id);
+	var queryText = "INSERT INTO \"cabang\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newCabang.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newCabang });
+	result(null, { id: id, ...newCabang });
 };
 
 Cabang.findById = async (id, result) => {

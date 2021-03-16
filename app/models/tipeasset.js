@@ -10,14 +10,14 @@ const TipeAsset = function (tipeasset) {
 };
 
 TipeAsset.create = async(newTipeAsset, result, cabang_id, user_id) => {
-		var id = await f.getid("tipe_asset");
-		const hv = await f.headerValue(newTipeAsset, id);
-		var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newTipeAsset.id;
-		const res = await exec;
+	var id = await f.getid("tipe_asset");
+	const hv = await f.headerValue(newTipeAsset, id);
+	var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newTipeAsset.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newTipeAsset });
+	result(null, { id: id, ...newTipeAsset });
 };
 
 TipeAsset.findById = async (id, result) => {

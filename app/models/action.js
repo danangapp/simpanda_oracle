@@ -7,14 +7,14 @@ const Action = function (action) {
 };
 
 Action.create = async(newAction, result, cabang_id, user_id) => {
-		var id = await f.getid("action");
-		const hv = await f.headerValue(newAction, id);
-		var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newAction.id;
-		const res = await exec;
+	var id = await f.getid("action");
+	const hv = await f.headerValue(newAction, id);
+	var queryText = "INSERT INTO \"action\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newAction.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newAction });
+	result(null, { id: id, ...newAction });
 };
 
 Action.findById = async (id, result) => {

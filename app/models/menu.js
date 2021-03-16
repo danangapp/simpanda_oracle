@@ -9,14 +9,14 @@ const Menu = function (menu) {
 };
 
 Menu.create = async(newMenu, result, cabang_id, user_id) => {
-		var id = await f.getid("menu");
-		const hv = await f.headerValue(newMenu, id);
-		var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newMenu.id;
-		const res = await exec;
+	var id = await f.getid("menu");
+	const hv = await f.headerValue(newMenu, id);
+	var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newMenu.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newMenu });
+	result(null, { id: id, ...newMenu });
 };
 
 Menu.findById = async (id, result) => {

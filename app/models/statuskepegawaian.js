@@ -7,14 +7,14 @@ const StatusKepegawaian = function (statuskepegawaian) {
 };
 
 StatusKepegawaian.create = async(newStatusKepegawaian, result, cabang_id, user_id) => {
-		var id = await f.getid("status_kepegawaian");
-		const hv = await f.headerValue(newStatusKepegawaian, id);
-		var queryText = "INSERT INTO \"status_kepegawaian\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newStatusKepegawaian.id;
-		const res = await exec;
+	var id = await f.getid("status_kepegawaian");
+	const hv = await f.headerValue(newStatusKepegawaian, id);
+	var queryText = "INSERT INTO \"status_kepegawaian\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newStatusKepegawaian.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newStatusKepegawaian });
+	result(null, { id: id, ...newStatusKepegawaian });
 };
 
 StatusKepegawaian.findById = async (id, result) => {

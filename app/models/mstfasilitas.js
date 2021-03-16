@@ -17,14 +17,14 @@ const MstFasilitas = function (mstfasilitas) {
 };
 
 MstFasilitas.create = async(newMstFasilitas, result, cabang_id, user_id) => {
-		var id = await f.getid("mst_fasilitas");
-		const hv = await f.headerValue(newMstFasilitas, id);
-		var queryText = "INSERT INTO \"mst_fasilitas\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newMstFasilitas.id;
-		const res = await exec;
+	var id = await f.getid("mst_fasilitas");
+	const hv = await f.headerValue(newMstFasilitas, id);
+	var queryText = "INSERT INTO \"mst_fasilitas\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newMstFasilitas.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newMstFasilitas });
+	result(null, { id: id, ...newMstFasilitas });
 };
 
 MstFasilitas.findById = async (id, result) => {

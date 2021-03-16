@@ -13,14 +13,14 @@ const MstPersPandu = function (mstperspandu) {
 };
 
 MstPersPandu.create = async(newMstPersPandu, result, cabang_id, user_id) => {
-		var id = await f.getid("mst_pers_pandu");
-		const hv = await f.headerValue(newMstPersPandu, id);
-		var queryText = "INSERT INTO \"mst_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newMstPersPandu.id;
-		const res = await exec;
+	var id = await f.getid("mst_pers_pandu");
+	const hv = await f.headerValue(newMstPersPandu, id);
+	var queryText = "INSERT INTO \"mst_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newMstPersPandu.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newMstPersPandu });
+	result(null, { id: id, ...newMstPersPandu });
 };
 
 MstPersPandu.findById = async (id, result) => {

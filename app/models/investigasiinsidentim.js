@@ -11,14 +11,14 @@ const InvestigasiInsidenTim = function (investigasiinsidentim) {
 };
 
 InvestigasiInsidenTim.create = async(newInvestigasiInsidenTim, result, cabang_id, user_id) => {
-		var id = await f.getid("investigasi_insiden_tim");
-		const hv = await f.headerValue(newInvestigasiInsidenTim, id);
-		var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newInvestigasiInsidenTim.id;
-		const res = await exec;
+	var id = await f.getid("investigasi_insiden_tim");
+	const hv = await f.headerValue(newInvestigasiInsidenTim, id);
+	var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newInvestigasiInsidenTim.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newInvestigasiInsidenTim });
+	result(null, { id: id, ...newInvestigasiInsidenTim });
 };
 
 InvestigasiInsidenTim.findById = async (id, result) => {

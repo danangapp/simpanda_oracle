@@ -9,14 +9,14 @@ const ArmadaJagaCopy1 = function (armadajagacopy1) {
 };
 
 ArmadaJagaCopy1.create = async(newArmadaJagaCopy1, result, cabang_id, user_id) => {
-		var id = await f.getid("armada_jaga_copy1");
-		const hv = await f.headerValue(newArmadaJagaCopy1, id);
-		var queryText = "INSERT INTO \"armada_jaga_copy1\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newArmadaJagaCopy1.id;
-		const res = await exec;
+	var id = await f.getid("armada_jaga_copy1");
+	const hv = await f.headerValue(newArmadaJagaCopy1, id);
+	var queryText = "INSERT INTO \"armada_jaga_copy1\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newArmadaJagaCopy1.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newArmadaJagaCopy1 });
+	result(null, { id: id, ...newArmadaJagaCopy1 });
 };
 
 ArmadaJagaCopy1.findById = async (id, result) => {

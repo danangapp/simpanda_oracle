@@ -31,21 +31,21 @@ const setActivity = (objects, koneksi = 1) => {
 
 AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id, user_id) => {
 		newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
-		var id = await f.getid("asset_stasiun_equipment");
-		const hv = await f.headerValue(newAssetStasiunEquipment, id);
-		var queryText = "INSERT INTO \"asset_stasiun_equipment\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newAssetStasiunEquipment.id;
-		const res = await exec;
+	var id = await f.getid("asset_stasiun_equipment");
+	const hv = await f.headerValue(newAssetStasiunEquipment, id);
+	var queryText = "INSERT INTO \"asset_stasiun_equipment\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newAssetStasiunEquipment.id;
+	const res = await exec;
 
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newAssetStasiunEquipment });
+	result(null, { id: id, ...newAssetStasiunEquipment });
 };
 
 AssetStasiunEquipment.findById = async (id, result) => {

@@ -8,14 +8,14 @@ const UserAccess = function (useraccess) {
 };
 
 UserAccess.create = async(newUserAccess, result, cabang_id, user_id) => {
-		var id = await f.getid("user_access");
-		const hv = await f.headerValue(newUserAccess, id);
-		var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newUserAccess.id;
-		const res = await exec;
+	var id = await f.getid("user_access");
+	const hv = await f.headerValue(newUserAccess, id);
+	var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newUserAccess.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newUserAccess });
+	result(null, { id: id, ...newUserAccess });
 };
 
 UserAccess.findById = async (id, result) => {

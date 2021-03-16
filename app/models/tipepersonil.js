@@ -8,14 +8,14 @@ const TipePersonil = function (tipepersonil) {
 };
 
 TipePersonil.create = async(newTipePersonil, result, cabang_id, user_id) => {
-		var id = await f.getid("tipe_personil");
-		const hv = await f.headerValue(newTipePersonil, id);
-		var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newTipePersonil.id;
-		const res = await exec;
+	var id = await f.getid("tipe_personil");
+	const hv = await f.headerValue(newTipePersonil, id);
+	var queryText = "INSERT INTO \"tipe_personil\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newTipePersonil.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newTipePersonil });
+	result(null, { id: id, ...newTipePersonil });
 };
 
 TipePersonil.findById = async (id, result) => {

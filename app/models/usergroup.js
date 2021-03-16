@@ -9,36 +9,36 @@ const UserGroup = function (usergroup) {
 };
 
 UserGroup.create = async(newUserGroup, result, cabang_id, user_id) => {
-		const user_access = newUserGroup.user_access;
-		delete newUserGroup.user_access;
-		var id = await f.getid("user_group");
-		const hv = await f.headerValue(newUserGroup, id);
-		var queryText = "INSERT INTO \"user_group\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newUserGroup.id;
-		const res = await exec;
+	const user_access = newUserGroup.user_access;
+	delete newUserGroup.user_access;
+	var id = await f.getid("user_group");
+	const hv = await f.headerValue(newUserGroup, id);
+	var queryText = "INSERT INTO \"user_group\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newUserGroup.id;
+	const res = await exec;
 
-		for (var i in user_access) {
-		    const x = user_access[i];
-			x['user_group_id'] = res.insertId;
-		
-		    var header = "", value = "";
-		    for (var a in x) {
-		        const val = x[a];
-		        header += a + ", ";
-				if (a != "user_access") {
-				    value += "'" + val + "', ";
-				} else {
-				    var fileName = f.uploadFile64('user_group', val);
-				    value += "'" + fileName + "', ";
-				}
-		    }
-		    value = value.substring(0, value.length - 2);
-		    header = header.substring(0, header.length - 2);
-			f.query("INSERT INTO user_access (" + header + ") values (" + value + ")");
-		}
+	for (var i in user_access) {
+	    const x = user_access[i];
+		x['user_group_id'] = res.insertId;
+	
+	    var header = "", value = "";
+	    for (var a in x) {
+	        const val = x[a];
+	        header += a + ", ";
+			if (a != "user_access") {
+			    value += "'" + val + "', ";
+			} else {
+			    var fileName = f.uploadFile64('user_group', val);
+			    value += "'" + fileName + "', ";
+			}
+	    }
+	    value = value.substring(0, value.length - 2);
+	    header = header.substring(0, header.length - 2);
+		f.query("INSERT INTO user_access (" + header + ") values (" + value + ")");
+	}
 
-		result(null, { id: id, ...newUserGroup });
+	result(null, { id: id, ...newUserGroup });
 };
 
 UserGroup.findById = async (id, result) => {

@@ -14,14 +14,14 @@ const ActionSeq = function (actionseq) {
 };
 
 ActionSeq.create = async(newActionSeq, result, cabang_id, user_id) => {
-		var id = await f.getid("action_seq");
-		const hv = await f.headerValue(newActionSeq, id);
-		var queryText = "INSERT INTO \"action_seq\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newActionSeq.id;
-		const res = await exec;
+	var id = await f.getid("action_seq");
+	const hv = await f.headerValue(newActionSeq, id);
+	var queryText = "INSERT INTO \"action_seq\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newActionSeq.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newActionSeq });
+	result(null, { id: id, ...newActionSeq });
 };
 
 ActionSeq.findById = async (id, result) => {

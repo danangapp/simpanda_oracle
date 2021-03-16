@@ -50,25 +50,25 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 Personil.create = async(newPersonil, result, cabang_id, user_id) => {
-		const sertifikat = newPersonil.sertifikat;
-		delete newPersonil.sertifikat;
+	const sertifikat = newPersonil.sertifikat;
+	delete newPersonil.sertifikat;
 		newPersonil = setActivity(newPersonil);
-		var id = await f.getid("personil");
-		const hv = await f.headerValue(newPersonil, id);
-		var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newPersonil.id;
-		const res = await exec;
+	var id = await f.getid("personil");
+	const hv = await f.headerValue(newPersonil, id);
+	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPersonil.id;
+	const res = await exec;
 
-		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newPersonil });
+	result(null, { id: id, ...newPersonil });
 };
 
 Personil.findById = async (id, result) => {

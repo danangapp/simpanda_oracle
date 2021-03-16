@@ -27,26 +27,26 @@ const setActivity = (objects, koneksi = 1) => {
 
 PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id) => {
 		newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
-		var check = newPemeriksaanKapal.check;
-		delete newPemeriksaanKapal.check;
-		const res = f.query("INSERT INTO pemeriksaan_kapal SET ?", newPemeriksaanKapal);
-		for (var i in check) {
-		    const pemeriksaan_kapal_check_id = check[i].pemeriksaan_kapal_check_id;
-		    const kondisi_id = check[i].kondisi_id;
-		    const tanggal_awal = f.toDate(check[i].tanggal_awal);
-		    const tanggal_akhir = f.toDate(check[i].tanggal_akhir);
-		    const keterangan = check[i].keterangan;
-		    f.query("INSERT INTO pemeriksaan_kapal_check_data (pemeriksaan_kapal_check_id, kondisi_id, tanggal_awal, tanggal_akhir, keterangan, pemeriksaan_kapal_id) VALUES (" + pemeriksaan_kapal_check_id + ", " + kondisi_id + ", '" + tanggal_awal + "', '" + tanggal_akhir + "', '" + keterangan + "', '" + res.insertId + "')");
-		}
+	var check = newPemeriksaanKapal.check;
+	delete newPemeriksaanKapal.check;
+	const res = f.query("INSERT INTO pemeriksaan_kapal SET ?", newPemeriksaanKapal);
+	for (var i in check) {
+	    const pemeriksaan_kapal_check_id = check[i].pemeriksaan_kapal_check_id;
+	    const kondisi_id = check[i].kondisi_id;
+	    const tanggal_awal = f.toDate(check[i].tanggal_awal);
+	    const tanggal_akhir = f.toDate(check[i].tanggal_akhir);
+	    const keterangan = check[i].keterangan;
+	    f.query("INSERT INTO pemeriksaan_kapal_check_data (pemeriksaan_kapal_check_id, kondisi_id, tanggal_awal, tanggal_akhir, keterangan, pemeriksaan_kapal_id) VALUES (" + pemeriksaan_kapal_check_id + ", " + kondisi_id + ", '" + tanggal_awal + "', '" + tanggal_akhir + "', '" + keterangan + "', '" + res.insertId + "')");
+	}
 
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newPemeriksaanKapal });
+	result(null, { id: id, ...newPemeriksaanKapal });
 };
 
 PemeriksaanKapal.findById = async (id, result) => {

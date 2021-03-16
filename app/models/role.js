@@ -7,14 +7,14 @@ const Role = function (role) {
 };
 
 Role.create = async(newRole, result, cabang_id, user_id) => {
-		var id = await f.getid("role");
-		const hv = await f.headerValue(newRole, id);
-		var queryText = "INSERT INTO \"role\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newRole.id;
-		const res = await exec;
+	var id = await f.getid("role");
+	const hv = await f.headerValue(newRole, id);
+	var queryText = "INSERT INTO \"role\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newRole.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newRole });
+	result(null, { id: id, ...newRole });
 };
 
 Role.findById = async (id, result) => {

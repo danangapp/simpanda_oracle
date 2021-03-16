@@ -7,14 +7,14 @@ const StatusAbsen = function (statusabsen) {
 };
 
 StatusAbsen.create = async(newStatusAbsen, result, cabang_id, user_id) => {
-		var id = await f.getid("status_absen");
-		const hv = await f.headerValue(newStatusAbsen, id);
-		var queryText = "INSERT INTO \"status_absen\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newStatusAbsen.id;
-		const res = await exec;
+	var id = await f.getid("status_absen");
+	const hv = await f.headerValue(newStatusAbsen, id);
+	var queryText = "INSERT INTO \"status_absen\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newStatusAbsen.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newStatusAbsen });
+	result(null, { id: id, ...newStatusAbsen });
 };
 
 StatusAbsen.findById = async (id, result) => {

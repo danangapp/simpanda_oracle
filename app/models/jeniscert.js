@@ -8,14 +8,14 @@ const JenisCert = function (jeniscert) {
 };
 
 JenisCert.create = async(newJenisCert, result, cabang_id, user_id) => {
-		var id = await f.getid("jenis_cert");
-		const hv = await f.headerValue(newJenisCert, id);
-		var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newJenisCert.id;
-		const res = await exec;
+	var id = await f.getid("jenis_cert");
+	const hv = await f.headerValue(newJenisCert, id);
+	var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newJenisCert.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newJenisCert });
+	result(null, { id: id, ...newJenisCert });
 };
 
 JenisCert.findById = async (id, result) => {

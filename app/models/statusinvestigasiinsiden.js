@@ -7,14 +7,14 @@ const StatusInvestigasiInsiden = function (statusinvestigasiinsiden) {
 };
 
 StatusInvestigasiInsiden.create = async(newStatusInvestigasiInsiden, result, cabang_id, user_id) => {
-		var id = await f.getid("status_investigasi_insiden");
-		const hv = await f.headerValue(newStatusInvestigasiInsiden, id);
-		var queryText = "INSERT INTO \"status_investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newStatusInvestigasiInsiden.id;
-		const res = await exec;
+	var id = await f.getid("status_investigasi_insiden");
+	const hv = await f.headerValue(newStatusInvestigasiInsiden, id);
+	var queryText = "INSERT INTO \"status_investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newStatusInvestigasiInsiden.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newStatusInvestigasiInsiden });
+	result(null, { id: id, ...newStatusInvestigasiInsiden });
 };
 
 StatusInvestigasiInsiden.findById = async (id, result) => {

@@ -7,14 +7,14 @@ const ApprovalStatus = function (approvalstatus) {
 };
 
 ApprovalStatus.create = async(newApprovalStatus, result, cabang_id, user_id) => {
-		var id = await f.getid("approval_status");
-		const hv = await f.headerValue(newApprovalStatus, id);
-		var queryText = "INSERT INTO \"approval_status\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newApprovalStatus.id;
-		const res = await exec;
+	var id = await f.getid("approval_status");
+	const hv = await f.headerValue(newApprovalStatus, id);
+	var queryText = "INSERT INTO \"approval_status\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newApprovalStatus.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newApprovalStatus });
+	result(null, { id: id, ...newApprovalStatus });
 };
 
 ApprovalStatus.findById = async (id, result) => {

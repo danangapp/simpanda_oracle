@@ -26,17 +26,17 @@ const Sertifikat = function (sertifikat) {
 };
 
 Sertifikat.create = async(newSertifikat, result, cabang_id, user_id) => {
-		const sertifikat = newSertifikat.sertifikat;
-		delete newSertifikat.sertifikat;
-		var id = await f.getid("sertifikat");
-		const hv = await f.headerValue(newSertifikat, id);
-		var queryText = "INSERT INTO \"sertifikat\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newSertifikat.id;
-		const res = await exec;
+	const sertifikat = newSertifikat.sertifikat;
+	delete newSertifikat.sertifikat;
+	var id = await f.getid("sertifikat");
+	const hv = await f.headerValue(newSertifikat, id);
+	var queryText = "INSERT INTO \"sertifikat\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newSertifikat.id;
+	const res = await exec;
 
-		await f.executeSertifikat(sertifikat, id, "sertifikat", "sertifikat_id");
-		result(null, { id: id, ...newSertifikat });
+	await f.executeSertifikat(sertifikat, id, "sertifikat", "sertifikat_id");
+	result(null, { id: id, ...newSertifikat });
 };
 
 Sertifikat.findById = async (id, result) => {

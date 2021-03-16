@@ -7,14 +7,14 @@ const TipeSaranaPemanduKapal = function (tipesaranapemandukapal) {
 };
 
 TipeSaranaPemanduKapal.create = async(newTipeSaranaPemanduKapal, result, cabang_id, user_id) => {
-		var id = await f.getid("tipe_sarana_pemandu_kapal");
-		const hv = await f.headerValue(newTipeSaranaPemanduKapal, id);
-		var queryText = "INSERT INTO \"tipe_sarana_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newTipeSaranaPemanduKapal.id;
-		const res = await exec;
+	var id = await f.getid("tipe_sarana_pemandu_kapal");
+	const hv = await f.headerValue(newTipeSaranaPemanduKapal, id);
+	var queryText = "INSERT INTO \"tipe_sarana_pemandu_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newTipeSaranaPemanduKapal.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newTipeSaranaPemanduKapal });
+	result(null, { id: id, ...newTipeSaranaPemanduKapal });
 };
 
 TipeSaranaPemanduKapal.findById = async (id, result) => {

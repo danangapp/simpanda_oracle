@@ -11,14 +11,14 @@ const Authorization = function (authorization) {
 };
 
 Authorization.create = async(newAuthorization, result, cabang_id, user_id) => {
-		var id = await f.getid("authorization");
-		const hv = await f.headerValue(newAuthorization, id);
-		var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newAuthorization.id;
-		const res = await exec;
+	var id = await f.getid("authorization");
+	const hv = await f.headerValue(newAuthorization, id);
+	var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newAuthorization.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newAuthorization });
+	result(null, { id: id, ...newAuthorization });
 };
 
 Authorization.findById = async (id, result) => {

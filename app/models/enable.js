@@ -7,14 +7,14 @@ const Enable = function (enable) {
 };
 
 Enable.create = async(newEnable, result, cabang_id, user_id) => {
-		var id = await f.getid("enable");
-		const hv = await f.headerValue(newEnable, id);
-		var queryText = "INSERT INTO \"enable\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newEnable.id;
-		const res = await exec;
+	var id = await f.getid("enable");
+	const hv = await f.headerValue(newEnable, id);
+	var queryText = "INSERT INTO \"enable\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newEnable.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newEnable });
+	result(null, { id: id, ...newEnable });
 };
 
 Enable.findById = async (id, result) => {

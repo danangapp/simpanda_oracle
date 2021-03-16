@@ -72,25 +72,25 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 AssetKapal.create = async(newAssetKapal, result, cabang_id, user_id) => {
-		const sertifikat = newAssetKapal.sertifikat;
-		delete newAssetKapal.sertifikat;
+	const sertifikat = newAssetKapal.sertifikat;
+	delete newAssetKapal.sertifikat;
 		newAssetKapal = setActivity(newAssetKapal);
-		var id = await f.getid("asset_kapal");
-		const hv = await f.headerValue(newAssetKapal, id);
-		var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newAssetKapal.id;
-		const res = await exec;
+	var id = await f.getid("asset_kapal");
+	const hv = await f.headerValue(newAssetKapal, id);
+	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newAssetKapal.id;
+	const res = await exec;
 
-		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newAssetKapal });
+	result(null, { id: id, ...newAssetKapal });
 };
 
 AssetKapal.findById = async (id, result) => {

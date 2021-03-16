@@ -17,21 +17,21 @@ const ArmadaSchedule = function (armadaschedule) {
 ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
 	var armada_jaga = newArmadaSchedule.armada_jaga;
 	delete newArmadaSchedule.armada_jaga;
-		var id = await f.getid("armada_schedule");
-		const hv = await f.headerValue(newArmadaSchedule, id);
-		var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newArmadaSchedule.id;
-		const res = await exec;
+	var id = await f.getid("armada_schedule");
+	const hv = await f.headerValue(newArmadaSchedule, id);
+	var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newArmadaSchedule.id;
+	const res = await exec;
 
-		for (var a in armada_jaga) {
-			armada_jaga[a].armada_schedule_id = id;
-			var id_pj = await f.getid("armada_jaga");
-			var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
-			var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-			await f.query(queryText, 2);
-		}
-		result(null, { id: id, ...newArmadaSchedule });
+	for (var a in armada_jaga) {
+		armada_jaga[a].armada_schedule_id = id;
+		var id_pj = await f.getid("armada_jaga");
+		var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+	result(null, { id: id, ...newArmadaSchedule });
 };
 
 ArmadaSchedule.findById = async (id, result) => {

@@ -7,14 +7,14 @@ const Kondisi = function (kondisi) {
 };
 
 Kondisi.create = async(newKondisi, result, cabang_id, user_id) => {
-		var id = await f.getid("kondisi");
-		const hv = await f.headerValue(newKondisi, id);
-		var queryText = "INSERT INTO \"kondisi\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newKondisi.id;
-		const res = await exec;
+	var id = await f.getid("kondisi");
+	const hv = await f.headerValue(newKondisi, id);
+	var queryText = "INSERT INTO \"kondisi\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newKondisi.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newKondisi });
+	result(null, { id: id, ...newKondisi });
 };
 
 Kondisi.findById = async (id, result) => {

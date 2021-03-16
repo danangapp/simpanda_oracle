@@ -22,14 +22,14 @@ const MstKapalCabangBktKepil = function (mstkapalcabangbktkepil) {
 };
 
 MstKapalCabangBktKepil.create = async(newMstKapalCabangBktKepil, result, cabang_id, user_id) => {
-		var id = await f.getid("mst_kapal_cabang_bkt_kepil");
-		const hv = await f.headerValue(newMstKapalCabangBktKepil, id);
-		var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newMstKapalCabangBktKepil.id;
-		const res = await exec;
+	var id = await f.getid("mst_kapal_cabang_bkt_kepil");
+	const hv = await f.headerValue(newMstKapalCabangBktKepil, id);
+	var queryText = "INSERT INTO \"mst_kapal_cabang_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newMstKapalCabangBktKepil.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newMstKapalCabangBktKepil });
+	result(null, { id: id, ...newMstKapalCabangBktKepil });
 };
 
 MstKapalCabangBktKepil.findById = async (id, result) => {

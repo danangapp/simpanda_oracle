@@ -7,14 +7,14 @@ const TipeStasiun = function (tipestasiun) {
 };
 
 TipeStasiun.create = async(newTipeStasiun, result, cabang_id, user_id) => {
-		var id = await f.getid("tipe_stasiun");
-		const hv = await f.headerValue(newTipeStasiun, id);
-		var queryText = "INSERT INTO \"tipe_stasiun\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newTipeStasiun.id;
-		const res = await exec;
+	var id = await f.getid("tipe_stasiun");
+	const hv = await f.headerValue(newTipeStasiun, id);
+	var queryText = "INSERT INTO \"tipe_stasiun\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newTipeStasiun.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newTipeStasiun });
+	result(null, { id: id, ...newTipeStasiun });
 };
 
 TipeStasiun.findById = async (id, result) => {

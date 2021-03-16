@@ -12,14 +12,14 @@ const SaranaBantuPemanduPersonil = function (saranabantupemandupersonil) {
 };
 
 SaranaBantuPemanduPersonil.create = async(newSaranaBantuPemanduPersonil, result, cabang_id, user_id) => {
-		var id = await f.getid("sarana_bantu_pemandu_personil");
-		const hv = await f.headerValue(newSaranaBantuPemanduPersonil, id);
-		var queryText = "INSERT INTO \"sarana_bantu_pemandu_personil\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newSaranaBantuPemanduPersonil.id;
-		const res = await exec;
+	var id = await f.getid("sarana_bantu_pemandu_personil");
+	const hv = await f.headerValue(newSaranaBantuPemanduPersonil, id);
+	var queryText = "INSERT INTO \"sarana_bantu_pemandu_personil\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newSaranaBantuPemanduPersonil.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newSaranaBantuPemanduPersonil });
+	result(null, { id: id, ...newSaranaBantuPemanduPersonil });
 };
 
 SaranaBantuPemanduPersonil.findById = async (id, result) => {

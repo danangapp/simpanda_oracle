@@ -120,7 +120,11 @@ exports.update = (req, res) => {
 
 	req.fields.date = f.toDate(req.fields.date);
 	if (req.fields.ship_particular) {
-	    req.fields.ship_particular = f.uploadFile64('asset_kapal', req.fields.ship_particular);
+		if (req.fields.cv.substring(0, 4) == "data") {
+		    req.fields.ship_particular = f.uploadFile64('personil', req.fields.ship_particular);
+		} else {
+		    delete req.fields.ship_particular
+		}
 	}
 
 

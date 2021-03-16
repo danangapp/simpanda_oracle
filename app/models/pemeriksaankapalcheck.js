@@ -7,14 +7,14 @@ const PemeriksaanKapalCheck = function (pemeriksaankapalcheck) {
 };
 
 PemeriksaanKapalCheck.create = async(newPemeriksaanKapalCheck, result, cabang_id, user_id) => {
-		var id = await f.getid("pemeriksaan_kapal_check");
-		const hv = await f.headerValue(newPemeriksaanKapalCheck, id);
-		var queryText = "INSERT INTO \"pemeriksaan_kapal_check\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newPemeriksaanKapalCheck.id;
-		const res = await exec;
+	var id = await f.getid("pemeriksaan_kapal_check");
+	const hv = await f.headerValue(newPemeriksaanKapalCheck, id);
+	var queryText = "INSERT INTO \"pemeriksaan_kapal_check\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPemeriksaanKapalCheck.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newPemeriksaanKapalCheck });
+	result(null, { id: id, ...newPemeriksaanKapalCheck });
 };
 
 PemeriksaanKapalCheck.findById = async (id, result) => {

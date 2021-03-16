@@ -7,14 +7,14 @@ const DokumenKapal = function (dokumenkapal) {
 };
 
 DokumenKapal.create = async(newDokumenKapal, result, cabang_id, user_id) => {
-		var id = await f.getid("dokumen_kapal");
-		const hv = await f.headerValue(newDokumenKapal, id);
-		var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newDokumenKapal.id;
-		const res = await exec;
+	var id = await f.getid("dokumen_kapal");
+	const hv = await f.headerValue(newDokumenKapal, id);
+	var queryText = "INSERT INTO \"dokumen_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newDokumenKapal.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newDokumenKapal });
+	result(null, { id: id, ...newDokumenKapal });
 };
 
 DokumenKapal.findById = async (id, result) => {

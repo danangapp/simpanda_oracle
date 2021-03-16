@@ -33,30 +33,30 @@ PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
 	var pandu_jaga = newPanduSchedule.pandu_jaga;
 	delete newPanduSchedule.pandu_jaga;
 		newPanduSchedule = setActivity(newPanduSchedule);
-		var id = await f.getid("pandu_schedule");
-		const hv = await f.headerValue(newPanduSchedule, id);
-		var queryText = "INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newPanduSchedule.id;
-		const res = await exec;
+	var id = await f.getid("pandu_schedule");
+	const hv = await f.headerValue(newPanduSchedule, id);
+	var queryText = "INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPanduSchedule.id;
+	const res = await exec;
 
-		for (var a in pandu_jaga) {
-			pandu_jaga[a].pandu_schedule_id = id;
-			pandu_jaga[a].personil_id = pandu_jaga[a].id;
-			delete pandu_jaga[a].id;
-			var id_pj = await f.getid("pandu_jaga");
-			var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
-			var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
-			await f.query(queryText, 2);
-		}
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	for (var a in pandu_jaga) {
+		pandu_jaga[a].pandu_schedule_id = id;
+		pandu_jaga[a].personil_id = pandu_jaga[a].id;
+		delete pandu_jaga[a].id;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newPanduSchedule });
+	result(null, { id: id, ...newPanduSchedule });
 };
 
 PanduSchedule.findById = async (id, result) => {

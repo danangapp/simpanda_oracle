@@ -46,14 +46,14 @@ const MstBktTunda = function (mstbkttunda) {
 };
 
 MstBktTunda.create = async(newMstBktTunda, result, cabang_id, user_id) => {
-		var id = await f.getid("mst_bkt_tunda");
-		const hv = await f.headerValue(newMstBktTunda, id);
-		var queryText = "INSERT INTO \"mst_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newMstBktTunda.id;
-		const res = await exec;
+	var id = await f.getid("mst_bkt_tunda");
+	const hv = await f.headerValue(newMstBktTunda, id);
+	var queryText = "INSERT INTO \"mst_bkt_tunda\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newMstBktTunda.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newMstBktTunda });
+	result(null, { id: id, ...newMstBktTunda });
 };
 
 MstBktTunda.findById = async (id, result) => {

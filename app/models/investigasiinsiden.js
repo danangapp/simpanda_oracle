@@ -64,44 +64,44 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user_id) => {
-		const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
-		delete newInvestigasiInsiden.investigasi_insiden_tim;
+	const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
+	delete newInvestigasiInsiden.investigasi_insiden_tim;
 		newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
-		var id = await f.getid("investigasi_insiden");
-		const hv = await f.headerValue(newInvestigasiInsiden, id);
-		var queryText = "INSERT INTO \"investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newInvestigasiInsiden.id;
-		const res = await exec;
+	var id = await f.getid("investigasi_insiden");
+	const hv = await f.headerValue(newInvestigasiInsiden, id);
+	var queryText = "INSERT INTO \"investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newInvestigasiInsiden.id;
+	const res = await exec;
 
-		for (var i in investigasi_insiden_tim) {
-		    const x = investigasi_insiden_tim[i];
-			x['investigasi_insiden_id'] = res.insertId;
-		
-		    var header = "", value = "";
-		    for (var a in x) {
-		        const val = x[a];
-		        header += a + ", ";
-				if (a != "investigasi_insiden_tim") {
-				    value += "'" + val + "', ";
-				} else {
-				    var fileName = f.uploadFile64('investigasi_insiden', val);
-				    value += "'" + fileName + "', ";
-				}
-		    }
-		    value = value.substring(0, value.length - 2);
-		    header = header.substring(0, header.length - 2);
-			f.query("INSERT INTO investigasi_insiden_tim (" + header + ") values (" + value + ")");
-		}
+	for (var i in investigasi_insiden_tim) {
+	    const x = investigasi_insiden_tim[i];
+		x['investigasi_insiden_id'] = res.insertId;
+	
+	    var header = "", value = "";
+	    for (var a in x) {
+	        const val = x[a];
+	        header += a + ", ";
+			if (a != "investigasi_insiden_tim") {
+			    value += "'" + val + "', ";
+			} else {
+			    var fileName = f.uploadFile64('investigasi_insiden', val);
+			    value += "'" + fileName + "', ";
+			}
+	    }
+	    value = value.substring(0, value.length - 2);
+	    header = header.substring(0, header.length - 2);
+		f.query("INSERT INTO investigasi_insiden_tim (" + header + ") values (" + value + ")");
+	}
 
-		objek.koneksi = id;
-		objek.action = "0";
-		objek.user_id = user_id;
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
-		result(null, { id: id, ...newInvestigasiInsiden });
+	result(null, { id: id, ...newInvestigasiInsiden });
 };
 
 InvestigasiInsiden.findById = async (id, result) => {

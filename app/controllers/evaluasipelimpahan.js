@@ -95,11 +95,19 @@ exports.update = (req, res) => {
 
 	req.fields.tanggal_sk = f.toDate(req.fields.tanggal_sk);
 	if (req.fields.file_pendukung) {
-	    req.fields.file_pendukung = f.uploadFile64('evaluasi_pelimpahan', req.fields.file_pendukung);
+		if (req.fields.cv.substring(0, 4) == "data") {
+		    req.fields.file_pendukung = f.uploadFile64('personil', req.fields.file_pendukung);
+		} else {
+		    delete req.fields.file_pendukung
+		}
 	}
 
 	if (req.fields.file_sk_pelimpahan) {
-	    req.fields.file_sk_pelimpahan = f.uploadFile64('evaluasi_pelimpahan', req.fields.file_sk_pelimpahan);
+		if (req.fields.cv.substring(0, 4) == "data") {
+		    req.fields.file_sk_pelimpahan = f.uploadFile64('personil', req.fields.file_sk_pelimpahan);
+		} else {
+		    delete req.fields.file_sk_pelimpahan
+		}
 	}
 
 

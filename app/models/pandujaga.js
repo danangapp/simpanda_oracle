@@ -8,14 +8,14 @@ const PanduJaga = function (pandujaga) {
 };
 
 PanduJaga.create = async(newPanduJaga, result, cabang_id, user_id) => {
-		var id = await f.getid("pandu_jaga");
-		const hv = await f.headerValue(newPanduJaga, id);
-		var queryText = "INSERT INTO \"pandu_jaga\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newPanduJaga.id;
-		const res = await exec;
+	var id = await f.getid("pandu_jaga");
+	const hv = await f.headerValue(newPanduJaga, id);
+	var queryText = "INSERT INTO \"pandu_jaga\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newPanduJaga.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newPanduJaga });
+	result(null, { id: id, ...newPanduJaga });
 };
 
 PanduJaga.findById = async (id, result) => {

@@ -12,14 +12,14 @@ const ActivityLog = function (activitylog) {
 };
 
 ActivityLog.create = async(newActivityLog, result, cabang_id, user_id) => {
-		var id = await f.getid("activity_log");
-		const hv = await f.headerValue(newActivityLog, id);
-		var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newActivityLog.id;
-		const res = await exec;
+	var id = await f.getid("activity_log");
+	const hv = await f.headerValue(newActivityLog, id);
+	var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newActivityLog.id;
+	const res = await exec;
 
-		result(null, { id: id, ...newActivityLog });
+	result(null, { id: id, ...newActivityLog });
 };
 
 ActivityLog.findById = async (id, result) => {
