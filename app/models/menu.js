@@ -36,6 +36,7 @@ Menu.getAll = async (param, result, cabang_id) => {
 	}
 
 	query += wheres;
+	query += "ORDER BY a.\"id\" DESC";
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);

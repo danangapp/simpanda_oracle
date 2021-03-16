@@ -84,6 +84,7 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
+	query += "ORDER BY a.\"id\" DESC";
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
