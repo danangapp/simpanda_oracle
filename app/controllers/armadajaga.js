@@ -9,8 +9,8 @@ exports.create = (req, res) => {
     }
 
     var armadajaga = {
-        tipe_asset_id: req.fields.tipe_asset_id,
-        asset_kapal_id: req.fields.asset_kapal_id,
+        from: req.fields.from,
+        to: req.fields.to,
         armada_schedule_id: req.fields.armada_schedule_id,
     };
 

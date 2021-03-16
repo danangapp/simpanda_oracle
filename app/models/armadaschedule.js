@@ -3,54 +3,53 @@ var objek = new Object();
 
 // constructor
 const ArmadaSchedule = function (armadaschedule) {
-    this.date = armadaschedule.date;
-    this.cabang = armadaschedule.cabang;
-    this.tipe_asset_id = armadaschedule.tipe_asset_id;
-    this.asset_kapal_id = armadaschedule.asset_kapal_id;
-    this.status = armadaschedule.status;
-    this.jam_pengoperasian = armadaschedule.jam_pengoperasian;
-    this.reliability = armadaschedule.reliability;
-    this.keterangan = armadaschedule.keterangan;
-    this.armada_jaga_id = armadaschedule.armada_jaga_id;
+	this.date = armadaschedule.date;
+	this.cabang = armadaschedule.cabang;
+	this.tipe_asset_id = armadaschedule.tipe_asset_id;
+	this.asset_kapal_id = armadaschedule.asset_kapal_id;
+	this.status = armadaschedule.status;
+	this.jam_pengoperasian = armadaschedule.jam_pengoperasian;
+	this.reliability = armadaschedule.reliability;
+	this.keterangan = armadaschedule.keterangan;
+	this.armada_jaga_id = armadaschedule.armada_jaga_id;
 };
 
-ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
-	var pandu_jaga = newArmadaSchedule.armada_jaga;
+ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) => {
+	var armada_jaga = newArmadaSchedule.armada_jaga;
 	delete newArmadaSchedule.armada_jaga;
-		var id = await f.getid("armada_schedule");
-		const hv = await f.headerValue(newArmadaSchedule, id);
-		var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
-		const exec = f.query(queryText, 1);
-		delete newArmadaSchedule.id;
-		const res = await exec;
+	var id = await f.getid("armada_schedule");
+	const hv = await f.headerValue(newArmadaSchedule, id);
+	var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
+	const exec = f.query(queryText, 1);
+	delete newArmadaSchedule.id;
+	const res = await exec;
 
-		for (var a in armada_jaga) {
-			armada_jaga[a].pandu_schedule_id = id;
-			armada_jaga[a].personil_id = armada_jaga[a].id;
-			delete armada_jaga[a].id;
-			var id_pj = await f.getid("armada_jaga");
-			var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
-			var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-			await f.query(queryText, 2);
-		}
-		result(null, { id: id, ...newArmadaSchedule });
+	for (var a in armada_jaga) {
+		armada_jaga[a].armada_schedule_id = id;
+		var id_pj = await f.getid("armada_jaga");
+		var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+	result(null, { id: id, ...newArmadaSchedule });
 };
 
 ArmadaSchedule.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT * FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
-	var queryText = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"armada_jaga\" FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.*  , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"from\", a3.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 	const armada_jaga = { "armada_jaga": resQuery.rows }
+	let merge = { ...res.rows[0], ...armada_jaga }
 	result(null, merge);
 }
 
 ArmadaSchedule.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "armada_schedule");
-    var query = "SELECT a.* , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"nama\" as \"armada_jaga\" FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\" ";
+	var wheres = f.getParam(param, "armada_schedule");
+	var query = "SELECT a.*  , a1.\"nama\" as \"tipe_asset\", a2.\"nama_asset\" as \"asset_kapal\", a3.\"from\", a3.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\"  LEFT JOIN \"armada_jaga\" a3 ON a.\"armada_jaga_id\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -60,16 +59,13 @@ ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-ArmadaSchedule.updateById = async(id, armadaschedule, result, user_id) => {
-	var armada_jaga = armadaschedule.armada_jaga;
+ArmadaSchedule.updateById = async (id, armadaschedule, result, user_id) => {
+	var armada_jaga = armadaschedule.available;
 	delete armadaschedule.armada_jaga;
 
 	await f.query(`DELETE FROM "armada_jaga" WHERE "armada_schedule_id" = '${id}'`, 2);
 	for (var a in armada_jaga) {
 		armada_jaga[a].armada_schedule_id = id;
-		armada_jaga[a].personil_id = armada_jaga[a].id;
-		delete armada_jaga[a].id;
-		delete armada_jaga[a].nama;
 		var id_pj = await f.getid("armada_jaga");
 		var hv_pj = await f.headerValue(armada_jaga[a], id_pj);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
