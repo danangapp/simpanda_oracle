@@ -15,10 +15,8 @@ const ArmadaSchedule = function (armadaschedule) {
 };
 
 ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
-	var hadir = newArmadaSchedule.hadir;
-	var tidak_hadir = newArmadaSchedule.tidak_hadir;
-	delete newArmadaSchedule.hadir;
-	delete newArmadaSchedule.tidak_hadir;
+	var notAvailable = newArmadaSchedule.notAvailable;
+	delete newArmadaSchedule.notAvailable;
 	var id = await f.getid("armada_schedule");
 	const hv = await f.headerValue(newArmadaSchedule, id);
 	var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
@@ -26,20 +24,11 @@ ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => 
 	delete newArmadaSchedule.id;
 	const res = await exec;
 
-	for (var a in hadir) {
-		hadir[a].armada_schedule_id = id;
-		hadir[a].available = 1;
+	for (var a in notAvailable) {
+		notAvailable[a].armada_schedule_id = id;
+		notAvailable[a].available = 0;
 		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(hadir[a], id_pj);
-		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-		await f.query(queryText, 2);
-	}
-
-	for (var a in tidak_hadir) {
-		tidak_hadir[a].armada_schedule_id = id;
-		tidak_hadir[a].available = 0;
-		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(tidak_hadir[a], id_pj);
+		var hv_pj = await f.headerValue(notAvailable[a], id_pj);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}
@@ -74,26 +63,15 @@ ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 }
 
 ArmadaSchedule.updateById = async(id, armadaschedule, result, user_id) => {
-	var hadir = armadaschedule.hadir;
-	var tidak_hadir = armadaschedule.tidak_hadir;
-	delete armadaschedule.hadir;
-	delete armadaschedule.tidak_hadir;
+	var notAvailable = armadaschedule.notAvailable;
+	delete armadaschedule.notAvailable;
 
 	await f.query(`DELETE FROM "armada_jaga" WHERE "armada_schedule_id" = '${id}'`, 2);
-	for (var a in hadir) {
-		hadir[a].armada_schedule_id = id;
-		hadir[a].available = 1;
+	for (var a in notAvailable) {
+		notAvailable[a].armada_schedule_id = id;
+		notAvailable[a].available = 0;
 		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(hadir[a], id_pj);
-		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-		await f.query(queryText, 2);
-	}
-
-	for (var a in tidak_hadir) {
-		tidak_hadir[a].armada_schedule_id = id;
-		tidak_hadir[a].available = 0;
-		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(tidak_hadir[a], id_pj);
+		var hv_pj = await f.headerValue(notAvailable[a], id_pj);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}

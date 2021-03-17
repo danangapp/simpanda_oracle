@@ -18,8 +18,7 @@ exports.create = (req, res) => {
         reliability: req.fields.reliability,
         keterangan: req.fields.keterangan,
         armada_jaga_id: req.fields.armada_jaga_id,
-        hadir: req.fields.hadir,
-        tidak_hadir: req.fields.tidak_hadir,
+        notAvailable: req.fields.notAvailable,
     };
 
 	var used = {};
