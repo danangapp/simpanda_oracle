@@ -32,6 +32,9 @@ exports.create = (req, res) => {
         surat_kesehatan: req.fields.surat_kesehatan,
         sertifikat_id: req.fields.sertifikat_id,
         sertifikat: req.fields.sertifikat,
+        skpp_tanggal_mulai: f.toDate(req.fields.skpp_tanggal_mulai),
+        skpp_tanggal_selesai: f.toDate(req.fields.skpp_tanggal_selesai),
+        pandu_bandar_laut_id: req.fields.pandu_bandar_laut_id,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
@@ -111,6 +114,8 @@ exports.update = (req, res) => {
 	req.fields.tanggal_lahir = f.toDate(req.fields.tanggal_lahir);
 	req.fields.tanggal_mulai = f.toDate(req.fields.tanggal_mulai);
 	req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
+	req.fields.skpp_tanggal_mulai = f.toDate(req.fields.skpp_tanggal_mulai);
+	req.fields.skpp_tanggal_selesai = f.toDate(req.fields.skpp_tanggal_selesai);
 	req.fields.date = f.toDate(req.fields.date);
 	if (req.fields.cv) {
 		if (req.fields.cv.substring(0, 4) == "data") {
