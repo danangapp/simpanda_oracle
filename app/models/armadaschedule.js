@@ -40,8 +40,8 @@ ArmadaSchedule.findById = async (id, result) => {
 	var queryText = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\" , a3.\"nama_asset\" as \"asset_kapal\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-	const armada_jaga = { "available": resQuery.rows }
-	let merge = { ...res.rows[0], ...armada_jaga }	
+	const notAvailable = { "notAvailable": resQuery.rows }
+	let merge = { ...res.rows[0], ...notAvailable }	
 	result(null, merge);
 }
 
