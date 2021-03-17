@@ -102,6 +102,7 @@ require("./app/routes/dashboard")(app);
 require("./app/routes/download")(app);
 require("./app/routes/menu")(app);
 require("./app/routes/authorization")(app);
+require("./app/routes/pemilikkapal")(app);
 
 
 // set port, listen for requests
