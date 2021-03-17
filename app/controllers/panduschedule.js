@@ -23,8 +23,8 @@ exports.create = (req, res) => {
         user_id: req.fields.user_id,
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
-        available: req.fields.available,
-        notAvailable: req.fields.notAvailable,
+        hadir: req.fields.hadir,
+        tidak_hadir: req.fields.tidak_hadir,
     };
 
 	var used = {};
