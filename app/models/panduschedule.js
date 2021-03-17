@@ -30,8 +30,10 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
-	var pandu_jaga = newPanduSchedule.pandu_jaga;
-	delete newPanduSchedule.pandu_jaga;
+	var available = newPanduSchedule.available;
+	delete newPanduSchedule.available;
+	var notAvailable = newPanduSchedule.notAvailable;
+	delete newPanduSchedule.notAvailable;
 	var newPanduScheduleDate = newPanduSchedule.date;
 	newPanduSchedule = setActivity(newPanduSchedule);
 	newPanduSchedule.date = newPanduScheduleDate;	var id = await f.getid("pandu_schedule");
@@ -41,12 +43,20 @@ PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
 	delete newPanduSchedule.id;
 	const res = await exec;
 
-	for (var a in pandu_jaga) {
-		pandu_jaga[a].pandu_schedule_id = id;
-		pandu_jaga[a].personil_id = pandu_jaga[a].id;
-		delete pandu_jaga[a].id;
+	for (var a in available) {
+		available[a].pandu_schedule_id = id;
+		available[a].available = 1;
 		var id_pj = await f.getid("pandu_jaga");
-		var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
+		var hv_pj = await f.headerValue(available[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+
+	for (var a in notAvailable) {
+		notAvailable[a].pandu_schedule_id = id;
+		notAvailable[a].available = 0;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(notAvailable[a], id_pj);
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}
@@ -101,6 +111,29 @@ PanduSchedule.updateById = async(id, panduschedule, result, user_id) => {
 		delete pandu_jaga[a].nama;
 		var id_pj = await f.getid("pandu_jaga");
 		var hv_pj = await f.headerValue(pandu_jaga[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+	var available = panduschedule.available;
+	var notAvailable = panduschedule.notAvailable;
+	delete panduschedule.available;
+	delete panduschedule.notAvailable;
+
+	await f.query(`DELETE FROM "pandu_jaga" WHERE "pandu_schedule_id" = '${id}'`, 2);
+	for (var a in available) {
+		available[a].pandu_schedule_id = id;
+		available[a].available = 1;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(available[a], id_pj);
+		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+
+	for (var a in notAvailable) {
+		notAvailable[a].pandu_schedule_id = id;
+		notAvailable[a].available = 0;
+		var id_pj = await f.getid("pandu_jaga");
+		var hv_pj = await f.headerValue(notAvailable[a], id_pj);
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}

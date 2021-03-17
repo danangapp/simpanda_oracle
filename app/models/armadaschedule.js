@@ -41,7 +41,8 @@ ArmadaSchedule.findById = async (id, result) => {
 	const exec = f.query(queryText);
 	const res = await exec;
 	const notAvailable = { "notAvailable": resQuery.rows }
-	let merge = { ...res.rows[0], ...notAvailable }	
+	const available = { "available": resQuery.rows }
+	let merge = { ...res.rows[0], ...available, ...notAvailable }	
 	result(null, merge);
 }
 
