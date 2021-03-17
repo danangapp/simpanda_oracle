@@ -103,6 +103,7 @@ require("./app/routes/download")(app);
 require("./app/routes/menu")(app);
 require("./app/routes/authorization")(app);
 require("./app/routes/pemilikkapal")(app);
+require("./app/routes/kepemilikankapal")(app);
 
 
 // set port, listen for requests
