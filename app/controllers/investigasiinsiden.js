@@ -120,7 +120,7 @@ exports.update = (req, res) => {
 	req.fields.reviewed_tanggal = f.toDate(req.fields.reviewed_tanggal);
 	req.fields.approved_tanggal = f.toDate(req.fields.approved_tanggal);
 	if (req.fields.bukti_temuan) {
-		if (req.fields.cv.substring(0, 4) == "data") {
+		if (req.fields.bukti_temuan.substring(0, 4) == "data") {
 		    req.fields.bukti_temuan = f.uploadFile64('personil', req.fields.bukti_temuan);
 		} else {
 		    delete req.fields.bukti_temuan

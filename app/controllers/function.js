@@ -194,11 +194,11 @@ module.exports = {
             }
         } else if (db === "armada_jaga") {
             if (i == "cabang_id") {
-                column = `a2."cabang_id"`;
+                column = `a1."cabang_id"`;
             }
 
             if (i == "date") {
-                column = `a3."date"`;
+                column = `a1."date"`;
                 adaTgl = 1;
             }
         }
