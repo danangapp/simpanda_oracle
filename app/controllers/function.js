@@ -84,6 +84,12 @@ module.exports = {
         const myHash = sjcl.codec.hex.fromBits(myBitArray)
         return myHash;
     },
+    commitToFalse: function () {
+        oracledb.autoCommit = false
+    },
+    commitToTrue: function () {
+        oracledb.autoCommit = true
+    },
     query: async function (query, insert = 0) {
         let connection;
         try {

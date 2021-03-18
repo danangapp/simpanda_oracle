@@ -3,75 +3,75 @@ var objek = new Object();
 
 // constructor
 const AssetKapal = function (assetkapal) {
-    this.cabang_id = assetkapal.cabang_id;
-    this.simop_kd_fas = assetkapal.simop_kd_fas;
-    this.kepemilikan_kapal_id = assetkapal.kepemilikan_kapal_id;
-    this.simop_status_milik = assetkapal.simop_status_milik;
-    this.simop_kd_agen = assetkapal.simop_kd_agen;
-    this.tipe_asset_id = assetkapal.tipe_asset_id;
-    this.nama_asset = assetkapal.nama_asset;
-    this.horse_power = assetkapal.horse_power;
-    this.tahun_perolehan = assetkapal.tahun_perolehan;
-    this.nilai_perolehan = assetkapal.nilai_perolehan;
-    this.enable = assetkapal.enable;
-    this.asset_number = assetkapal.asset_number;
-    this.simop_kd_puspel_jai = assetkapal.simop_kd_puspel_jai;
-    this.simop_new_puspel_jai = assetkapal.simop_new_puspel_jai;
-    this.simop_new_asset_jai = assetkapal.simop_new_asset_jai;
-    this.approval_status_id = assetkapal.approval_status_id;
-    this.loa = assetkapal.loa;
-    this.tahun_pembuatan = assetkapal.tahun_pembuatan;
-    this.breadth = assetkapal.breadth;
-    this.kontruksi = assetkapal.kontruksi;
-    this.depth = assetkapal.depth;
-    this.negara_pembuat = assetkapal.negara_pembuat;
-    this.draft_max = assetkapal.draft_max;
-    this.daya = assetkapal.daya;
-    this.putaran = assetkapal.putaran;
-    this.merk = assetkapal.merk;
-    this.tipe = assetkapal.tipe;
-    this.daya_motor = assetkapal.daya_motor;
-    this.daya_generator = assetkapal.daya_generator;
-    this.putaran_spesifikasi = assetkapal.putaran_spesifikasi;
-    this.merk_spesifikasi = assetkapal.merk_spesifikasi;
-    this.tipe_spesifikasi = assetkapal.tipe_spesifikasi;
-    this.klas = assetkapal.klas;
-    this.notasi_permesinan = assetkapal.notasi_permesinan;
-    this.no_registrasi = assetkapal.no_registrasi;
-    this.notasi_perlengkapan = assetkapal.notasi_perlengkapan;
-    this.port_of_registration = assetkapal.port_of_registration;
-    this.notasi_perairan = assetkapal.notasi_perairan;
-    this.notasi_lambung = assetkapal.notasi_lambung;
-    this.gross_tonnage = assetkapal.gross_tonnage;
-    this.bolard_pull = assetkapal.bolard_pull;
-    this.kecepatan = assetkapal.kecepatan;
-    this.ship_particular = assetkapal.ship_particular;
-    this.sertifikat = assetkapal.sertifikat;
-    this.date = assetkapal.date;
-    this.item = assetkapal.item;
-    this.action = assetkapal.action;
-    this.user_id = assetkapal.user_id;
-    this.remark = assetkapal.remark;
-    this.koneksi = assetkapal.koneksi;
+	this.cabang_id = assetkapal.cabang_id;
+	this.simop_kd_fas = assetkapal.simop_kd_fas;
+	this.kepemilikan_kapal_id = assetkapal.kepemilikan_kapal_id;
+	this.simop_status_milik = assetkapal.simop_status_milik;
+	this.simop_kd_agen = assetkapal.simop_kd_agen;
+	this.tipe_asset_id = assetkapal.tipe_asset_id;
+	this.nama_asset = assetkapal.nama_asset;
+	this.horse_power = assetkapal.horse_power;
+	this.tahun_perolehan = assetkapal.tahun_perolehan;
+	this.nilai_perolehan = assetkapal.nilai_perolehan;
+	this.enable = assetkapal.enable;
+	this.asset_number = assetkapal.asset_number;
+	this.simop_kd_puspel_jai = assetkapal.simop_kd_puspel_jai;
+	this.simop_new_puspel_jai = assetkapal.simop_new_puspel_jai;
+	this.simop_new_asset_jai = assetkapal.simop_new_asset_jai;
+	this.approval_status_id = assetkapal.approval_status_id;
+	this.loa = assetkapal.loa;
+	this.tahun_pembuatan = assetkapal.tahun_pembuatan;
+	this.breadth = assetkapal.breadth;
+	this.kontruksi = assetkapal.kontruksi;
+	this.depth = assetkapal.depth;
+	this.negara_pembuat = assetkapal.negara_pembuat;
+	this.draft_max = assetkapal.draft_max;
+	this.daya = assetkapal.daya;
+	this.putaran = assetkapal.putaran;
+	this.merk = assetkapal.merk;
+	this.tipe = assetkapal.tipe;
+	this.daya_motor = assetkapal.daya_motor;
+	this.daya_generator = assetkapal.daya_generator;
+	this.putaran_spesifikasi = assetkapal.putaran_spesifikasi;
+	this.merk_spesifikasi = assetkapal.merk_spesifikasi;
+	this.tipe_spesifikasi = assetkapal.tipe_spesifikasi;
+	this.klas = assetkapal.klas;
+	this.notasi_permesinan = assetkapal.notasi_permesinan;
+	this.no_registrasi = assetkapal.no_registrasi;
+	this.notasi_perlengkapan = assetkapal.notasi_perlengkapan;
+	this.port_of_registration = assetkapal.port_of_registration;
+	this.notasi_perairan = assetkapal.notasi_perairan;
+	this.notasi_lambung = assetkapal.notasi_lambung;
+	this.gross_tonnage = assetkapal.gross_tonnage;
+	this.bolard_pull = assetkapal.bolard_pull;
+	this.kecepatan = assetkapal.kecepatan;
+	this.ship_particular = assetkapal.ship_particular;
+	this.sertifikat = assetkapal.sertifikat;
+	this.date = assetkapal.date;
+	this.item = assetkapal.item;
+	this.action = assetkapal.action;
+	this.user_id = assetkapal.user_id;
+	this.remark = assetkapal.remark;
+	this.koneksi = assetkapal.koneksi;
 };
 
 const setActivity = (objects, koneksi = 1) => {
-		objek.date = f.toDate(objects.date);
-		objek.item = 'assetkapal';
-		objek.action = objects.approval_status_id;
-		objek.user_id = objects.user_id;
-		objek.remark = objects.remark;
-		objek.koneksi = koneksi;
-		delete objects.date;
-		delete objects.item;
-		delete objects.action;
-		delete objects.user_id;
-		delete objects.remark;
-		delete objects.koneksi;
-		return objects
+	objek.date = f.toDate(objects.date);
+	objek.item = 'assetkapal';
+	objek.action = objects.approval_status_id;
+	objek.user_id = objects.user_id;
+	objek.remark = objects.remark;
+	objek.koneksi = koneksi;
+	delete objects.date;
+	delete objects.item;
+	delete objects.action;
+	delete objects.user_id;
+	delete objects.remark;
+	delete objects.koneksi;
+	return objects
 };
 
-AssetKapal.create = async(newAssetKapal, result, cabang_id, user_id) => {
+AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	const sertifikat = newAssetKapal.sertifikat;
 	delete newAssetKapal.sertifikat;
 	newAssetKapal = setActivity(newAssetKapal);
@@ -101,29 +101,30 @@ AssetKapal.findById = async (id, result) => {
 	const res = await exec;
 	const sertifikat = { "sertifikat": resQuery.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
-	let merge = { ...res.rows[0], ...sertifikat, ...activityLog }	
+	let merge = { ...res.rows[0], ...sertifikat, ...activityLog }
 	result(null, merge);
 }
 
 AssetKapal.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "asset_kapal");
+	var wheres = f.getParam(param, "asset_kapal");
 	wheres = wheres.replace(`a."flag"`, `a2."flag"`);
-    var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"kepemilikan_kapal\", a3.\"flag\" as \"tipe_asset\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"approval_status\" , a3.\"nama\" as \"jenis_asset\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"kepemilikan_kapal\" a2 ON a.\"kepemilikan_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"approval_status\" a5 ON a.\"approval_status_id\" = a5.\"id\" ";
+	var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"kepemilikan_kapal\", a3.\"flag\" as \"tipe_asset\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"approval_status\" , a3.\"nama\" as \"jenis_asset\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"kepemilikan_kapal\" a2 ON a.\"kepemilikan_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"approval_status\" a5 ON a.\"approval_status_id\" = a5.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"simop_kd_fas\" LIKE '%" + param.q + "%' OR a.\"kepemilikan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"simop_status_milik\" LIKE '%" + param.q + "%' OR a.\"simop_kd_agen\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"nama_asset\" LIKE '%" + param.q + "%' OR a.\"horse_power\" LIKE '%" + param.q + "%' OR a.\"tahun_perolehan\" LIKE '%" + param.q + "%' OR a.\"nilai_perolehan\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_number\" LIKE '%" + param.q + "%' OR a.\"simop_kd_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_asset_jai\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"loa\" LIKE '%" + param.q + "%' OR a.\"tahun_pembuatan\" LIKE '%" + param.q + "%' OR a.\"breadth\" LIKE '%" + param.q + "%' OR a.\"kontruksi\" LIKE '%" + param.q + "%' OR a.\"depth\" LIKE '%" + param.q + "%' OR a.\"negara_pembuat\" LIKE '%" + param.q + "%' OR a.\"draft_max\" LIKE '%" + param.q + "%' OR a.\"daya\" LIKE '%" + param.q + "%' OR a.\"putaran\" LIKE '%" + param.q + "%' OR a.\"merk\" LIKE '%" + param.q + "%' OR a.\"tipe\" LIKE '%" + param.q + "%' OR a.\"daya_motor\" LIKE '%" + param.q + "%' OR a.\"daya_generator\" LIKE '%" + param.q + "%' OR a.\"putaran_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"merk_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"tipe_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"klas\" LIKE '%" + param.q + "%' OR a.\"notasi_permesinan\" LIKE '%" + param.q + "%' OR a.\"no_registrasi\" LIKE '%" + param.q + "%' OR a.\"notasi_perlengkapan\" LIKE '%" + param.q + "%' OR a.\"port_of_registration\" LIKE '%" + param.q + "%' OR a.\"notasi_perairan\" LIKE '%" + param.q + "%' OR a.\"notasi_lambung\" LIKE '%" + param.q + "%' OR a.\"gross_tonnage\" LIKE '%" + param.q + "%' OR a.\"bolard_pull\" LIKE '%" + param.q + "%' OR a.\"kecepatan\" LIKE '%" + param.q + "%' OR a.\"ship_particular\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"simop_kd_fas\" LIKE '%" + param.q + "%' OR a.\"kepemilikan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"simop_status_milik\" LIKE '%" + param.q + "%' OR a.\"simop_kd_agen\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"nama_asset\" LIKE '%" + param.q + "%' OR a.\"horse_power\" LIKE '%" + param.q + "%' OR a.\"tahun_perolehan\" LIKE '%" + param.q + "%' OR a.\"nilai_perolehan\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_number\" LIKE '%" + param.q + "%' OR a.\"simop_kd_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_asset_jai\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"loa\" LIKE '%" + param.q + "%' OR a.\"tahun_pembuatan\" LIKE '%" + param.q + "%' OR a.\"breadth\" LIKE '%" + param.q + "%' OR a.\"kontruksi\" LIKE '%" + param.q + "%' OR a.\"depth\" LIKE '%" + param.q + "%' OR a.\"negara_pembuat\" LIKE '%" + param.q + "%' OR a.\"draft_max\" LIKE '%" + param.q + "%' OR a.\"daya\" LIKE '%" + param.q + "%' OR a.\"putaran\" LIKE '%" + param.q + "%' OR a.\"merk\" LIKE '%" + param.q + "%' OR a.\"tipe\" LIKE '%" + param.q + "%' OR a.\"daya_motor\" LIKE '%" + param.q + "%' OR a.\"daya_generator\" LIKE '%" + param.q + "%' OR a.\"putaran_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"merk_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"tipe_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"klas\" LIKE '%" + param.q + "%' OR a.\"notasi_permesinan\" LIKE '%" + param.q + "%' OR a.\"no_registrasi\" LIKE '%" + param.q + "%' OR a.\"notasi_perlengkapan\" LIKE '%" + param.q + "%' OR a.\"port_of_registration\" LIKE '%" + param.q + "%' OR a.\"notasi_perairan\" LIKE '%" + param.q + "%' OR a.\"notasi_lambung\" LIKE '%" + param.q + "%' OR a.\"gross_tonnage\" LIKE '%" + param.q + "%' OR a.\"bolard_pull\" LIKE '%" + param.q + "%' OR a.\"kecepatan\" LIKE '%" + param.q + "%' OR a.\"ship_particular\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
+	console.log(query);
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
 }
 
-AssetKapal.updateById = async(id, assetkapal, result, user_id) => {
+AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	const sertifikat = assetkapal.sertifikat;
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");

@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 // const fs = require('fs');
 // var XlsxTemplate = require('xlsx-template');
 const formidableMiddleware = require('express-formidable');
@@ -113,6 +114,36 @@ app.listen(PORT, () => {
 });
 
 
+// axios.post("http://10.88.48.57:5555/restv2/simpanda/insertPandu/cabang",
+//   {
+//     "opInsertMstPersPanduCabangRequest": {
+//       "esbBody": {
+//         "nmPersPandu": "Test Danang",
+//         "nipp": "23456",
+//         "kelas": "12",
+//         "kdCabang": "15",
+//         "enable": "0",
+//         "kdPersPanduCbg": ""
+//       }
+//     }
+//   },
+//   {
+//     auth: {
+//       username: 'vms_user',
+//       password: 'vms_user'
+//     }
+//   }
+// ).then((response) => {
+//   const data = response.data.opInsertMstPersPanduCabangResponse.esbBody;
+//   if (response.data.opInsertMstPersPanduCabangResponse.esbBody) {
+//     console.log(data);
+//   } else {
+//     console.log('nothing');
+//   }
+// }, (error) => {
+//   console.log(error);
+// });
+
 // var res = f.query(`SELECT NVL(max("id"), 0) as "id" FROM "cabang"`, 1);
 // res.then((a) => {
 //   console.log(a.rows[0][0]);
@@ -126,30 +157,6 @@ app.listen(PORT, () => {
 //   console.log(a.rows);
 // })
 
-
-// console.log(select);
-// var oracledb = require('oracledb');
-// const dbConfig = require('./app/config/dbconfig');
-// async function run() {
-//   let connection;
-//   try {
-//     connection = await oracledb.getConnection(dbConfig);
-//     const result = await connection.execute(`SELECT * FROM "cabang"`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-//     console.log(result.rows);
-//   } catch (err) {
-//     console.error(err);
-//   } finally {
-//     if (connection) {
-//       try {
-//         await connection.close();
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     }
-//   }
-// }
-
-// run();
 
 
 // fs.readFile('d:/danang.xlsx', function (err, data) {
