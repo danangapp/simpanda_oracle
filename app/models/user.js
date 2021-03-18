@@ -80,8 +80,8 @@ User.login = async (req, result) => {
 		const timeExpired = f.toDate(new Date().addHours(1), "YYYY/MM/DD HH:mm:ss");
 		obj.expired = timeExpired;
 
-		var id = await f.getid("authorization");
-		const hv = await f.headerValue(obj, id);
+		// var id = await f.getid("authorization");
+		const hv = await f.headerValue(obj);
 		// await f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
 		await f.query(`INSERT INTO "authorization" ${hv}`, 2);
 

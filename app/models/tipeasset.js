@@ -10,12 +10,12 @@ const TipeAsset = function (tipeasset) {
 };
 
 TipeAsset.create = async(newTipeAsset, result, cabang_id, user_id) => {
-	var id = await f.getid("tipe_asset");
-	const hv = await f.headerValue(newTipeAsset, id);
+	const hv = await f.headerValue(newTipeAsset);
 	var queryText = "INSERT INTO \"tipe_asset\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newTipeAsset.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newTipeAsset });
 };
@@ -47,13 +47,12 @@ TipeAsset.updateById = async(id, tipeasset, result, user_id) => {
 
 	var arr = ["nama", "type", "sarana_config_question", "flag"];
 	var str = f.getValueUpdate(tipeasset, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = tipeasset.approval_status_id;
 	objek.item = "tipeasset";
 	objek.remark = tipeasset.activityLog ? tipeasset.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"tipe_asset\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...tipeasset });

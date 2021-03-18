@@ -8,12 +8,12 @@ const UserAccess = function (useraccess) {
 };
 
 UserAccess.create = async(newUserAccess, result, cabang_id, user_id) => {
-	var id = await f.getid("user_access");
-	const hv = await f.headerValue(newUserAccess, id);
+	const hv = await f.headerValue(newUserAccess);
 	var queryText = "INSERT INTO \"user_access\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newUserAccess.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newUserAccess });
 };
@@ -45,13 +45,12 @@ UserAccess.updateById = async(id, useraccess, result, user_id) => {
 
 	var arr = ["user_group_id", "menu_id"];
 	var str = f.getValueUpdate(useraccess, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = useraccess.approval_status_id;
 	objek.item = "useraccess";
 	objek.remark = useraccess.activityLog ? useraccess.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"user_access\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...useraccess });

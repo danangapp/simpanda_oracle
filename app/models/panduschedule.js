@@ -33,19 +33,18 @@ PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
 	var personil = newPanduSchedule.personil;
 	delete newPanduSchedule.personil;
 	var newPanduScheduleDate = newPanduSchedule.date;
-	newPanduSchedule.date = newPanduScheduleDate;
 	newPanduSchedule = setActivity(newPanduSchedule);
-	var id = await f.getid("pandu_schedule");
-	const hv = await f.headerValue(newPanduSchedule, id);
+	newPanduSchedule.date = newPanduScheduleDate;
+	const hv = await f.headerValue(newPanduSchedule);
 	var queryText = "INSERT INTO \"pandu_schedule\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPanduSchedule.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	for (var a in personil) {
 		personil[a].pandu_schedule_id = id;
-		var id_pj = await f.getid("pandu_jaga");
-		var hv_pj = await f.headerValue(personil[a], id_pj);
+		var hv_pj = await f.headerValue(personil[a]);
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}
@@ -53,15 +52,14 @@ PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newPanduSchedule });
 };
 
 PanduSchedule.findById = async (id, result) => {
-	const resPersonil = await f.query("SELECT a.\"id\", a.\"from\", a.\"to\", a.\"keterangan\" FROM \"pandu_jaga\" a WHERE a.\"pandu_schedule_id\" = '" + id + "'");
+	const resPersonil = await f.query("SELECT a.\"id\", a.\"personil_id\", a.\"from\", a.\"to\", a.\"kehadiran\", a.\"keterangan\" FROM \"pandu_jaga\" a WHERE a.\"pandu_schedule_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pandu_schedule\" b ON a.\"item\" = 'pandu_schedule' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"status_absen\", a3.\"nama\" as \"approval_status\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"pandu_bandar_laut\" FROM \"pandu_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"status_absen\" a2 ON a.\"status_absen_id\" = a2.\"id\"  LEFT JOIN \"approval_status\" a3 ON a.\"approval_status_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a5 ON a.\"pandu_bandar_laut_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
@@ -95,8 +93,7 @@ PanduSchedule.updateById = async(id, panduschedule, result, user_id) => {
 	await f.query(`DELETE FROM "pandu_jaga" WHERE "pandu_schedule_id" = '${id}'`, 2);
 	for (var a in personil) {
 		personil[a].pandu_schedule_id = id;
-		var id_pj = await f.getid("pandu_jaga");
-		var hv_pj = await f.headerValue(personil[a], id_pj);
+		var hv_pj = await f.headerValue(personil[a]);
 		var queryText = "INSERT INTO \"pandu_jaga\" " + hv_pj;
 		await f.query(queryText, 2);
 	}
@@ -104,13 +101,12 @@ PanduSchedule.updateById = async(id, panduschedule, result, user_id) => {
 
 	var arr = ["date", "cabang_id", "status_absen_id", "keterangan", "approval_status_id", "enable", "pandu_jaga_id", "pandu_bandar_laut_id"];
 	var str = f.getValueUpdate(panduschedule, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = panduschedule.approval_status_id;
 	objek.item = "panduschedule";
 	objek.remark = panduschedule.activityLog ? panduschedule.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pandu_schedule\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...panduschedule });

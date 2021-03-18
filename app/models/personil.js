@@ -56,19 +56,18 @@ Personil.create = async(newPersonil, result, cabang_id, user_id) => {
 	const sertifikat = newPersonil.sertifikat;
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
-	var id = await f.getid("personil");
-	const hv = await f.headerValue(newPersonil, id);
+	const hv = await f.headerValue(newPersonil);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPersonil.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newPersonil });
@@ -114,13 +113,12 @@ Personil.updateById = async(id, personil, result, user_id) => {
 
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id"];
 	var str = f.getValueUpdate(personil, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = personil.approval_status_id;
 	objek.item = "personil";
 	objek.remark = personil.activityLog ? personil.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...personil });

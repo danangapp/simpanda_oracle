@@ -11,12 +11,12 @@ const Authorization = function (authorization) {
 };
 
 Authorization.create = async(newAuthorization, result, cabang_id, user_id) => {
-	var id = await f.getid("authorization");
-	const hv = await f.headerValue(newAuthorization, id);
+	const hv = await f.headerValue(newAuthorization);
 	var queryText = "INSERT INTO \"authorization\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newAuthorization.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newAuthorization });
 };
@@ -49,13 +49,12 @@ Authorization.updateById = async(id, authorization, result, user_id) => {
 
 	var arr = ["user_id", "accessToken", "refreshToken", "expired", "cabang_id"];
 	var str = f.getValueUpdate(authorization, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = authorization.approval_status_id;
 	objek.item = "authorization";
 	objek.remark = authorization.activityLog ? authorization.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"authorization\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...authorization });

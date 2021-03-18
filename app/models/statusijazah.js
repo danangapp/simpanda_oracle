@@ -7,12 +7,12 @@ const StatusIjazah = function (statusijazah) {
 };
 
 StatusIjazah.create = async(newStatusIjazah, result, cabang_id, user_id) => {
-	var id = await f.getid("status_ijazah");
-	const hv = await f.headerValue(newStatusIjazah, id);
+	const hv = await f.headerValue(newStatusIjazah);
 	var queryText = "INSERT INTO \"status_ijazah\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newStatusIjazah.id;
 	const res = await exec;
+	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newStatusIjazah });
 };
@@ -44,13 +44,12 @@ StatusIjazah.updateById = async(id, statusijazah, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusijazah, id, arr);
-	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = statusijazah.approval_status_id;
 	objek.item = "statusijazah";
 	objek.remark = statusijazah.activityLog ? statusijazah.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek, id_activity_log);
+	const hval = await f.headerValue(objek);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"status_ijazah\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...statusijazah });
