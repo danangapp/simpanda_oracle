@@ -15,8 +15,10 @@ const ArmadaSchedule = function (armadaschedule) {
 };
 
 ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
+	var newArmadaScheduleDate = newArmadaSchedule.date;
 	var armada = newArmadaSchedule.armada;
 	delete newArmadaSchedule.armada;
+	newArmadaSchedule.date = newArmadaScheduleDate;
 	const hv = await f.headerValue(newArmadaSchedule);
 	var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
