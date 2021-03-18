@@ -7,12 +7,12 @@ const ApprovalStatus = function (approvalstatus) {
 };
 
 ApprovalStatus.create = async(newApprovalStatus, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newApprovalStatus);
+	var id = await f.getid("approval_status");
+	const hv = await f.headerValue(newApprovalStatus, id);
 	var queryText = "INSERT INTO \"approval_status\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newApprovalStatus.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newApprovalStatus });
 };
@@ -44,12 +44,13 @@ ApprovalStatus.updateById = async(id, approvalstatus, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(approvalstatus, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = approvalstatus.approval_status_id;
 	objek.item = "approvalstatus";
 	objek.remark = approvalstatus.activityLog ? approvalstatus.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"approval_status\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...approvalstatus });

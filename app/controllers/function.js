@@ -123,7 +123,7 @@ module.exports = {
     },
     headerValue: async function (object, id = 1) {
         var header = "", value = "";
-        // object.id = id;
+        object.id = id;
         for (var a in object) {
             const val = object[a];
             if (val != undefined) {
@@ -279,7 +279,7 @@ module.exports = {
         var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id", "id"]
         for (var i in sertifikat) {
             const x = sertifikat[i];
-            // x.id = await this.getid("sertifikat");
+            x.id = await this.getid("sertifikat");
             x[dbId] = id;
 
             var header = "", value = "";

@@ -7,12 +7,12 @@ const KepemilikanKapal = function (kepemilikankapal) {
 };
 
 KepemilikanKapal.create = async(newKepemilikanKapal, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newKepemilikanKapal);
+	var id = await f.getid("kepemilikan_kapal");
+	const hv = await f.headerValue(newKepemilikanKapal, id);
 	var queryText = "INSERT INTO \"kepemilikan_kapal\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newKepemilikanKapal.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newKepemilikanKapal });
 };
@@ -44,12 +44,13 @@ KepemilikanKapal.updateById = async(id, kepemilikankapal, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kepemilikankapal, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = kepemilikankapal.approval_status_id;
 	objek.item = "kepemilikankapal";
 	objek.remark = kepemilikankapal.activityLog ? kepemilikankapal.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"kepemilikan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...kepemilikankapal });

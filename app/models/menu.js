@@ -9,12 +9,12 @@ const Menu = function (menu) {
 };
 
 Menu.create = async(newMenu, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newMenu);
+	var id = await f.getid("menu");
+	const hv = await f.headerValue(newMenu, id);
 	var queryText = "INSERT INTO \"menu\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newMenu.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newMenu });
 };
@@ -46,12 +46,13 @@ Menu.updateById = async(id, menu, result, user_id) => {
 
 	var arr = ["nama", "url", "icon"];
 	var str = f.getValueUpdate(menu, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = menu.approval_status_id;
 	objek.item = "menu";
 	objek.remark = menu.activityLog ? menu.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"menu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...menu });

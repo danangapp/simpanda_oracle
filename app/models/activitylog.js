@@ -12,12 +12,12 @@ const ActivityLog = function (activitylog) {
 };
 
 ActivityLog.create = async(newActivityLog, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newActivityLog);
+	var id = await f.getid("activity_log");
+	const hv = await f.headerValue(newActivityLog, id);
 	var queryText = "INSERT INTO \"activity_log\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newActivityLog.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newActivityLog });
 };
@@ -49,12 +49,13 @@ ActivityLog.updateById = async(id, activitylog, result, user_id) => {
 
 	var arr = ["date", "item", "action", "user_id", "remark", "koneksi"];
 	var str = f.getValueUpdate(activitylog, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = activitylog.approval_status_id;
 	objek.item = "activitylog";
 	objek.remark = activitylog.activityLog ? activitylog.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"activity_log\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...activitylog });

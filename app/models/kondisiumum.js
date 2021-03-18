@@ -7,12 +7,12 @@ const KondisiUmum = function (kondisiumum) {
 };
 
 KondisiUmum.create = async(newKondisiUmum, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newKondisiUmum);
+	var id = await f.getid("kondisi_umum");
+	const hv = await f.headerValue(newKondisiUmum, id);
 	var queryText = "INSERT INTO \"kondisi_umum\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newKondisiUmum.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newKondisiUmum });
 };
@@ -44,12 +44,13 @@ KondisiUmum.updateById = async(id, kondisiumum, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kondisiumum, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = kondisiumum.approval_status_id;
 	objek.item = "kondisiumum";
 	objek.remark = kondisiumum.activityLog ? kondisiumum.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"kondisi_umum\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...kondisiumum });

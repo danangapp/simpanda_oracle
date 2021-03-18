@@ -8,12 +8,12 @@ const PanduJaga = function (pandujaga) {
 };
 
 PanduJaga.create = async(newPanduJaga, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newPanduJaga);
+	var id = await f.getid("pandu_jaga");
+	const hv = await f.headerValue(newPanduJaga, id);
 	var queryText = "INSERT INTO \"pandu_jaga\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPanduJaga.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newPanduJaga });
 };
@@ -45,12 +45,13 @@ PanduJaga.updateById = async(id, pandujaga, result, user_id) => {
 
 	var arr = ["pandu_schedule_id", "personil_id"];
 	var str = f.getValueUpdate(pandujaga, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pandujaga.approval_status_id;
 	objek.item = "pandujaga";
 	objek.remark = pandujaga.activityLog ? pandujaga.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pandu_jaga\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pandujaga });

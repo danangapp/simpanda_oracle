@@ -7,12 +7,12 @@ const StatusAbsen = function (statusabsen) {
 };
 
 StatusAbsen.create = async(newStatusAbsen, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newStatusAbsen);
+	var id = await f.getid("status_absen");
+	const hv = await f.headerValue(newStatusAbsen, id);
 	var queryText = "INSERT INTO \"status_absen\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newStatusAbsen.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newStatusAbsen });
 };
@@ -44,12 +44,13 @@ StatusAbsen.updateById = async(id, statusabsen, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(statusabsen, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = statusabsen.approval_status_id;
 	objek.item = "statusabsen";
 	objek.remark = statusabsen.activityLog ? statusabsen.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"status_absen\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...statusabsen });

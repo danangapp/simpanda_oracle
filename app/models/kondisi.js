@@ -7,12 +7,12 @@ const Kondisi = function (kondisi) {
 };
 
 Kondisi.create = async(newKondisi, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newKondisi);
+	var id = await f.getid("kondisi");
+	const hv = await f.headerValue(newKondisi, id);
 	var queryText = "INSERT INTO \"kondisi\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newKondisi.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newKondisi });
 };
@@ -44,12 +44,13 @@ Kondisi.updateById = async(id, kondisi, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(kondisi, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = kondisi.approval_status_id;
 	objek.item = "kondisi";
 	objek.remark = kondisi.activityLog ? kondisi.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"kondisi\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...kondisi });

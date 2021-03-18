@@ -7,12 +7,12 @@ const Enable = function (enable) {
 };
 
 Enable.create = async(newEnable, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newEnable);
+	var id = await f.getid("enable");
+	const hv = await f.headerValue(newEnable, id);
 	var queryText = "INSERT INTO \"enable\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newEnable.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newEnable });
 };
@@ -44,12 +44,13 @@ Enable.updateById = async(id, enable, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(enable, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = enable.approval_status_id;
 	objek.item = "enable";
 	objek.remark = enable.activityLog ? enable.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"enable\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...enable });

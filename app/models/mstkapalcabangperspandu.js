@@ -13,12 +13,12 @@ const MstKapalCabangPersPandu = function (mstkapalcabangperspandu) {
 };
 
 MstKapalCabangPersPandu.create = async(newMstKapalCabangPersPandu, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newMstKapalCabangPersPandu);
+	var id = await f.getid("mst_kapal_cabang_pers_pandu");
+	const hv = await f.headerValue(newMstKapalCabangPersPandu, id);
 	var queryText = "INSERT INTO \"mst_kapal_cabang_pers_pandu\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newMstKapalCabangPersPandu.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newMstKapalCabangPersPandu });
 };
@@ -50,12 +50,13 @@ MstKapalCabangPersPandu.updateById = async(id, mstkapalcabangperspandu, result, 
 
 	var arr = ["KD_PERS_PANDU", "NM_PERS_PANDU", "NIPP", "KELAS", "KD_CABANG", "ENABLE", "KD_PERS_PANDU_CBG"];
 	var str = f.getValueUpdate(mstkapalcabangperspandu, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstkapalcabangperspandu.approval_status_id;
 	objek.item = "mstkapalcabangperspandu";
 	objek.remark = mstkapalcabangperspandu.activityLog ? mstkapalcabangperspandu.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"mst_kapal_cabang_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstkapalcabangperspandu });

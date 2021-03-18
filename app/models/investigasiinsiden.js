@@ -67,12 +67,12 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 	const investigasi_insiden_tim = newInvestigasiInsiden.investigasi_insiden_tim;
 	delete newInvestigasiInsiden.investigasi_insiden_tim;
 	newInvestigasiInsiden = setActivity(newInvestigasiInsiden);
-	const hv = await f.headerValue(newInvestigasiInsiden);
+	var id = await f.getid("investigasi_insiden");
+	const hv = await f.headerValue(newInvestigasiInsiden, id);
 	var queryText = "INSERT INTO \"investigasi_insiden\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newInvestigasiInsiden.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	for (var i in investigasi_insiden_tim) {
 	    const x = investigasi_insiden_tim[i];
@@ -97,7 +97,8 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newInvestigasiInsiden });
@@ -135,12 +136,13 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal"];
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = investigasiinsiden.approval_status_id;
 	objek.item = "investigasiinsiden";
 	objek.remark = investigasiinsiden.activityLog ? investigasiinsiden.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...investigasiinsiden });

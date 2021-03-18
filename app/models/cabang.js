@@ -17,12 +17,12 @@ const Cabang = function (cabang) {
 };
 
 Cabang.create = async(newCabang, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newCabang);
+	var id = await f.getid("cabang");
+	const hv = await f.headerValue(newCabang, id);
 	var queryText = "INSERT INTO \"cabang\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newCabang.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newCabang });
 };
@@ -55,12 +55,13 @@ Cabang.updateById = async(id, cabang, result, user_id) => {
 
 	var arr = ["nama", "almt_cabang", "cabang_cms", "no_account_cabang", "nm_cabang_3digit", "kd_account_cabang", "kd_cabang_jai_puspel", "orgid", "port_code", "autospk", "kd_jenis_pelabuhan"];
 	var str = f.getValueUpdate(cabang, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = cabang.approval_status_id;
 	objek.item = "cabang";
 	objek.remark = cabang.activityLog ? cabang.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"cabang\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...cabang });

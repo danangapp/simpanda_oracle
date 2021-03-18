@@ -43,12 +43,12 @@ const MstBktPandu = function (mstbktpandu) {
 };
 
 MstBktPandu.create = async(newMstBktPandu, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newMstBktPandu);
+	var id = await f.getid("mst_bkt_pandu");
+	const hv = await f.headerValue(newMstBktPandu, id);
 	var queryText = "INSERT INTO \"mst_bkt_pandu\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newMstBktPandu.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newMstBktPandu });
 };
@@ -80,12 +80,13 @@ MstBktPandu.updateById = async(id, mstbktpandu, result, user_id) => {
 
 	var arr = ["NO_BKT_PANDU", "TGL_FORM_BKT_PANDU", "NO_UKK", "KD_PERS_PANDU", "KD_FAS", "KD_PPKB", "KD_NM_NAHKODA", "PANDU_DARI", "PANDU_KE", "TGL_MPANDU", "TGL_SPANDU", "KD_GERAKAN", "KET_PANDU", "KD_PERAIRAN", "TGL_JAM_ENTRY", "JAM_PANDU_NAIK", "JAM_KAPAL_GERAK", "JAM_SPANDU", "JAM_PANDU_TURUN", "USERID_BKT_PANDU", "PPKB_KE", "BIAYA_PANDU", "NO_UKK1", "NO_UKK2", "NO_UKK3", "DRAFT_DEPAN", "DRAFT_BELAKANG", "NO_UKK_TK1", "NO_UKK_TK2", "PPKB_KE_ORIGIN", "KOREKSI_KE", "PPKB_KE_ORIGIN_AKHIR", "NO_BA", "KETERANGAN_BA", "TGL_BA", "KET_PANDU_KHUSUS", "KD_FAS_JEMPUT"];
 	var str = f.getValueUpdate(mstbktpandu, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstbktpandu.approval_status_id;
 	objek.item = "mstbktpandu";
 	objek.remark = mstbktpandu.activityLog ? mstbktpandu.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"mst_bkt_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstbktpandu });

@@ -9,12 +9,12 @@ const ArmadaJagaCopy1 = function (armadajagacopy1) {
 };
 
 ArmadaJagaCopy1.create = async(newArmadaJagaCopy1, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newArmadaJagaCopy1);
+	var id = await f.getid("armada_jaga_copy1");
+	const hv = await f.headerValue(newArmadaJagaCopy1, id);
 	var queryText = "INSERT INTO \"armada_jaga_copy1\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newArmadaJagaCopy1.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newArmadaJagaCopy1 });
 };
@@ -46,12 +46,13 @@ ArmadaJagaCopy1.updateById = async(id, armadajagacopy1, result, user_id) => {
 
 	var arr = ["tipe_asset_id", "asset_kapal_id", "armada_schedule_id"];
 	var str = f.getValueUpdate(armadajagacopy1, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = armadajagacopy1.approval_status_id;
 	objek.item = "armadajagacopy1";
 	objek.remark = armadajagacopy1.activityLog ? armadajagacopy1.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"armada_jaga_copy1\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...armadajagacopy1 });

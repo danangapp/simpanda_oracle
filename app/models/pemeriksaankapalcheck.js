@@ -7,12 +7,12 @@ const PemeriksaanKapalCheck = function (pemeriksaankapalcheck) {
 };
 
 PemeriksaanKapalCheck.create = async(newPemeriksaanKapalCheck, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newPemeriksaanKapalCheck);
+	var id = await f.getid("pemeriksaan_kapal_check");
+	const hv = await f.headerValue(newPemeriksaanKapalCheck, id);
 	var queryText = "INSERT INTO \"pemeriksaan_kapal_check\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPemeriksaanKapalCheck.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newPemeriksaanKapalCheck });
 };
@@ -44,12 +44,13 @@ PemeriksaanKapalCheck.updateById = async(id, pemeriksaankapalcheck, result, user
 
 	var arr = ["question"];
 	var str = f.getValueUpdate(pemeriksaankapalcheck, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pemeriksaankapalcheck.approval_status_id;
 	objek.item = "pemeriksaankapalcheck";
 	objek.remark = pemeriksaankapalcheck.activityLog ? pemeriksaankapalcheck.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pemeriksaan_kapal_check\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pemeriksaankapalcheck });

@@ -7,12 +7,12 @@ const PanduBandarLaut = function (pandubandarlaut) {
 };
 
 PanduBandarLaut.create = async(newPanduBandarLaut, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newPanduBandarLaut);
+	var id = await f.getid("pandu_bandar_laut");
+	const hv = await f.headerValue(newPanduBandarLaut, id);
 	var queryText = "INSERT INTO \"pandu_bandar_laut\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPanduBandarLaut.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newPanduBandarLaut });
 };
@@ -44,12 +44,13 @@ PanduBandarLaut.updateById = async(id, pandubandarlaut, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(pandubandarlaut, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pandubandarlaut.approval_status_id;
 	objek.item = "pandubandarlaut";
 	objek.remark = pandubandarlaut.activityLog ? pandubandarlaut.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pandu_bandar_laut\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pandubandarlaut });

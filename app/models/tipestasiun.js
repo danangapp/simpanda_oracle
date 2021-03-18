@@ -7,12 +7,12 @@ const TipeStasiun = function (tipestasiun) {
 };
 
 TipeStasiun.create = async(newTipeStasiun, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newTipeStasiun);
+	var id = await f.getid("tipe_stasiun");
+	const hv = await f.headerValue(newTipeStasiun, id);
 	var queryText = "INSERT INTO \"tipe_stasiun\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newTipeStasiun.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newTipeStasiun });
 };
@@ -44,12 +44,13 @@ TipeStasiun.updateById = async(id, tipestasiun, result, user_id) => {
 
 	var arr = ["nama"];
 	var str = f.getValueUpdate(tipestasiun, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = tipestasiun.approval_status_id;
 	objek.item = "tipestasiun";
 	objek.remark = tipestasiun.activityLog ? tipestasiun.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"tipe_stasiun\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...tipestasiun });

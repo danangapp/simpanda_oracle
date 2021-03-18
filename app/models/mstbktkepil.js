@@ -24,12 +24,12 @@ const MstBktKepil = function (mstbktkepil) {
 };
 
 MstBktKepil.create = async(newMstBktKepil, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newMstBktKepil);
+	var id = await f.getid("mst_bkt_kepil");
+	const hv = await f.headerValue(newMstBktKepil, id);
 	var queryText = "INSERT INTO \"mst_bkt_kepil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newMstBktKepil.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newMstBktKepil });
 };
@@ -61,12 +61,13 @@ MstBktKepil.updateById = async(id, mstbktkepil, result, user_id) => {
 
 	var arr = ["NO_BKT_KEPIL", "TGL_FORM_BKT_KEPIL", "NO_UKK", "KD_PPKB", "KD_KADE", "KD_MST_KEPIL", "KD_FAS", "TGL_JAM_BKT_KEPIL", "TGL_JAM_ENTRY", "JAM_TOLAK", "JAM_TIBA", "USERID_BKT_KEPIL", "PPKB_KE", "BIAYA_KEPIL", "KD_MORING", "KOREKSI_KE", "PPKB_KE_ORIGIN", "PPKB_KE_ORIGIN_AKHIR"];
 	var str = f.getValueUpdate(mstbktkepil, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstbktkepil.approval_status_id;
 	objek.item = "mstbktkepil";
 	objek.remark = mstbktkepil.activityLog ? mstbktkepil.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"mst_bkt_kepil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...mstbktkepil });

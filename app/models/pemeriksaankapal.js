@@ -42,7 +42,8 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newPemeriksaanKapal });
@@ -92,12 +93,13 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pemeriksaankapal.approval_status_id;
 	objek.item = "pemeriksaankapal";
 	objek.remark = pemeriksaankapal.activityLog ? pemeriksaankapal.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pemeriksaan_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...pemeriksaankapal });

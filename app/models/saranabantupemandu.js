@@ -29,12 +29,12 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 	const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 	delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
-	const hv = await f.headerValue(newSaranaBantuPemandu);
+	var id = await f.getid("sarana_bantu_pemandu");
+	const hv = await f.headerValue(newSaranaBantuPemandu, id);
 	var queryText = "INSERT INTO \"sarana_bantu_pemandu\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newSaranaBantuPemandu.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	for (var i in sarana_bantu_pemandu_personil) {
 	    const x = sarana_bantu_pemandu_personil[i];
@@ -54,7 +54,8 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newSaranaBantuPemandu });
@@ -93,12 +94,13 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) =
 
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = saranabantupemandu.approval_status_id;
 	objek.item = "saranabantupemandu";
 	objek.remark = saranabantupemandu.activityLog ? saranabantupemandu.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"sarana_bantu_pemandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...saranabantupemandu });

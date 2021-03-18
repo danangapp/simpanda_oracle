@@ -8,12 +8,12 @@ const JenisCert = function (jeniscert) {
 };
 
 JenisCert.create = async(newJenisCert, result, cabang_id, user_id) => {
-	const hv = await f.headerValue(newJenisCert);
+	var id = await f.getid("jenis_cert");
+	const hv = await f.headerValue(newJenisCert, id);
 	var queryText = "INSERT INTO \"jenis_cert\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newJenisCert.id;
 	const res = await exec;
-	var id = res.outBinds.id[0];
 
 	result(null, { id: id, ...newJenisCert });
 };
@@ -45,12 +45,13 @@ JenisCert.updateById = async(id, jeniscert, result, user_id) => {
 
 	var arr = ["nama", "remark"];
 	var str = f.getValueUpdate(jeniscert, id, arr);
+	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = jeniscert.approval_status_id;
 	objek.item = "jeniscert";
 	objek.remark = jeniscert.activityLog ? jeniscert.activityLog.remark : '';
 	objek.user_id = user_id;
-	const hval = await f.headerValue(objek);
+	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"jenis_cert\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...jeniscert });
