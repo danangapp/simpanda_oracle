@@ -177,7 +177,7 @@ module.exports = {
             }
         } else if (db === "asset_kapal") {
             if (i == "flag") {
-                column = `a2."flag"`;
+                column = `a3."flag"`;
             }
         } else if (db === "pandu_jaga") {
             if (i == "pandu_bandar_laut_id") {
