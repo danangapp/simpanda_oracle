@@ -117,10 +117,10 @@ app.listen(PORT, () => {
 // res.then((a) => {
 //   console.log(a.rows[0][0]);
 // })
-var res = f.query(`INSERT INTO "cabang" ("nama") VALUES ('cabang danang')` + ` RETURN "id" INTO :id`, 1);
-res.then((a) => {
-  console.log(a);
-})
+// var res = f.query(`INSERT INTO "cabang" ("nama") VALUES ('cabang danang')` + ` RETURN "id" INTO :id`, 1);
+// res.then((a) => {
+//   console.log(a);
+// })
 // const select = f.select(`SELECT * FROM "cabang"`);
 // select.then((a) => {
 //   console.log(a.rows);
