@@ -53,7 +53,6 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
-	f.commitToFalse();
 	const sertifikat = newPersonil.sertifikat;
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
@@ -71,7 +70,6 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	f.commitToTrue();
 	result(null, { id: id, ...newPersonil });
 };
 
