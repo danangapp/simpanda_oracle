@@ -7,6 +7,12 @@ const SaranaBantuPemandu = function (saranabantupemandu) {
     this.cabang_id = saranabantupemandu.cabang_id;
     this.tanggal_pemeriksaan = saranabantupemandu.tanggal_pemeriksaan;
     this.pelaksana = saranabantupemandu.pelaksana;
+    this.nama = saranabantupemandu.nama;
+    this.tipe_asset_id = saranabantupemandu.tipe_asset_id;
+    this.jabatan = saranabantupemandu.jabatan;
+    this.asset_kapal_id = saranabantupemandu.asset_kapal_id;
+    this.status_ijazah_id = saranabantupemandu.status_ijazah_id;
+    this.sarana_bantu_pemandu_personil = saranabantupemandu.sarana_bantu_pemandu_personil;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -64,7 +70,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 SaranaBantuPemandu.findById = async (id, result) => {
 	const resQuery = f.query("SELECT * FROM \"sarana_bantu_pemandu_personil\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 		const sarana_bantu_pemandu_personil = { "sarana_bantu_pemandu_personil": resQuery }
@@ -75,10 +81,10 @@ SaranaBantuPemandu.findById = async (id, result) => {
 
 SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "sarana_bantu_pemandu");
-    var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\" ";
+    var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_pemeriksaan\" LIKE '%" + param.q + "%' OR a.\"pelaksana\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_pemeriksaan\" LIKE '%" + param.q + "%' OR a.\"pelaksana\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status_ijazah_id\" LIKE '%" + param.q + "%' OR a.\"sarana_bantu_pemandu_personil\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -92,7 +98,7 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 
 SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) => {
 
-	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana"];
+	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
