@@ -32,8 +32,6 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user_id) => {
-	const sarana_bantu_pemandu_personil = newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
-	delete newSaranaBantuPemandu.sarana_bantu_pemandu_personil;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
 	var id = await f.getid("sarana_bantu_pemandu");
 	const hv = await f.headerValue(newSaranaBantuPemandu, id);
@@ -41,21 +39,6 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 	const exec = f.query(queryText, 1);
 	delete newSaranaBantuPemandu.id;
 	const res = await exec;
-
-	for (var i in sarana_bantu_pemandu_personil) {
-	    const x = sarana_bantu_pemandu_personil[i];
-		x['sarana_bantu_pemandu_id'] = res.insertId;
-	
-	    var header = "", value = "";
-	    for (var a in x) {
-	        const val = x[a];
-	        header += a + ", ";
-			value += "'" + val + "', ";
-	    }
-	    value = value.substring(0, value.length - 2);
-	    header = header.substring(0, header.length - 2);
-		f.query("INSERT INTO sarana_bantu_pemandu_personil (" + header + ") values (" + value + ")");
-	}
 
 	objek.koneksi = id;
 	objek.action = "0";
@@ -68,14 +51,12 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 };
 
 SaranaBantuPemandu.findById = async (id, result) => {
-	const resQuery = f.query("SELECT * FROM \"sarana_bantu_pemandu_personil\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-		const sarana_bantu_pemandu_personil = { "sarana_bantu_pemandu_personil": resQuery }
 	const activityLog = { "activityLog": resActivityLog.rows }
-	let merge = { ...res.rows[0], ...sarana_bantu_pemandu_personil, ...activityLog }	
+	let merge = { ...res.rows[0], ...activityLog }	
 	result(null, merge);
 }
 
