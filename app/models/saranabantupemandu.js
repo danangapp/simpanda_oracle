@@ -32,6 +32,8 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user_id) => {
+	const question = newSaranaBantuPemandu.question;
+	delete newSaranaBantuPemandu.question;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
 	var id = await f.getid("sarana_bantu_pemandu");
 	const hv = await f.headerValue(newSaranaBantuPemandu, id);
@@ -39,6 +41,20 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 	const exec = f.query(queryText, 1);
 	delete newSaranaBantuPemandu.id;
 	const res = await exec;
+
+	for (var i in question) {
+		var id_sbpdata = await f.getid("sbp_data");
+	    const x = question[i];
+		x['sarana_bantu_pemandu_id'] = id;
+		x['answer'] = x['value'];
+		delete x.value;
+	
+	    var header = "", value = "";
+	    value = value.substring(0, value.length - 2);
+	    header = header.substring(0, header.length - 2);
+		const hv = await f.headerValue(x, id_sbpdata);
+		await f.query("INSERT INTO \"sbp_data\"" + hv);
+	}
 
 	objek.koneksi = id;
 	objek.action = "0";
@@ -51,12 +67,18 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 };
 
 SaranaBantuPemandu.findById = async (id, result) => {
+	const resQuery = await f.query("SELECT * FROM \"sbp_data\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
+	for (var a in resQuery.rows) {
+		resQuery.rows[a].value = resQuery.rows[a].answer;
+		delete resQuery.rows[a].answer;
+	}
+	const question = { "question": resQuery.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
-	let merge = { ...res.rows[0], ...activityLog }	
+	let merge = { ...res.rows[0], ...question, ...activityLog }	
 	result(null, merge);
 }
 

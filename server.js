@@ -1,6 +1,6 @@
 const express = require("express");
-// const fs = require('fs');
-// var XlsxTemplate = require('xlsx-template');
+const fs = require('fs');
+var XlsxTemplate = require('xlsx-template');
 const formidableMiddleware = require('express-formidable');
 const f = require('./app/controllers/function')
 require('dotenv').config();
@@ -79,6 +79,7 @@ require("./app/routes/pandujaga")(app);
 require("./app/routes/panduschedule")(app);
 require("./app/routes/pemeriksaankapal")(app);
 require("./app/routes/pemeriksaankapalcheck")(app);
+require("./app/routes/pemeriksaankapalcheckdata")(app);
 require("./app/routes/personil")(app);
 require("./app/routes/role")(app);
 require("./app/routes/saranabantupemandu")(app);
@@ -104,7 +105,7 @@ require("./app/routes/menu")(app);
 require("./app/routes/authorization")(app);
 require("./app/routes/pemilikkapal")(app);
 require("./app/routes/kepemilikankapal")(app);
-
+require("./app/routes/sbpdata")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 4000;
@@ -151,19 +152,7 @@ app.listen(PORT, () => {
 
 // run();
 
-
-// fs.readFile('d:/danang.xlsx', function (err, data) {
-
-//   var template = new XlsxTemplate(data);
-//   var sheetNumber = 1;
-//   var values1 = {
-//     name: 'danang rusmanto'
-//   };
-//   var values2 = {
-//     name: 'renny mai'
-//   };
-//   template.substitute(1, values1);
-//   template.substitute(2, values2);
-//   var data = template.generate();
-//   fs.writeFileSync('d:/danang1.xlsx', data, 'binary');
-// });
+// f.query(`SELECT * FROM "asset_rumah_dinas"`)
+//   .then((a) => {
+//     f.report('d:/rumah-dinas.xlsx', 'd:/danang1.xlsx', { rumah_dinas: a.rows }, "Rumah Dinas")
+//   })

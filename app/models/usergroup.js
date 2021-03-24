@@ -20,7 +20,7 @@ UserGroup.create = async(newUserGroup, result, cabang_id, user_id) => {
 
 	for (var i in user_access) {
 	    const x = user_access[i];
-		x['user_group_id'] = res.insertId;
+		x['user_group_id'] = id;
 	
 	    var header = "", value = "";
 	    for (var a in x) {
@@ -42,7 +42,7 @@ UserGroup.create = async(newUserGroup, result, cabang_id, user_id) => {
 };
 
 UserGroup.findById = async (id, result) => {
-	const resQuery = f.query("SELECT * FROM \"user_access\" WHERE \"user_group_id\" = '" + id + "'");
+	const resQuery = await f.query("SELECT * FROM \"user_access\" WHERE \"user_group_id\" = '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;

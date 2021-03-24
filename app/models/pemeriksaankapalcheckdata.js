@@ -23,7 +23,7 @@ PemeriksaanKapalCheckData.create = async(newPemeriksaanKapalCheckData, result, c
 };
 
 PemeriksaanKapalCheckData.findById = async (id, result) => {
-	var queryText = "SELECT a.* , a1.\"nama\" as \"kondisi\", a2.\"nama\" as \"pemeriksaan_kapal\", a3.\"nama\" as \"pemeriksaan_kapal_check\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"  LEFT JOIN \"pemeriksaan_kapal\" a2 ON a.\"pemeriksaan_kapal_id\" = a2.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check\" a3 ON a.\"pemeriksaan_kapal_check_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.*  , a1.\"nama\" as \"kondisi\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"  WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 	result(null, res.rows[0]);
@@ -31,7 +31,7 @@ PemeriksaanKapalCheckData.findById = async (id, result) => {
 
 PemeriksaanKapalCheckData.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "pemeriksaan_kapal_check_data");
-    var query = "SELECT a.* , a1.\"nama\" as \"kondisi\", a2.\"nama\" as \"pemeriksaan_kapal\", a3.\"nama\" as \"pemeriksaan_kapal_check\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"  LEFT JOIN \"pemeriksaan_kapal\" a2 ON a.\"pemeriksaan_kapal_id\" = a2.\"id\"  LEFT JOIN \"pemeriksaan_kapal_check\" a3 ON a.\"pemeriksaan_kapal_check_id\" = a3.\"id\" ";
+    var query = "SELECT a.*  , a1.\"nama\" as \"kondisi\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"kondisi_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_awal\" LIKE '%" + param.q + "%' OR a.\"tanggal_akhir\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_check_id\" LIKE '%" + param.q + "%'";	

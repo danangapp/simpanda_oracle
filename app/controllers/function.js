@@ -124,6 +124,7 @@ module.exports = {
     },
     getid: async function (tableName) {
         var get_id = await this.query(`SELECT NVL(max("id"), 0) + 1 as "id" FROM "${tableName}"`, 2);
+        // console.log(get_id.rows)
         var id = get_id.rows[0][0];
         return id;
     },
@@ -335,5 +336,15 @@ module.exports = {
             wheres = "";
         }
         return wheres;
+    },
+    report: function (templatePathName, outputPath, data, sheet) {
+        fs.readFile(templatePathName, function (err, dt) {
+            var template = new XlsxTemplate(dt);
+
+            template.substitute(sheet, data);
+            var out = template.generate();
+            fs.writeFileSync(outputPath, out, 'binary');
+            return "";
+        });
     }
 };
