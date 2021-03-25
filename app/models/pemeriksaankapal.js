@@ -53,12 +53,12 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 };
 
 PemeriksaanKapal.findById = async (id, result) => {
-	const resQuery = f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "'");
+	const resQuery = await f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"status\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-		const check = { "check": resQuery }
+		const check = { "check": resQuery.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...check, ...activityLog }	
 	result(null, merge);
@@ -83,16 +83,18 @@ PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
 
 PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 
-		var check = pemeriksaankapal.check;
-		for (var i in check) {
-		    const pemeriksaan_kapal_check_id = check[i].pemeriksaan_kapal_check_id;
-		    const kondisi_id = check[i].kondisi_id;
-		    const tanggal_awal = f.toDate(check[i].tanggal_awal);
-		    const tanggal_akhir = f.toDate(check[i].tanggal_akhir);
-		    const keterangan = check[i].keterangan;
-		    await f.query("UPDATE pemeriksaan_kapal_check_data SET pemeriksaan_kapal_check_id='" + pemeriksaan_kapal_check_id + "', kondisi_id='" + kondisi_id + "', tanggal_awal='" + tanggal_awal + "', tanggal_akhir='" + tanggal_akhir + "', keterangan='" + keterangan + "' WHERE kondisi_id='" + kondisi_id + "' AND pemeriksaan_kapal_id='" + id + "'");
-		}
-		delete pemeriksaankapal.check;
+	var check = pemeriksaankapal.check;
+	await f.query("DELETE \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\"='" + id + "'");
+	for (var i in check) {
+		check[i].pemeriksaan_kapal_id = id;
+		check[i].tanggal_awal = f.toDate(check[i].tanggal_awal);
+		check[i].tanggal_akhir = f.toDate(check[i].tanggal_akhir);
+		var id_pj = await f.getid("pemeriksaan_kapal_check_data");
+		var hv_pj = await f.headerValue(check[i], id_pj);
+		var queryText = "INSERT INTO \"pemeriksaan_kapal_check_data\" " + hv_pj;
+		await f.query(queryText, 2);
+	}
+	delete pemeriksaankapal.check;
 
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];
 	var str = f.getValueUpdate(pemeriksaankapal, id, arr);

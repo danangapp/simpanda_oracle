@@ -15,6 +15,7 @@ exports.create = (req, res) => {
         keterangan: req.fields.keterangan,
         pemeriksaan_kapal_id: req.fields.pemeriksaan_kapal_id,
         pemeriksaan_kapal_check_id: req.fields.pemeriksaan_kapal_check_id,
+        status: req.fields.status,
     };
 
 	var used = {};

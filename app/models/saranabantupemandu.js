@@ -3,35 +3,35 @@ var objek = new Object();
 
 // constructor
 const SaranaBantuPemandu = function (saranabantupemandu) {
-	this.approval_status_id = saranabantupemandu.approval_status_id;
-	this.cabang_id = saranabantupemandu.cabang_id;
-	this.tanggal_pemeriksaan = saranabantupemandu.tanggal_pemeriksaan;
-	this.pelaksana = saranabantupemandu.pelaksana;
-	this.nama = saranabantupemandu.nama;
-	this.tipe_asset_id = saranabantupemandu.tipe_asset_id;
-	this.jabatan = saranabantupemandu.jabatan;
-	this.asset_kapal_id = saranabantupemandu.asset_kapal_id;
-	this.status_ijazah_id = saranabantupemandu.status_ijazah_id;
-	this.sarana_bantu_pemandu_personil = saranabantupemandu.sarana_bantu_pemandu_personil;
+    this.approval_status_id = saranabantupemandu.approval_status_id;
+    this.cabang_id = saranabantupemandu.cabang_id;
+    this.tanggal_pemeriksaan = saranabantupemandu.tanggal_pemeriksaan;
+    this.pelaksana = saranabantupemandu.pelaksana;
+    this.nama = saranabantupemandu.nama;
+    this.tipe_asset_id = saranabantupemandu.tipe_asset_id;
+    this.jabatan = saranabantupemandu.jabatan;
+    this.asset_kapal_id = saranabantupemandu.asset_kapal_id;
+    this.status_ijazah_id = saranabantupemandu.status_ijazah_id;
+    this.sarana_bantu_pemandu_personil = saranabantupemandu.sarana_bantu_pemandu_personil;
 };
 
 const setActivity = (objects, koneksi = 1) => {
-	objek.date = f.toDate(objects.date);
-	objek.item = 'saranabantupemandu';
-	objek.action = objects.approval_status_id;
-	objek.user_id = objects.user_id;
-	objek.remark = objects.remark;
-	objek.koneksi = koneksi;
-	delete objects.date;
-	delete objects.item;
-	delete objects.action;
-	delete objects.user_id;
-	delete objects.remark;
-	delete objects.koneksi;
-	return objects
+		objek.date = f.toDate(objects.date);
+		objek.item = 'saranabantupemandu';
+		objek.action = objects.approval_status_id;
+		objek.user_id = objects.user_id;
+		objek.remark = objects.remark;
+		objek.koneksi = koneksi;
+		delete objects.date;
+		delete objects.item;
+		delete objects.action;
+		delete objects.user_id;
+		delete objects.remark;
+		delete objects.koneksi;
+		return objects
 };
 
-SaranaBantuPemandu.create = async (newSaranaBantuPemandu, result, cabang_id, user_id) => {
+SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user_id) => {
 	const question = newSaranaBantuPemandu.question;
 	delete newSaranaBantuPemandu.question;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
@@ -44,14 +44,14 @@ SaranaBantuPemandu.create = async (newSaranaBantuPemandu, result, cabang_id, use
 
 	for (var i in question) {
 		var id_sbpdata = await f.getid("sbp_data");
-		const x = question[i];
+	    const x = question[i];
 		x['sarana_bantu_pemandu_id'] = id;
 		x['answer'] = x['value'];
 		delete x.value;
-
-		var header = "", value = "";
-		value = value.substring(0, value.length - 2);
-		header = header.substring(0, header.length - 2);
+	
+	    var header = "", value = "";
+	    value = value.substring(0, value.length - 2);
+	    header = header.substring(0, header.length - 2);
 		const hv = await f.headerValue(x, id_sbpdata);
 		await f.query("INSERT INTO \"sbp_data\"" + hv);
 	}
@@ -78,29 +78,28 @@ SaranaBantuPemandu.findById = async (id, result) => {
 	}
 	const question = { "question": resQuery.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
-	let merge = { ...res.rows[0], ...question, ...activityLog }
+	let merge = { ...res.rows[0], ...question, ...activityLog }	
 	result(null, merge);
 }
 
 SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
-	var wheres = f.getParam(param, "sarana_bantu_pemandu");
-	var query = "SELECT a.*  , a1.\"sarana_config_question\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"tipe_asset\" a1 ON a1.\"id\" = a.\"tipe_asset_id\"";
+    var wheres = f.getParam(param, "sarana_bantu_pemandu");
+    var query = "SELECT a.*  , a1.\"sarana_config_question\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"tipe_asset\" a1 ON a1.\"id\" = a.\"tipe_asset_id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_pemeriksaan\" LIKE '%" + param.q + "%' OR a.\"pelaksana\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status_ijazah_id\" LIKE '%" + param.q + "%' OR a.\"sarana_bantu_pemandu_personil\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_pemeriksaan\" LIKE '%" + param.q + "%' OR a.\"pelaksana\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status_ijazah_id\" LIKE '%" + param.q + "%' OR a.\"sarana_bantu_pemandu_personil\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
-	console.log(query);
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
 }
 
-SaranaBantuPemandu.updateById = async (id, saranabantupemandu, result, user_id) => {
+SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) => {
 
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);

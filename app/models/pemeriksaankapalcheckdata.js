@@ -9,6 +9,7 @@ const PemeriksaanKapalCheckData = function (pemeriksaankapalcheckdata) {
     this.keterangan = pemeriksaankapalcheckdata.keterangan;
     this.pemeriksaan_kapal_id = pemeriksaankapalcheckdata.pemeriksaan_kapal_id;
     this.pemeriksaan_kapal_check_id = pemeriksaankapalcheckdata.pemeriksaan_kapal_check_id;
+    this.status = pemeriksaankapalcheckdata.status;
 };
 
 PemeriksaanKapalCheckData.create = async(newPemeriksaanKapalCheckData, result, cabang_id, user_id) => {
@@ -34,7 +35,7 @@ PemeriksaanKapalCheckData.getAll = async (param, result, cabang_id) => {
     var query = "SELECT a.*  , a1.\"nama\" as \"kondisi\" FROM \"pemeriksaan_kapal_check_data\" a  LEFT JOIN \"kondisi\" a1 ON a.\"kondisi_id\" = a1.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"kondisi_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_awal\" LIKE '%" + param.q + "%' OR a.\"tanggal_akhir\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_check_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"kondisi_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_awal\" LIKE '%" + param.q + "%' OR a.\"tanggal_akhir\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"pemeriksaan_kapal_check_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -47,7 +48,7 @@ PemeriksaanKapalCheckData.getAll = async (param, result, cabang_id) => {
 
 PemeriksaanKapalCheckData.updateById = async(id, pemeriksaankapalcheckdata, result, user_id) => {
 
-	var arr = ["kondisi_id", "tanggal_awal", "tanggal_akhir", "keterangan", "pemeriksaan_kapal_id", "pemeriksaan_kapal_check_id"];
+	var arr = ["kondisi_id", "tanggal_awal", "tanggal_akhir", "keterangan", "pemeriksaan_kapal_id", "pemeriksaan_kapal_check_id", "status"];
 	var str = f.getValueUpdate(pemeriksaankapalcheckdata, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
