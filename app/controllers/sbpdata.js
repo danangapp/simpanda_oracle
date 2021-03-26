@@ -16,7 +16,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in sbpdata) {
-	    if (!sbpdata[i]) {
+	    if (sbpdata[i] == undefined) {
 	        delete sbpdata[i];
 	    }
 	}

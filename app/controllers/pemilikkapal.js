@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in pemilikkapal) {
-	    if (!pemilikkapal[i]) {
+	    if (pemilikkapal[i] == undefined) {
 	        delete pemilikkapal[i];
 	    }
 	}

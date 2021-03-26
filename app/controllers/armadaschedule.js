@@ -23,7 +23,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in armadaschedule) {
-	    if (!armadaschedule[i]) {
+	    if (armadaschedule[i] == undefined) {
 	        delete armadaschedule[i];
 	    }
 	}

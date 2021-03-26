@@ -19,7 +19,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in saranabantupemandupersonil) {
-	    if (!saranabantupemandupersonil[i]) {
+	    if (saranabantupemandupersonil[i] == undefined) {
 	        delete saranabantupemandupersonil[i];
 	    }
 	}

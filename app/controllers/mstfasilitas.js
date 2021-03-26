@@ -24,7 +24,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstfasilitas) {
-	    if (!mstfasilitas[i]) {
+	    if (mstfasilitas[i] == undefined) {
 	        delete mstfasilitas[i];
 	    }
 	}

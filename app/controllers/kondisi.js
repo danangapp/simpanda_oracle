@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in kondisi) {
-	    if (!kondisi[i]) {
+	    if (kondisi[i] == undefined) {
 	        delete kondisi[i];
 	    }
 	}

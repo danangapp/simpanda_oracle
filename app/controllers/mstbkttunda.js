@@ -53,7 +53,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstbkttunda) {
-	    if (!mstbkttunda[i]) {
+	    if (mstbkttunda[i] == undefined) {
 	        delete mstbkttunda[i];
 	    }
 	}

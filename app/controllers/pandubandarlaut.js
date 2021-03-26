@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in pandubandarlaut) {
-	    if (!pandubandarlaut[i]) {
+	    if (pandubandarlaut[i] == undefined) {
 	        delete pandubandarlaut[i];
 	    }
 	}

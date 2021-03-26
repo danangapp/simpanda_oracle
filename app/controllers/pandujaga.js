@@ -15,7 +15,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in pandujaga) {
-	    if (!pandujaga[i]) {
+	    if (pandujaga[i] == undefined) {
 	        delete pandujaga[i];
 	    }
 	}

@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in kondisiumum) {
-	    if (!kondisiumum[i]) {
+	    if (kondisiumum[i] == undefined) {
 	        delete kondisiumum[i];
 	    }
 	}

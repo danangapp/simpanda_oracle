@@ -16,7 +16,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in menu) {
-	    if (!menu[i]) {
+	    if (menu[i] == undefined) {
 	        delete menu[i];
 	    }
 	}

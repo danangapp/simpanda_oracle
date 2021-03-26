@@ -29,7 +29,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstkapalcabangbktkepil) {
-	    if (!mstkapalcabangbktkepil[i]) {
+	    if (mstkapalcabangbktkepil[i] == undefined) {
 	        delete mstkapalcabangbktkepil[i];
 	    }
 	}

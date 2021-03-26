@@ -21,7 +21,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in actionseq) {
-	    if (!actionseq[i]) {
+	    if (actionseq[i] == undefined) {
 	        delete actionseq[i];
 	    }
 	}

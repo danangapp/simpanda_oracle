@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in statusijazah) {
-	    if (!statusijazah[i]) {
+	    if (statusijazah[i] == undefined) {
 	        delete statusijazah[i];
 	    }
 	}

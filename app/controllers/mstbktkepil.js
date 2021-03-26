@@ -31,7 +31,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstbktkepil) {
-	    if (!mstbktkepil[i]) {
+	    if (mstbktkepil[i] == undefined) {
 	        delete mstbktkepil[i];
 	    }
 	}

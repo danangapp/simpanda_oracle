@@ -44,17 +44,28 @@ exports.create = (req, res) => {
         pihak_yang_bertanggungjawab: req.fields.pihak_yang_bertanggungjawab,
         pelaksana: req.fields.pelaksana,
         tanggal_pemeriksaan: req.fields.tanggal_pemeriksaan,
+        nama: req.fields.nama,
+        jabatan: req.fields.jabatan,
         status_investigasi_insiden_id: req.fields.status_investigasi_insiden_id,
         prepard_by: req.fields.prepard_by,
-        prepard_tanggal: f.toDate(req.fields.prepard_tanggal),
+        prepard_tanggal: req.fields.prepard_tanggal,
         reviewed_by: req.fields.reviewed_by,
-        reviewed_tanggal: f.toDate(req.fields.reviewed_tanggal),
+        reviewed_tanggal: req.fields.reviewed_tanggal,
         approved_by: req.fields.approved_by,
-        approved_tanggal: f.toDate(req.fields.approved_tanggal),
+        approved_tanggal: req.fields.approved_tanggal,
         cabang_id: req.fields.cabang_id,
         peralatan_kelengkapan_lainnya: req.fields.peralatan_kelengkapan_lainnya,
         alat_pelindung_diri_lainnya: req.fields.alat_pelindung_diri_lainnya,
         perilaku_lainnya: req.fields.perilaku_lainnya,
+        kebersihan_kerapihan_lainnya: req.fields.kebersihan_kerapihan_lainnya,
+        rincian_kegiatan_lainnya: req.fields.rincian_kegiatan_lainnya,
+        peralatan_perlengkapan_lainnya: req.fields.peralatan_perlengkapan_lainnya,
+        pemeliharaan_perbaikan_lainnya: req.fields.pemeliharaan_perbaikan_lainnya,
+        kemampuan_kondisi_fisik_lain: req.fields.kemampuan_kondisi_fisik_lain,
+        kebersihan_kerapihan_lain: req.fields.kebersihan_kerapihan_lain,
+        tingkat_kemampuan_lainnya: req.fields.tingkat_kemampuan_lainnya,
+        penjagaan_lainnya: req.fields.penjagaan_lainnya,
+        tindakan_terkait_lainnya: req.fields.tindakan_terkait_lainnya,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
@@ -66,7 +77,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in investigasiinsiden) {
-	    if (!investigasiinsiden[i]) {
+	    if (investigasiinsiden[i] == undefined) {
 	        delete investigasiinsiden[i];
 	    }
 	}
@@ -120,9 +131,6 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.prepard_tanggal = f.toDate(req.fields.prepard_tanggal);
-	req.fields.reviewed_tanggal = f.toDate(req.fields.reviewed_tanggal);
-	req.fields.approved_tanggal = f.toDate(req.fields.approved_tanggal);
 	if (req.fields.bukti_temuan) {
 		if (req.fields.bukti_temuan.substring(0, 4) == "data") {
 		    req.fields.bukti_temuan = f.uploadFile64('personil', req.fields.bukti_temuan);

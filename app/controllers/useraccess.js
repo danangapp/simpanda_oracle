@@ -15,7 +15,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in useraccess) {
-	    if (!useraccess[i]) {
+	    if (useraccess[i] == undefined) {
 	        delete useraccess[i];
 	    }
 	}

@@ -50,7 +50,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstbktpandu) {
-	    if (!mstbktpandu[i]) {
+	    if (mstbktpandu[i] == undefined) {
 	        delete mstbktpandu[i];
 	    }
 	}

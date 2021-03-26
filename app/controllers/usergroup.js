@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in usergroup) {
-	    if (!usergroup[i]) {
+	    if (usergroup[i] == undefined) {
 	        delete usergroup[i];
 	    }
 	}

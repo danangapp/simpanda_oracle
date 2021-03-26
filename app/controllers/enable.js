@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in enable) {
-	    if (!enable[i]) {
+	    if (enable[i] == undefined) {
 	        delete enable[i];
 	    }
 	}

@@ -18,7 +18,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in investigasiinsidentim) {
-	    if (!investigasiinsidentim[i]) {
+	    if (investigasiinsidentim[i] == undefined) {
 	        delete investigasiinsidentim[i];
 	    }
 	}

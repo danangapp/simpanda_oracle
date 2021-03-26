@@ -45,7 +45,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in personil) {
-	    if (!personil[i]) {
+	    if (personil[i] == undefined) {
 	        delete personil[i];
 	    }
 	}

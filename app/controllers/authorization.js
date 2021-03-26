@@ -18,7 +18,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in authorization) {
-	    if (!authorization[i]) {
+	    if (authorization[i] == undefined) {
 	        delete authorization[i];
 	    }
 	}

@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in tipeasset) {
-	    if (!tipeasset[i]) {
+	    if (tipeasset[i] == undefined) {
 	        delete tipeasset[i];
 	    }
 	}

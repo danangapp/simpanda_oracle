@@ -16,7 +16,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in armadajagacopy1) {
-	    if (!armadajagacopy1[i]) {
+	    if (armadajagacopy1[i] == undefined) {
 	        delete armadajagacopy1[i];
 	    }
 	}

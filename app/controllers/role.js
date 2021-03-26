@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in role) {
-	    if (!role[i]) {
+	    if (role[i] == undefined) {
 	        delete role[i];
 	    }
 	}

@@ -19,7 +19,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in activitylog) {
-	    if (!activitylog[i]) {
+	    if (activitylog[i] == undefined) {
 	        delete activitylog[i];
 	    }
 	}

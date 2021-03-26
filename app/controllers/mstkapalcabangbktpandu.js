@@ -54,7 +54,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in mstkapalcabangbktpandu) {
-	    if (!mstkapalcabangbktpandu[i]) {
+	    if (mstkapalcabangbktpandu[i] == undefined) {
 	        delete mstkapalcabangbktpandu[i];
 	    }
 	}

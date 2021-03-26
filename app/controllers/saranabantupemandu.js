@@ -30,7 +30,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in saranabantupemandu) {
-	    if (!saranabantupemandu[i]) {
+	    if (saranabantupemandu[i] == undefined) {
 	        delete saranabantupemandu[i];
 	    }
 	}

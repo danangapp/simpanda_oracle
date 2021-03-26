@@ -15,7 +15,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in jeniscert) {
-	    if (!jeniscert[i]) {
+	    if (jeniscert[i] == undefined) {
 	        delete jeniscert[i];
 	    }
 	}

@@ -19,6 +19,11 @@ const EvaluasiPelimpahan = function (evaluasipelimpahan) {
     this.file_pendukung = evaluasipelimpahan.file_pendukung;
     this.tanggal_sk = evaluasipelimpahan.tanggal_sk;
     this.file_sk_pelimpahan = evaluasipelimpahan.file_sk_pelimpahan;
+    this.check_laporan_bulanan = evaluasipelimpahan.check_laporan_bulanan;
+    this.check_bukti_pembayaran_pnpb = evaluasipelimpahan.check_bukti_pembayaran_pnpb;
+    this.check_sispro = evaluasipelimpahan.check_sispro;
+    this.check_tarif_jasa_pandu_tunda = evaluasipelimpahan.check_tarif_jasa_pandu_tunda;
+    this.check_data_dukung = evaluasipelimpahan.check_data_dukung;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -71,7 +76,7 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"evaluasi_pelimpahan\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"bup\" LIKE '%" + param.q + "%' OR a.\"izin_bup\" LIKE '%" + param.q + "%' OR a.\"penetapan_perairan_pandu\" LIKE '%" + param.q + "%' OR a.\"izin_pelimpahan\" LIKE '%" + param.q + "%' OR a.\"pengawas_pemanduan\" LIKE '%" + param.q + "%' OR a.\"laporan_bulanan\" LIKE '%" + param.q + "%' OR a.\"bukti_pembayaran_pnpb\" LIKE '%" + param.q + "%' OR a.\"sispro\" LIKE '%" + param.q + "%' OR a.\"tarif_jasa_pandu_tunda\" LIKE '%" + param.q + "%' OR a.\"data_dukung\" LIKE '%" + param.q + "%' OR a.\"file_pendukung\" LIKE '%" + param.q + "%' OR a.\"tanggal_sk\" LIKE '%" + param.q + "%' OR a.\"file_sk_pelimpahan\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"bup\" LIKE '%" + param.q + "%' OR a.\"izin_bup\" LIKE '%" + param.q + "%' OR a.\"penetapan_perairan_pandu\" LIKE '%" + param.q + "%' OR a.\"izin_pelimpahan\" LIKE '%" + param.q + "%' OR a.\"pengawas_pemanduan\" LIKE '%" + param.q + "%' OR a.\"laporan_bulanan\" LIKE '%" + param.q + "%' OR a.\"bukti_pembayaran_pnpb\" LIKE '%" + param.q + "%' OR a.\"sispro\" LIKE '%" + param.q + "%' OR a.\"tarif_jasa_pandu_tunda\" LIKE '%" + param.q + "%' OR a.\"data_dukung\" LIKE '%" + param.q + "%' OR a.\"file_pendukung\" LIKE '%" + param.q + "%' OR a.\"tanggal_sk\" LIKE '%" + param.q + "%' OR a.\"file_sk_pelimpahan\" LIKE '%" + param.q + "%' OR a.\"check_laporan_bulanan\" LIKE '%" + param.q + "%' OR a.\"check_bukti_pembayaran_pnpb\" LIKE '%" + param.q + "%' OR a.\"check_sispro\" LIKE '%" + param.q + "%' OR a.\"check_tarif_jasa_pandu_tunda\" LIKE '%" + param.q + "%' OR a.\"check_data_dukung\" LIKE '%" + param.q + "%'";	
 		wheres += ")";
 	}
 
@@ -85,7 +90,7 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 
 EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) => {
 
-	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan"];
+	var arr = ["approval_status_id", "enable", "cabang_id", "bup", "izin_bup", "penetapan_perairan_pandu", "izin_pelimpahan", "pengawas_pemanduan", "laporan_bulanan", "bukti_pembayaran_pnpb", "sispro", "tarif_jasa_pandu_tunda", "data_dukung", "file_pendukung", "tanggal_sk", "file_sk_pelimpahan", "check_laporan_bulanan", "check_bukti_pembayaran_pnpb", "check_sispro", "check_tarif_jasa_pandu_tunda", "check_data_dukung"];
 	var str = f.getValueUpdate(evaluasipelimpahan, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;

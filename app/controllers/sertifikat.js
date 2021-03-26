@@ -28,7 +28,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in sertifikat) {
-	    if (!sertifikat[i]) {
+	    if (sertifikat[i] == undefined) {
 	        delete sertifikat[i];
 	    }
 	}

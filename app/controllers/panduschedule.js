@@ -28,7 +28,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in panduschedule) {
-	    if (!panduschedule[i]) {
+	    if (panduschedule[i] == undefined) {
 	        delete panduschedule[i];
 	    }
 	}

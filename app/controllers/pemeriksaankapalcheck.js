@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in pemeriksaankapalcheck) {
-	    if (!pemeriksaankapalcheck[i]) {
+	    if (pemeriksaankapalcheck[i] == undefined) {
 	        delete pemeriksaankapalcheck[i];
 	    }
 	}

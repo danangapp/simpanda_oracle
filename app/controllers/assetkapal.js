@@ -64,7 +64,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in assetkapal) {
-	    if (!assetkapal[i]) {
+	    if (assetkapal[i] == undefined) {
 	        delete assetkapal[i];
 	    }
 	}

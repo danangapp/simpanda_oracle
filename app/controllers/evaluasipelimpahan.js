@@ -23,8 +23,13 @@ exports.create = (req, res) => {
         tarif_jasa_pandu_tunda: req.fields.tarif_jasa_pandu_tunda,
         data_dukung: req.fields.data_dukung,
         file_pendukung: req.fields.file_pendukung,
-        tanggal_sk: f.toDate(req.fields.tanggal_sk),
+        tanggal_sk: req.fields.tanggal_sk,
         file_sk_pelimpahan: req.fields.file_sk_pelimpahan,
+        check_laporan_bulanan: req.fields.check_laporan_bulanan,
+        check_bukti_pembayaran_pnpb: req.fields.check_bukti_pembayaran_pnpb,
+        check_sispro: req.fields.check_sispro,
+        check_tarif_jasa_pandu_tunda: req.fields.check_tarif_jasa_pandu_tunda,
+        check_data_dukung: req.fields.check_data_dukung,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
@@ -35,7 +40,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in evaluasipelimpahan) {
-	    if (!evaluasipelimpahan[i]) {
+	    if (evaluasipelimpahan[i] == undefined) {
 	        delete evaluasipelimpahan[i];
 	    }
 	}
@@ -93,7 +98,6 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal_sk = f.toDate(req.fields.tanggal_sk);
 	if (req.fields.file_pendukung) {
 		if (req.fields.file_pendukung.substring(0, 4) == "data") {
 		    req.fields.file_pendukung = f.uploadFile64('personil', req.fields.file_pendukung);

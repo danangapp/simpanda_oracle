@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in tipesaranapemandukapal) {
-	    if (!tipesaranapemandukapal[i]) {
+	    if (tipesaranapemandukapal[i] == undefined) {
 	        delete tipesaranapemandukapal[i];
 	    }
 	}

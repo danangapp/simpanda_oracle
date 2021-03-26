@@ -24,7 +24,7 @@ exports.create = (req, res) => {
 
 	var used = {};
 	for (var i in cabang) {
-	    if (!cabang[i]) {
+	    if (cabang[i] == undefined) {
 	        delete cabang[i];
 	    }
 	}
