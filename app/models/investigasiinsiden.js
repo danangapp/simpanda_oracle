@@ -139,16 +139,6 @@ InvestigasiInsiden.getAll = async (param, result, cabang_id) => {
 
 InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) => {
 
-	var investigasi_insiden_tim = investigasiinsiden.investigasi_insiden_tim;
-	await f.query("DELETE \"investigasi_insiden_tim\" WHERE \"investigasi_insiden_id\"='" + id + "'");
-	for (var i in investigasi_insiden_tim) {
-		var id_pj = await f.getid("investigasi_insiden_tim");
-		var hv_pj = await f.headerValue(investigasiinsiden[i], id_pj);
-		var queryText = "INSERT INTO \"investigasi_insiden_tim\" " + hv_pj;
-		await f.query(queryText, 2);
-	}
-	delete investigasiinsiden.investigasi_insiden_tim;
-
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "nama", "jabatan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal", "cabang_id", "peralatan_kelengkapan_lainnya", "alat_pelindung_diri_lainnya", "perilaku_lainnya", "kebersihan_kerapihan_lainnya", "rincian_kegiatan_lainnya", "peralatan_perlengkapan_lainnya", "pemeliharaan_perbaikan_lainnya", "kemampuan_kondisi_fisik_lain", "kebersihan_kerapihan_lain", "tingkat_kemampuan_lainnya", "penjagaan_lainnya", "tindakan_terkait_lainnya"];
 	var str = f.getValueUpdate(investigasiinsiden, id, arr);
 	var id_activity_log = await f.getid("activity_log");
