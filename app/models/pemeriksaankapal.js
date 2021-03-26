@@ -55,7 +55,7 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 PemeriksaanKapal.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"status\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "'");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	var queryText = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '1' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"  WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '0' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"  WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 		const check = { "check": resQuery.rows }
@@ -66,7 +66,7 @@ PemeriksaanKapal.findById = async (id, result) => {
 
 PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "pemeriksaan_kapal");
-    var query = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '1' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"";
+    var query = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '0' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";	
