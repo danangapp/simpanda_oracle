@@ -146,7 +146,7 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 	delete investigasiinsiden.investigasi_insiden_tim;
 	await f.query("DELETE \"investigasi_insiden_tim\" WHERE \"investigasi_insiden_id\"='" + id + "'");
 	for (var i in investigasi_insiden_tim) {
-	    const x = investigasi_insiden_tim[i];
+	    var x = investigasi_insiden_tim[i];
 		x['investigasi_insiden_id'] = id;
 		x.tgl = f.toDate(x.tgl);
 		if (x.id) {
