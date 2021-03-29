@@ -86,6 +86,7 @@ AssetKapal.create = async(newAssetKapal, result, cabang_id, user_id) => {
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
+	objek.remark = "Pengajuan dibuat oleh admin cabang";
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
@@ -137,8 +138,14 @@ AssetKapal.updateById = async(id, assetkapal, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = assetkapal.approval_status_id;
 	objek.item = "assetkapal";
-	objek.remark = assetkapal.activityLog ? assetkapal.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(assetkapal.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(assetkapal.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(assetkapal.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

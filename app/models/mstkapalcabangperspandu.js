@@ -54,8 +54,14 @@ MstKapalCabangPersPandu.updateById = async(id, mstkapalcabangperspandu, result, 
 	objek.koneksi = id;
 	objek.action = mstkapalcabangperspandu.approval_status_id;
 	objek.item = "mstkapalcabangperspandu";
-	objek.remark = mstkapalcabangperspandu.activityLog ? mstkapalcabangperspandu.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(mstkapalcabangperspandu.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(mstkapalcabangperspandu.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(mstkapalcabangperspandu.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"mst_kapal_cabang_pers_pandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -101,6 +101,7 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
+	objek.remark = "Pengajuan dibuat oleh admin cabang";
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
@@ -145,8 +146,14 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 	objek.koneksi = id;
 	objek.action = investigasiinsiden.approval_status_id;
 	objek.item = "investigasiinsiden";
-	objek.remark = investigasiinsiden.activityLog ? investigasiinsiden.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(investigasiinsiden.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(investigasiinsiden.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(investigasiinsiden.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"investigasi_insiden\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -53,6 +53,7 @@ PanduSchedule.create = async(newPanduSchedule, result, cabang_id, user_id) => {
 	objek.koneksi = id;
 	objek.action = "0";
 	objek.user_id = user_id;
+	objek.remark = "Pengajuan dibuat oleh admin cabang";
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
@@ -108,8 +109,14 @@ PanduSchedule.updateById = async(id, panduschedule, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = panduschedule.approval_status_id;
 	objek.item = "panduschedule";
-	objek.remark = panduschedule.activityLog ? panduschedule.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(panduschedule.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(panduschedule.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(panduschedule.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"pandu_schedule\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

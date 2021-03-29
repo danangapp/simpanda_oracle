@@ -48,8 +48,14 @@ KondisiUmum.updateById = async(id, kondisiumum, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = kondisiumum.approval_status_id;
 	objek.item = "kondisiumum";
-	objek.remark = kondisiumum.activityLog ? kondisiumum.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(kondisiumum.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(kondisiumum.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(kondisiumum.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"kondisi_umum\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

@@ -50,8 +50,14 @@ ArmadaJagaCopy1.updateById = async(id, armadajagacopy1, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = armadajagacopy1.approval_status_id;
 	objek.item = "armadajagacopy1";
-	objek.remark = armadajagacopy1.activityLog ? armadajagacopy1.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(armadajagacopy1.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(armadajagacopy1.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(armadajagacopy1.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"armada_jaga_copy1\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

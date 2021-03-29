@@ -53,8 +53,14 @@ ActivityLog.updateById = async(id, activitylog, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = activitylog.approval_status_id;
 	objek.item = "activitylog";
-	objek.remark = activitylog.activityLog ? activitylog.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(activitylog.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(activitylog.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(activitylog.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"activity_log\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);

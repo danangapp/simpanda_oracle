@@ -87,8 +87,14 @@ MstBktTunda.updateById = async(id, mstbkttunda, result, user_id) => {
 	objek.koneksi = id;
 	objek.action = mstbkttunda.approval_status_id;
 	objek.item = "mstbkttunda";
-	objek.remark = mstbkttunda.activityLog ? mstbkttunda.activityLog.remark : '';
 	objek.user_id = user_id;
+	if(mstbkttunda.approval_status_id == 1){
+		objek.remark = "Pengajuan disetujui oleh pusat";
+	}else if(mstbkttunda.approval_status_id == 2){
+		objek.remark = "Pengajuan ditolak oleh pusat";
+	}else if(mstbkttunda.approval_status_id == 0){
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	await f.query("UPDATE \"mst_bkt_tunda\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
