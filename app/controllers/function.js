@@ -272,6 +272,7 @@ module.exports = {
                 }
 
                 if (ada_tgl == 1) {
+                    value = this.toDate(value);
                     str += "\"" + i + "\" = TO_DATE('" + value + "', 'yyyy/mm/dd'), ";
                 } else {
                     str += "\"" + i + "\" = '" + value + "', ";
