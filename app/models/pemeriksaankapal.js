@@ -33,24 +33,15 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 	const hvs = await f.headerValue(newPemeriksaanKapal, id);
 	const res = f.query(`INSERT INTO "pemeriksaan_kapal"` + hvs, newPemeriksaanKapal);
 	for (var i in check) {
-		const arr = ['id', 'kondisi_id', 'tanggal_awal', 'tanggal_akhir', 'keterangan', 'pemeriksaan_kapal_id', 'pemeriksaan_kapal_check_id', 'status'];
-		var checkA = check[i];
-		var data = [];
-		for (var a in checkA) {
-			var ada = 0;
-			for (var b in arr) {
-				if (arr[b] == a) {
-					ada = 1;
-				}
-			}
-			if (ada == 1) {
-				data[a] = checkA[a];
-			}
-		}
-	    data['pemeriksaan_kapal_id'] = id;
-	    data['pemeriksaan_kapal_check_id'] = parseInt(i) + 1;
+	    check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
 	    var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
-	    const hval = await f.headerValue(data, id_pkcd);
+		if (check[i].gambar.substring(0, 4) == "data") {;
+			check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
+		};
+		delete check[i].id;
+		delete check[i].filetext;
+	    check[i]['pemeriksaan_kapal_id'] = id;
+	    const hval = await f.headerValue(check[i], id_pkcd);
 	    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 	}
 
@@ -98,15 +89,18 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 	var check = pemeriksaankapal.check;
 	await f.query("DELETE \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\"='" + id + "'");
 	for (var i in check) {
-		check[i].pemeriksaan_kapal_id = id;
-		check[i].tanggal_awal = f.toDate(check[i].tanggal_awal);
-		check[i].tanggal_akhir = f.toDate(check[i].tanggal_akhir);
+	    check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
+	    var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
+		if (check[i].gambar.substring(0, 4) == "data") {;
+			check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
+		};
+		delete check[i].id;
 		delete check[i].filetext;
-		var id_pj = await f.getid("pemeriksaan_kapal_check_data");
-		var hv_pj = await f.headerValue(check[i], id_pj);
-		var queryText = "INSERT INTO \"pemeriksaan_kapal_check_data\" " + hv_pj;
-		await f.query(queryText, 2);
+	    check[i]['pemeriksaan_kapal_id'] = id;
+	    const hval = await f.headerValue(check[i], id_pkcd);
+	    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 	}
+
 	delete pemeriksaankapal.check;
 
 	var arr = ["approval_status_id", "enable", "asset_kapal_id", "cabang_id"];

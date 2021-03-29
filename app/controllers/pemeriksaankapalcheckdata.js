@@ -16,6 +16,7 @@ exports.create = (req, res) => {
         pemeriksaan_kapal_id: req.fields.pemeriksaan_kapal_id,
         pemeriksaan_kapal_check_id: req.fields.pemeriksaan_kapal_check_id,
         status: req.fields.status,
+        gambar: req.fields.gambar,
     };
 
 	var used = {};
@@ -23,6 +24,10 @@ exports.create = (req, res) => {
 	    if (pemeriksaankapalcheckdata[i] == undefined) {
 	        delete pemeriksaankapalcheckdata[i];
 	    }
+	}
+
+	if (req.fields.gambar) {
+	    pemeriksaankapalcheckdata.gambar = f.uploadFile64('pemeriksaan_kapal_check_data', req.fields.gambar);
 	}
 
     PemeriksaanKapalCheckData.create(pemeriksaankapalcheckdata, (err, data) => {
@@ -72,6 +77,14 @@ exports.update = (req, res) => {
 
 	req.fields.tanggal_awal = f.toDate(req.fields.tanggal_awal);
 	req.fields.tanggal_akhir = f.toDate(req.fields.tanggal_akhir);
+	if (req.fields.gambar) {
+		if (req.fields.gambar.substring(0, 4) == "data") {
+		    req.fields.gambar = f.uploadFile64('personil', req.fields.gambar);
+		} else {
+		    delete req.fields.gambar
+		}
+	}
+
 
     PemeriksaanKapalCheckData.updateById(
         req.params.id,
