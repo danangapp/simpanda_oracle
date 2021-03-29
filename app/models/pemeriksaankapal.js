@@ -56,7 +56,7 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 };
 
 PemeriksaanKapal.findById = async (id, result) => {
-	const resQuery = await f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"status\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "'");
+	const resQuery = await f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"status\", \"gambar\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "' ORDER BY \"pemeriksaan_kapal_check_id\"");
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '2' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"  WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);

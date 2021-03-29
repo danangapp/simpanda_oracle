@@ -101,6 +101,22 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 
 SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) => {
 
+	const question = saranabantupemandu.question;
+	await f.query("DELETE FROM \"sbp_data\" WHERE \"sarana_bantu_pemandu_id\" = '\" + id + \"' ");
+	for (var i in question) {
+		var id_sbpdata = await f.getid("sbp_data");
+	    const x = question[i];
+		x['sarana_bantu_pemandu_id'] = id;
+		x['answer'] = x['value'];
+		delete x.value;
+	
+	    var header = "", value = "";
+	    value = value.substring(0, value.length - 2);
+	    header = header.substring(0, header.length - 2);
+		const hv = await f.headerValue(x, id_sbpdata);
+		await f.query("INSERT INTO \"sbp_data\"" + hv);
+	}
+
 	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	var id_activity_log = await f.getid("activity_log");
