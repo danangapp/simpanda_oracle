@@ -33,13 +33,25 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 	const hvs = await f.headerValue(newPemeriksaanKapal, id);
 	const res = f.query(`INSERT INTO "pemeriksaan_kapal"` + hvs, newPemeriksaanKapal);
 	for (var i in check) {
-	    const pemeriksaan_kapal_check_id = check[i].id;
-	    const kondisi_id = check[i].kondisi_id;
-	    const tanggal_awal = f.toDate(check[i].tanggal_awal);
-	    const tanggal_akhir = f.toDate(check[i].tanggal_akhir);
-	    const keterangan = check[i].keterangan;
+		const arr = ['id', 'kondisi_id', 'tanggal_awal', 'tanggal_akhir', 'keterangan', 'pemeriksaan_kapal_id', 'pemeriksaan_kapal_check_id', 'status'];
+		var checkA = check[i];
+		var data = [];
+		for (var a in checkA) {
+			var ada = 0;
+			for (var b in arr) {
+				if (arr[b] == a) {
+					ada = 1;
+				}
+			}
+			if (ada == 1) {
+				data[a] = checkA[a];
+			}
+		}
+	    data['pemeriksaan_kapal_id'] = id;
+	    data['pemeriksaan_kapal_check_id'] = parseInt(i) + 1;
 	    var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
-	    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data" ("id", "pemeriksaan_kapal_check_id", "kondisi_id", "tanggal_awal", "tanggal_akhir", "keterangan", "pemeriksaan_kapal_id") VALUES ('${id_pkcd}', '${pemeriksaan_kapal_check_id}', '${kondisi_id}', TO_DATE('${tanggal_awal}', 'yyyy/mm/dd'), TO_DATE('${tanggal_akhir}', 'yyyy/mm/dd'), '${keterangan}', '${id}')`);
+	    const hval = await f.headerValue(data, id_pkcd);
+	    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 	}
 
 	objek.koneksi = id;
@@ -89,6 +101,7 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 		check[i].pemeriksaan_kapal_id = id;
 		check[i].tanggal_awal = f.toDate(check[i].tanggal_awal);
 		check[i].tanggal_akhir = f.toDate(check[i].tanggal_akhir);
+		delete check[i].filetext;
 		var id_pj = await f.getid("pemeriksaan_kapal_check_data");
 		var hv_pj = await f.headerValue(check[i], id_pj);
 		var queryText = "INSERT INTO \"pemeriksaan_kapal_check_data\" " + hv_pj;
