@@ -152,10 +152,10 @@ InvestigasiInsiden.updateById = async (id, investigasiinsiden, result, user_id) 
 		if (x.id) {
 			delete x.id;
 		}
+		console.log("x", x);
 		const id_inv = await f.getid("investigasi_insiden_tim");
 		const hval = await f.headerValue(x, id_inv);
 		await f.query("INSERT INTO \"investigasi_insiden_tim\" " + hval);
-		console.log("INSERT INTO \"investigasi_insiden_tim\" " + hval);
 	}
 
 	var arr = ["approval_status_id", "enable", "no_report", "unit_terkait", "judul_report", "kronologi_kejadian", "temuan_investigasi", "bukti_temuan", "saksi_1", "saksi_2", "investigator", "rincian_kegiatan", "luka_sakit", "wujud_cedera", "bagian_tubuh_cedera", "mekanisme_cedera", "kerusakan_alat", "uraian_kejadian", "analisa_penyebab", "peralatan_kelengkapan", "alat_pelindung_diri", "perilaku", "kebersihan_kerapihan", "peralatan_perlengkapan", "kemampuan_kondisi_fisik", "pemeliharaan_perbaikan", "design", "tingkat_kemampuan", "penjagaan", "tindakan_terkait", "faktor_utama_insiden", "rekomendasi_tindakan", "pihak_yang_bertanggungjawab", "pelaksana", "tanggal_pemeriksaan", "nama", "jabatan", "status_investigasi_insiden_id", "prepard_by", "prepard_tanggal", "reviewed_by", "reviewed_tanggal", "approved_by", "approved_tanggal", "cabang_id", "peralatan_kelengkapan_lainnya", "alat_pelindung_diri_lainnya", "perilaku_lainnya", "kebersihan_kerapihan_lainnya", "rincian_kegiatan_lainnya", "peralatan_perlengkapan_lainnya", "pemeliharaan_perbaikan_lainnya", "kemampuan_kondisi_fisik_lain", "kebersihan_kerapihan_lain", "tingkat_kemampuan_lainnya", "penjagaan_lainnya", "tindakan_terkait_lainnya"];
