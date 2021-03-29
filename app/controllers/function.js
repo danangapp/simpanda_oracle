@@ -60,6 +60,10 @@ module.exports = {
         base64Data = base64Data.replace(/^data:image\/JPEG;base64,/, "");
         base64Data = base64Data.replace(/^data:application\/pdf;base64,/, "");
         base64Data = base64Data.replace(/^data:application\/PDF;base64,/, "");
+        base64Data = base64Data.replace(/^data:application\/xlsx;base64,/, "");
+        base64Data = base64Data.replace(/^data:application\/XLSX;base64,/, "");
+        base64Data = base64Data.replace(/^data:application\/docx;base64,/, "");
+        base64Data = base64Data.replace(/^data:application\/DOCX;base64,/, "");
 
         require("fs").writeFile(path + updateTo, base64Data, 'base64', function (err) {
             console.log(err);
