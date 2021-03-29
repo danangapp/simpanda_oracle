@@ -16,12 +16,14 @@ const setActivity = (objects, koneksi = 1) => {
 		objek.user_id = objects.user_id;
 		objek.remark = objects.remark;
 		objek.koneksi = koneksi;
+		objek.keterangan = objects.keterangan;
 		delete objects.date;
 		delete objects.item;
 		delete objects.action;
 		delete objects.user_id;
 		delete objects.remark;
 		delete objects.koneksi;
+		delete objects.keterangan;
 		return objects
 };
 
@@ -58,7 +60,7 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 
 PemeriksaanKapal.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT \"kondisi_id\", \"pemeriksaan_kapal_check_id\", \"tanggal_awal\", \"tanggal_akhir\", \"status\", \"gambar\", \"keterangan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\" = '" + id + "' ORDER BY \"pemeriksaan_kapal_check_id\"");
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pemeriksaan_kapal\" b ON a.\"item\" = 'pemeriksaan_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '2' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"  WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -109,6 +111,7 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pemeriksaankapal.approval_status_id;
+	objek.keterangan = pemeriksaankapal.keterangan;
 	objek.item = "pemeriksaankapal";
 	objek.user_id = user_id;
 	if(pemeriksaankapal.approval_status_id == 1){
@@ -116,7 +119,7 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 	}else if(pemeriksaankapal.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(pemeriksaankapal.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

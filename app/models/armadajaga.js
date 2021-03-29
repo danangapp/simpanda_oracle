@@ -49,6 +49,7 @@ ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = armadajaga.approval_status_id;
+	objek.keterangan = armadajaga.keterangan;
 	objek.item = "armadajaga";
 	objek.user_id = user_id;
 	if(armadajaga.approval_status_id == 1){
@@ -56,7 +57,7 @@ ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
 	}else if(armadajaga.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(armadajaga.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

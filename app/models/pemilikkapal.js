@@ -47,6 +47,7 @@ PemilikKapal.updateById = async(id, pemilikkapal, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = pemilikkapal.approval_status_id;
+	objek.keterangan = pemilikkapal.keterangan;
 	objek.item = "pemilikkapal";
 	objek.user_id = user_id;
 	if(pemilikkapal.approval_status_id == 1){
@@ -54,7 +55,7 @@ PemilikKapal.updateById = async(id, pemilikkapal, result, user_id) => {
 	}else if(pemilikkapal.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(pemilikkapal.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

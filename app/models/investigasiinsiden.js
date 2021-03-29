@@ -69,12 +69,14 @@ const setActivity = (objects, koneksi = 1) => {
 		objek.user_id = objects.user_id;
 		objek.remark = objects.remark;
 		objek.koneksi = koneksi;
+		objek.keterangan = objects.keterangan;
 		delete objects.date;
 		delete objects.item;
 		delete objects.action;
 		delete objects.user_id;
 		delete objects.remark;
 		delete objects.koneksi;
+		delete objects.keterangan;
 		return objects
 };
 
@@ -111,7 +113,7 @@ InvestigasiInsiden.create = async(newInvestigasiInsiden, result, cabang_id, user
 
 InvestigasiInsiden.findById = async (id, result) => {
 	const resQuery =await f.query("SELECT * FROM \"investigasi_insiden_tim\" WHERE \"investigasi_insiden_id\" = '" + id + "'");
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"investigasi_insiden\" b ON a.\"item\" = 'investigasi_insiden' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"investigasi_insiden\" b ON a.\"item\" = 'investigasi_insiden' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"status_investigasi_insiden\", a4.\"nama\" as \"cabang\" FROM \"investigasi_insiden\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"status_investigasi_insiden\" a3 ON a.\"status_investigasi_insiden_id\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -145,6 +147,7 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = investigasiinsiden.approval_status_id;
+	objek.keterangan = investigasiinsiden.keterangan;
 	objek.item = "investigasiinsiden";
 	objek.user_id = user_id;
 	if(investigasiinsiden.approval_status_id == 1){
@@ -152,7 +155,7 @@ InvestigasiInsiden.updateById = async(id, investigasiinsiden, result, user_id) =
 	}else if(investigasiinsiden.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(investigasiinsiden.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

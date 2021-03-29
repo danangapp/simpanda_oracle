@@ -21,12 +21,14 @@ const setActivity = (objects, koneksi = 1) => {
 		objek.user_id = objects.user_id;
 		objek.remark = objects.remark;
 		objek.koneksi = koneksi;
+		objek.keterangan = objects.keterangan;
 		delete objects.date;
 		delete objects.item;
 		delete objects.action;
 		delete objects.user_id;
 		delete objects.remark;
 		delete objects.koneksi;
+		delete objects.keterangan;
 		return objects
 };
 
@@ -51,7 +53,7 @@ AssetStasiunEquipment.create = async(newAssetStasiunEquipment, result, cabang_id
 };
 
 AssetStasiunEquipment.findById = async (id, result) => {
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_stasiun_equipment\" b ON a.\"item\" = 'asset_stasiun_equipment' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_stasiun_equipment\" b ON a.\"item\" = 'asset_stasiun_equipment' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"flag\" as \"tipe_asset\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\", a4.\"nama\" as \"cabang\" FROM \"asset_stasiun_equipment\" a  LEFT JOIN \"tipe_asset\" a1 ON a.\"tipe_asset_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"cabang\" a4 ON a.\"cabang_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -85,6 +87,7 @@ AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result, user
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = assetstasiunequipment.approval_status_id;
+	objek.keterangan = assetstasiunequipment.keterangan;
 	objek.item = "assetstasiunequipment";
 	objek.user_id = user_id;
 	if(assetstasiunequipment.approval_status_id == 1){
@@ -92,7 +95,7 @@ AssetStasiunEquipment.updateById = async(id, assetstasiunequipment, result, user
 	}else if(assetstasiunequipment.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(assetstasiunequipment.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

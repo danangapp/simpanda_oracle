@@ -48,6 +48,7 @@ UserAccess.updateById = async(id, useraccess, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = useraccess.approval_status_id;
+	objek.keterangan = useraccess.keterangan;
 	objek.item = "useraccess";
 	objek.user_id = user_id;
 	if(useraccess.approval_status_id == 1){
@@ -55,7 +56,7 @@ UserAccess.updateById = async(id, useraccess, result, user_id) => {
 	}else if(useraccess.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(useraccess.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

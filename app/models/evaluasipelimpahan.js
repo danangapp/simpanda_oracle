@@ -33,12 +33,14 @@ const setActivity = (objects, koneksi = 1) => {
 		objek.user_id = objects.user_id;
 		objek.remark = objects.remark;
 		objek.koneksi = koneksi;
+		objek.keterangan = objects.keterangan;
 		delete objects.date;
 		delete objects.item;
 		delete objects.action;
 		delete objects.user_id;
 		delete objects.remark;
 		delete objects.koneksi;
+		delete objects.keterangan;
 		return objects
 };
 
@@ -63,7 +65,7 @@ EvaluasiPelimpahan.create = async(newEvaluasiPelimpahan, result, cabang_id, user
 };
 
 EvaluasiPelimpahan.findById = async (id, result) => {
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"evaluasi_pelimpahan\" b ON a.\"item\" = 'evaluasi_pelimpahan' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"evaluasi_pelimpahan\" b ON a.\"item\" = 'evaluasi_pelimpahan' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"evaluasi_pelimpahan\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -96,6 +98,7 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) =
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = evaluasipelimpahan.approval_status_id;
+	objek.keterangan = evaluasipelimpahan.keterangan;
 	objek.item = "evaluasipelimpahan";
 	objek.user_id = user_id;
 	if(evaluasipelimpahan.approval_status_id == 1){
@@ -103,7 +106,7 @@ EvaluasiPelimpahan.updateById = async(id, evaluasipelimpahan, result, user_id) =
 	}else if(evaluasipelimpahan.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(evaluasipelimpahan.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

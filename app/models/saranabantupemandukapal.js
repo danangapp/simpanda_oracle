@@ -113,6 +113,7 @@ SaranaBantuPemanduKapal.updateById = async(id, saranabantupemandukapal, result, 
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = saranabantupemandukapal.approval_status_id;
+	objek.keterangan = saranabantupemandukapal.keterangan;
 	objek.item = "saranabantupemandukapal";
 	objek.user_id = user_id;
 	if(saranabantupemandukapal.approval_status_id == 1){
@@ -120,7 +121,7 @@ SaranaBantuPemanduKapal.updateById = async(id, saranabantupemandukapal, result, 
 	}else if(saranabantupemandukapal.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(saranabantupemandukapal.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

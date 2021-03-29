@@ -47,6 +47,7 @@ StatusIjazah.updateById = async(id, statusijazah, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = statusijazah.approval_status_id;
+	objek.keterangan = statusijazah.keterangan;
 	objek.item = "statusijazah";
 	objek.user_id = user_id;
 	if(statusijazah.approval_status_id == 1){
@@ -54,7 +55,7 @@ StatusIjazah.updateById = async(id, statusijazah, result, user_id) => {
 	}else if(statusijazah.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(statusijazah.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

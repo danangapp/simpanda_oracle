@@ -57,6 +57,7 @@ MstFasilitas.updateById = async(id, mstfasilitas, result, user_id) => {
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstfasilitas.approval_status_id;
+	objek.keterangan = mstfasilitas.keterangan;
 	objek.item = "mstfasilitas";
 	objek.user_id = user_id;
 	if(mstfasilitas.approval_status_id == 1){
@@ -64,7 +65,7 @@ MstFasilitas.updateById = async(id, mstfasilitas, result, user_id) => {
 	}else if(mstfasilitas.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(mstfasilitas.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

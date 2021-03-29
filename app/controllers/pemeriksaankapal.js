@@ -19,6 +19,7 @@ exports.create = (req, res) => {
         user_id: req.fields.user_id,
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
+        keterangan: req.fields.keterangan,
         check: req.fields.check,
     };
 

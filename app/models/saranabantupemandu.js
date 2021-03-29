@@ -22,12 +22,14 @@ const setActivity = (objects, koneksi = 1) => {
 		objek.user_id = objects.user_id;
 		objek.remark = objects.remark;
 		objek.koneksi = koneksi;
+		objek.keterangan = objects.keterangan;
 		delete objects.date;
 		delete objects.item;
 		delete objects.action;
 		delete objects.user_id;
 		delete objects.remark;
 		delete objects.koneksi;
+		delete objects.keterangan;
 		return objects
 };
 
@@ -69,7 +71,7 @@ SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user
 
 SaranaBantuPemandu.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT * FROM \"sbp_data\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "'");
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"sarana_bantu_pemandu\" b ON a.\"item\" = 'sarana_bantu_pemandu' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\" , a3.\"sarana_config_question\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -103,7 +105,7 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) => {
 
 	const question = saranabantupemandu.question;
-	await f.query("DELETE FROM \"sbp_data\" WHERE \"sarana_bantu_pemandu_id\" = '\" + id + \"' ");
+	await f.query("DELETE FROM \"sbp_data\" WHERE \"sarana_bantu_pemandu_id\" = '" + id + "' ");
 	for (var i in question) {
 		var id_sbpdata = await f.getid("sbp_data");
 	    const x = question[i];
@@ -123,6 +125,7 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) =
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = saranabantupemandu.approval_status_id;
+	objek.keterangan = saranabantupemandu.keterangan;
 	objek.item = "saranabantupemandu";
 	objek.user_id = user_id;
 	if(saranabantupemandu.approval_status_id == 1){
@@ -130,7 +133,7 @@ SaranaBantuPemandu.updateById = async(id, saranabantupemandu, result, user_id) =
 	}else if(saranabantupemandu.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(saranabantupemandu.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);

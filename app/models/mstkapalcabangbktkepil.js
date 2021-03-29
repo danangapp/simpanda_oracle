@@ -62,6 +62,7 @@ MstKapalCabangBktKepil.updateById = async(id, mstkapalcabangbktkepil, result, us
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
 	objek.action = mstkapalcabangbktkepil.approval_status_id;
+	objek.keterangan = mstkapalcabangbktkepil.keterangan;
 	objek.item = "mstkapalcabangbktkepil";
 	objek.user_id = user_id;
 	if(mstkapalcabangbktkepil.approval_status_id == 1){
@@ -69,7 +70,7 @@ MstKapalCabangBktKepil.updateById = async(id, mstkapalcabangbktkepil, result, us
 	}else if(mstkapalcabangbktkepil.approval_status_id == 2){
 		objek.remark = "Pengajuan ditolak oleh pusat";
 	}else if(mstkapalcabangbktkepil.approval_status_id == 0){
-		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
