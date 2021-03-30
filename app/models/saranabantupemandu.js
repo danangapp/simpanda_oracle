@@ -35,7 +35,6 @@ const setActivity = (objects, koneksi = 1) => {
 
 SaranaBantuPemandu.create = async(newSaranaBantuPemandu, result, cabang_id, user_id) => {
 	const question = newSaranaBantuPemandu.question;
-	delete newSaranaBantuPemandu.question;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
 	var id = await f.getid("sarana_bantu_pemandu");
 	const hv = await f.headerValue(newSaranaBantuPemandu, id);

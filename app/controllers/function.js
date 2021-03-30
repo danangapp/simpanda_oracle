@@ -137,33 +137,35 @@ module.exports = {
         object.id = id;
         for (var a in object) {
             const val = object[a];
-            if (val != undefined) {
-                header += "\"" + a + "\", ";
+            if (typeof val != 'object') {
+                if (val != undefined) {
+                    header += "\"" + a + "\", ";
 
-                var ada_tgl = 0;
-                var ada_tglTime = 0;
-                for (var c in arrDate) {
-                    if (a == arrDate[c]) {
-                        ada_tgl = 1;
+                    var ada_tgl = 0;
+                    var ada_tglTime = 0;
+                    for (var c in arrDate) {
+                        if (a == arrDate[c]) {
+                            ada_tgl = 1;
+                        }
                     }
-                }
 
-                for (var c in arrDateTime) {
-                    if (a == arrDateTime[c]) {
-                        ada_tglTime = 1;
+                    for (var c in arrDateTime) {
+                        if (a == arrDateTime[c]) {
+                            ada_tglTime = 1;
+                        }
                     }
-                }
 
-                if (a != "id") {
-                    if (ada_tgl == 1) {
-                        value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
-                    } else if (ada_tglTime == 1) {
-                        value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
+                    if (a != "id") {
+                        if (ada_tgl == 1) {
+                            value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                        } else if (ada_tglTime == 1) {
+                            value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
+                        } else {
+                            value += "'" + val + "', ";
+                        }
                     } else {
-                        value += "'" + val + "', ";
+                        value += "" + val + ", ";
                     }
-                } else {
-                    value += "" + val + ", ";
                 }
             }
         }
