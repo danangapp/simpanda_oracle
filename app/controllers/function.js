@@ -136,7 +136,7 @@ module.exports = {
         var header = "", value = "";
         object.id = id;
         for (var a in object) {
-            const val = object[a];
+            var val = object[a];
             if (typeof val != 'object') {
                 if (val != undefined) {
                     header += "\"" + a + "\", ";
@@ -157,6 +157,7 @@ module.exports = {
 
                     if (a != "id") {
                         if (ada_tgl == 1) {
+                            val = this.toDate(val);
                             value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
                         } else if (ada_tglTime == 1) {
                             value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
