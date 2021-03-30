@@ -4,8 +4,10 @@ var XlsxTemplate = require('xlsx-template');
 const formidableMiddleware = require('express-formidable');
 const f = require('./app/controllers/function')
 require('dotenv').config();
+var cors = require('cors')
 
 const app = express();
+app.use(cors());
 app.use(formidableMiddleware());
 app.use(
   formidableMiddleware({
