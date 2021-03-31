@@ -9,19 +9,9 @@ exports.rekapsaranabantu = async (req, res) => {
     output = output1.rows;
     var arr = {}
     for (var a in output) {
-        if (output[a].tipe_asset_id == "1") {
-            arr["td_cv" + a] = output[a].answer == 1 ? "" : "";
-            arr["td_ctv" + a] = output[a].answer == 2 ? "" : "";
-            arr["td_cta" + a] = output[a].answer == 0 ? "" : "";
-        } else if (output[a].tipe_asset_id == "2") {
-            arr["pd_cv" + a] = output[a].answer == 1 ? "" : "";
-            arr["pd_ctv" + a] = output[a].answer == 2 ? "" : "";
-            arr["pd_cta" + a] = output[a].answer == 0 ? "" : "";
-        } else if (output[a].tipe_asset_id == "3") {
-            arr["cv" + a] = output[a].answer == 1 ? "" : "";
-            arr["ctv" + a] = output[a].answer == 2 ? "" : "";
-            arr["cta" + a] = output[a].answer == 0 ? "" : "";
-        }
+        arr["v" + a] = output[a].answer == 1 ? "" : "";
+        arr["tv" + a] = output[a].answer == 2 ? "" : "";
+        arr["ta" + a] = output[a].answer == 0 ? "" : "";
     }
     // console.log(arr)
     // arr["test"] = "yaya";
