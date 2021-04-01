@@ -50,7 +50,7 @@ var requestToken = async function (req, res, next) {
   // res.send("tester")
 }
 
-app.use(requestToken)
+// app.use(requestToken)
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Simpanda Application" });
