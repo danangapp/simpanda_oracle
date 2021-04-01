@@ -31,7 +31,7 @@ exports.pemeriksaankapal = async (req, res) => {
                     message: "Error retrieving report with id " + req.params.id
                 });
             }
-        } else res.download('./files/reports/pemeriksaankapal/' + data);
+        } else res.send(data);
     }, req.cabang_id);
 };
 

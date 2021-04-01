@@ -93,10 +93,9 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
         var out = template.generate();
         const fileName = './files/reports/pemeriksaankapal/' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
+        // f.download('http://10.88.49.27:4000/reports/1617271767965.xlsx')
     });
-    setTimeout(() => {
-        result(null, t + '.xlsx');
-    }, 500);
+    result(null, { "name": t + '.xlsx' });
 };
 
 Report.investigasiinsiden = async (id, result, cabang_id) => {
