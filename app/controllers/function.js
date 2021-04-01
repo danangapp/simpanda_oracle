@@ -1,6 +1,7 @@
 var moment = require('moment');
 var mv = require('mv');
-const fs = require('fs');
+var http = require('http');
+var fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
 var sjcl = require('sjcl');
 require('dotenv').config();
@@ -353,6 +354,18 @@ module.exports = {
             var out = template.generate();
             fs.writeFileSync(outputPath, out, 'binary');
             return "";
+        });
+    },
+    download: function (url, dest, cb) {
+        var file = fs.createWriteStream(dest);
+        var request = http.get(url, function (response) {
+            response.pipe(file);
+            file.on('finish', function () {
+                file.close(cb);  // close() is async, call cb after close completes.
+            });
+        }).on('error', function (err) { // Handle errors
+            fs.unlink(dest); // Delete the file async. (But we don't check the result)
+            if (cb) cb(err.message);
         });
     }
 };
