@@ -1,6 +1,7 @@
 const f = require('../controllers/function');
 const fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
+const createReport = require('docx-templates').default;
 // constructor
 const Report = function (report) {
     this.nama = report.nama;
@@ -58,6 +59,71 @@ Report.rekapsaranabantu = async (id, result, cabang_id) => {
         var out = template.generate();
         fs.writeFileSync('d:/danang1.xlsx', out, 'binary');
     });
+    result(null, "ok");
+};
+
+Report.pemeriksaankapal = async (id, result, cabang_id) => {
+    var query = `SELECT
+                    b."question",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN '' ELSE '' END ) AS "baik",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN '' ELSE '' END ) AS "rusak",
+                    a."tanggal_awal",
+                    a."tanggal_akhir",
+                    a."keterangan",
+                    ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
+                FROM
+                    "pemeriksaan_kapal_check_data" a
+                INNER JOIN "pemeriksaan_kapal_check" b ON a."pemeriksaan_kapal_check_id" = b."id"
+                WHERE
+                    a."pemeriksaan_kapal_id" = '${id}'
+                ORDER BY
+                    b."id"`;
+
+    var output1 = await f.query(query);
+    var output = output1.rows;
+    var arr = {};
+    arr['pk'] = output;
+    console.log(arr)
+
+    fs.readFile('./report/Report-Inspection-Pemeriksaan kapal.xlsx', function async(err, dt) {
+        var template = new XlsxTemplate(dt);
+        template.substitute(1, arr);
+        var out = template.generate();
+        fs.writeFileSync('d:/danang1.xlsx', out, 'binary');
+    });
+    result(null, "ok");
+};
+
+Report.investigasiinsiden = async (id, result, cabang_id) => {
+    var query = `SELECT * FROM "investigasi_insiden_check"`;
+
+    var output1 = await f.query(query);
+    var output = output1.rows;
+    var arr = {};
+    var y = "x";
+    var out = [];
+    for (var x in output) {
+        var jenis = output[x].jenis;
+        var kode = output[x].kode;
+        var nama = output[x].nama;
+        if (jenis != y) {
+            // console.log("lewat sini" + y)
+            out = []
+            y = jenis
+            arr[jenis] = out;
+        }
+        out.push({ jenis: jenis, kode: kode, nama: nama });
+    }
+    arr['k'] = out;
+    console.log(arr);
+    const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
+
+    const buffer = await createReport({
+        template,
+        data: arr,
+    });
+
+    fs.writeFileSync('d:/report.docx', buffer)
     result(null, "ok");
 };
 

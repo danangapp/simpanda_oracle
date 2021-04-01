@@ -18,3 +18,35 @@ exports.rekapsaranabantu = async (req, res) => {
         } else res.send(data);
     }, req.cabang_id);
 };
+
+exports.pemeriksaankapal = async (req, res) => {
+    Report.pemeriksaankapal(req.params.id, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else res.send(data);
+    }, req.cabang_id);
+};
+
+exports.investigasiinsiden = async (req, res) => {
+    Report.investigasiinsiden(req.params.id, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else res.send(data);
+    }, req.cabang_id);
+};
