@@ -85,13 +85,16 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     arr['pk'] = output;
     console.log(arr)
 
+    var d = new Date();
+    var t = d.getTime();
     fs.readFile('./report/Report-Inspection-Pemeriksaan kapal.xlsx', function async(err, dt) {
         var template = new XlsxTemplate(dt);
         template.substitute(1, arr);
         var out = template.generate();
-        fs.writeFileSync('d:/danang1.xlsx', out, 'binary');
+        const fileName = './files/reports/' + t + '.xlsx';
+        fs.writeFileSync(fileName, out, 'binary');
     });
-    result(null, "ok");
+    result(null, t + '.xlsx');
 };
 
 Report.investigasiinsiden = async (id, result, cabang_id) => {
