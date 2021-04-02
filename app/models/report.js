@@ -91,7 +91,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
         var template = new XlsxTemplate(dt);
         template.substitute(1, arr);
         var out = template.generate();
-        const fileName = './files/reports/pemeriksaankapal/' + t + '.xlsx';
+        const fileName = './files/reports/' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
     });
     setTimeout(() => {

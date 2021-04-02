@@ -32,7 +32,14 @@ exports.pemeriksaankapal = async (req, res) => {
                 });
             }
         } else {
-            res.download('./files/reports/pemeriksaankapal/' + data);
+            var filePath = './files/reports/' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+
         }
     }, req.cabang_id);
 };
