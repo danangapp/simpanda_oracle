@@ -121,7 +121,7 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         out.push({ jenis: jenis, kode: kode, nama: nama });
     }
     arr['k'] = out;
-    console.log(arr);
+    // console.log(arr);
     const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
 
     const buffer = await createReport({
@@ -129,8 +129,11 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         data: arr,
     });
 
-    fs.writeFileSync('d:/report.docx', buffer)
-    result(null, "ok");
+    var d = new Date();
+    var t = d.getTime();
+    const fileName = './files/reports/investigasiinsiden' + t + '.docx';
+    fs.writeFileSync(fileName, buffer)
+    result(null, t + '.docx');
 };
 
 

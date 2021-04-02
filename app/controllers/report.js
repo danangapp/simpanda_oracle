@@ -65,6 +65,15 @@ exports.investigasiinsiden = async (req, res) => {
                     message: "Error retrieving report with id " + req.params.id
                 });
             }
-        } else res.send(data);
+        } else {
+            var filePath = './files/reports/investigasiinsiden' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+
+        }
     }, req.cabang_id);
 };
