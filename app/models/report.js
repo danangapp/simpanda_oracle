@@ -7,7 +7,7 @@ const Report = function (report) {
     this.nama = report.nama;
 };
 
-Report.rekapsaranabantu = async (id, result, cabang_id) => {
+Report.saranabantupemandu = async (id, result, cabang_id) => {
     var query = `SELECT a."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
         b."negara_pembuat", b."horse_power", b."kecepatan", c."nama" AS "cabang", a."pelaksana", a."tanggal_pemeriksaan" FROM "sarana_bantu_pemandu" a
         INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" WHERE a."id" = '${id}'`;
@@ -51,13 +51,16 @@ Report.rekapsaranabantu = async (id, result, cabang_id) => {
         output[a]['no'] = parseInt(a) + 1;
     }
     arr['operator'] = output;
-
+    var d = new Date();
+    var t = d.getTime();
     fs.readFile('./report/Report-Inspection-Sarana Bantu Pemanduan ' + jenis + '.xlsx', function async(err, dt) {
         var template = new XlsxTemplate(dt);
         template.substitute(1, arr);
         template.substitute(2, arr);
         var out = template.generate();
-        fs.writeFileSync('d:/danang1.xlsx', out, 'binary');
+        const fileName = './files/reports/saranabantupemandu' + t + '.xlsx';
+        fs.writeFileSync(fileName, out, 'binary');
+        result(null, t + '.xlsx');
     });
     result(null, "ok");
 };
@@ -91,12 +94,10 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
         var template = new XlsxTemplate(dt);
         template.substitute(1, arr);
         var out = template.generate();
-        const fileName = './files/reports/' + t + '.xlsx';
+        const fileName = './files/reports/pemeriksaankapal' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
-    });
-    setTimeout(() => {
         result(null, t + '.xlsx');
-    }, 500);
+    });
 };
 
 Report.investigasiinsiden = async (id, result, cabang_id) => {

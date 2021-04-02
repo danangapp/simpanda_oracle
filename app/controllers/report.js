@@ -3,8 +3,8 @@ const f = require('./function');
 const fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
 
-exports.rekapsaranabantu = async (req, res) => {
-    Report.rekapsaranabantu(req.params.id, (err, data) => {
+exports.saranabantupemandu = async (req, res) => {
+    Report.saranabantupemandu(req.params.id, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
@@ -15,7 +15,16 @@ exports.rekapsaranabantu = async (req, res) => {
                     message: "Error retrieving report with id " + req.params.id
                 });
             }
-        } else res.send(data);
+        } else {
+            var filePath = './files/reports/saranabantupemandu' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+
+        }
     }, req.cabang_id);
 };
 
@@ -32,7 +41,7 @@ exports.pemeriksaankapal = async (req, res) => {
                 });
             }
         } else {
-            var filePath = './files/reports/' + data;
+            var filePath = './files/reports/pemeriksaankapal' + data;
             res.download(filePath, function (err) {
                 if (err) console.log(err);
                 fs.unlink(filePath, function () {
