@@ -137,5 +137,40 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
 };
 
 
+Report.evaluasipelimpahan = async (id, result, cabang_id) => {
+    var query = `SELECT
+                    b."question",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN '' ELSE '' END ) AS "baik",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN '' ELSE '' END ) AS "rusak",
+                    a."tanggal_awal",
+                    a."tanggal_akhir",
+                    a."keterangan",
+                    ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
+                FROM
+                    "pemeriksaan_kapal_check_data" a
+                INNER JOIN "pemeriksaan_kapal_check" b ON a."pemeriksaan_kapal_check_id" = b."id"
+                WHERE
+                    a."pemeriksaan_kapal_id" = '${id}'
+                ORDER BY
+                    b."id"`;
+
+    var output1 = await f.query(query);
+    var output = output1.rows;
+    var arr = {};
+    arr['pk'] = output;
+    // console.log(arr)
+
+    var d = new Date();
+    var t = d.getTime();
+    fs.readFile('./report/Report-Inspection-Evaluasi Pelimpahan.xlsx', function async(err, dt) {
+        var template = new XlsxTemplate(dt);
+        template.substitute(1, arr);
+        var out = template.generate();
+        const fileName = './files/reports/evaluasipelimpahan' + t + '.xlsx';
+        fs.writeFileSync(fileName, out, 'binary');
+        result(null, t + '.xlsx');
+    });
+};
+
 module.exports = Report;
 
