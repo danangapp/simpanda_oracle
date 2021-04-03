@@ -182,18 +182,21 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 
 
-Report.crewlist = async (id, result, cabang_id) => {
+Report.crewlist = async (req, result, cabang_id) => {
+    const date = req.fields.date;
+    const date1 = date.split("-");
+
     var query = `SELECT
-            b."nama_asset",
-            e."nipp",
-            e."nama" AS "personil",
-            e."jabatan",
-            e."nomor_hp",
-            e."manning",
-            e."agency",
-            c."nama" AS "cabang",
-            d."nama" AS "fleet",
-            a."keterangan" AS "keterangan_sarana_bantu"
+            MAX(b."nama_asset") AS "nama_asset",
+            MAX(e."nipp") AS "nipp",
+            MAX(e."nama") AS "personil",
+            MAX(e."jabatan") AS "jabatan",
+            MAX(e."nomor_hp") AS "nomor_hp",
+            MAX(e."manning") AS "manning",
+            MAX(e."agency") AS "agency",
+            MAX(c."nama") AS "cabang",
+            MAX(d."nama") AS "fleet",
+            MAX(a."keterangan") AS "keterangan_sarana_bantu"
         FROM
             "sarana_bantu_pemandu" a
             INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
@@ -201,6 +204,8 @@ Report.crewlist = async (id, result, cabang_id) => {
             INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
             LEFT JOIN "personil" e ON a."personil_id" = e."id"
         WHERE a."cabang_id" = '${cabang_id}'
+            AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
+        GROUP BY a."asset_kapal_id"
     `;
 
     var output1 = await f.query(query);

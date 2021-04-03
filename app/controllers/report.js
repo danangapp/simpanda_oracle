@@ -105,7 +105,7 @@ exports.evaluasipelimpahan = async (req, res) => {
 
 
 exports.crewlist = async (req, res) => {
-    Report.crewlist(req.params.id, (err, data) => {
+    Report.crewlist(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
