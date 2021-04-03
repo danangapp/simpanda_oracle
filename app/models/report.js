@@ -121,7 +121,15 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         out.push({ jenis: jenis, kode: kode, nama: nama });
     }
     arr['k'] = out;
-    // console.log(arr);
+
+    query = `SELECT * FROM "investigasi_insiden" WHERE "id"='${id}'`;
+    output1 = await f.query(query);
+    output = output1.rows;
+    output = output[0];
+    for (var a in output) {
+        arr[a] = output[a] || "";
+    }
+
     const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
 
     const buffer = await createReport({
@@ -170,6 +178,35 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         fs.writeFileSync(fileName, out, 'binary');
         result(null, t + '.xlsx');
     });
+};
+
+
+
+Report.crewlist = async (id, result, cabang_id) => {
+    var query = `SELECT
+            b."nama_asset",
+            e."nipp",
+            e."nama" AS "personil",
+            e."jabatan",
+            e."nomor_hp",
+            e."manning",
+            e."agency",
+            c."nama" AS "cabang",
+            d."nama" AS "fleet",
+            a."keterangan" AS "keterangan_sarana_bantu"
+        FROM
+            "sarana_bantu_pemandu" a
+            INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
+            INNER JOIN "cabang" c ON a."cabang_id" = c."id"
+            INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
+            LEFT JOIN "personil" e ON a."personil_id" = e."id"
+        WHERE a."cabang_id" = '${cabang_id}'
+    `;
+
+    var output1 = await f.query(query);
+    var output = output1.rows;
+
+    result(null, output);
 };
 
 module.exports = Report;
