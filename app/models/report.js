@@ -183,35 +183,39 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 
 Report.crewlist = async (req, result, cabang_id) => {
-    const date = req.fields.date;
-    const date1 = date.split("-");
+    if (req.fields.date) {
+        const date = req.fields.date;
+        const date1 = date.split("-");
 
-    var query = `SELECT
-            MAX(b."nama_asset") AS "nama_asset",
-            MAX(e."nipp") AS "nipp",
-            MAX(e."nama") AS "personil",
-            MAX(e."jabatan") AS "jabatan",
-            MAX(e."nomor_hp") AS "nomor_hp",
-            MAX(e."manning") AS "manning",
-            MAX(e."agency") AS "agency",
-            MAX(c."nama") AS "cabang",
-            MAX(d."nama") AS "fleet",
-            MAX(a."keterangan") AS "keterangan_sarana_bantu"
-        FROM
-            "sarana_bantu_pemandu" a
-            INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
-            INNER JOIN "cabang" c ON a."cabang_id" = c."id"
-            INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
-            LEFT JOIN "personil" e ON a."personil_id" = e."id"
-        WHERE a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
-            AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
-        GROUP BY a."asset_kapal_id"
-    `;
+        var query = `SELECT
+                MAX(b."nama_asset") AS "nama_asset",
+                MAX(e."nipp") AS "nipp",
+                MAX(e."nama") AS "personil",
+                MAX(e."jabatan") AS "jabatan",
+                MAX(e."nomor_hp") AS "nomor_hp",
+                MAX(e."manning") AS "manning",
+                MAX(e."agency") AS "agency",
+                MAX(c."nama") AS "cabang",
+                MAX(d."nama") AS "fleet",
+                MAX(a."keterangan") AS "keterangan_sarana_bantu"
+            FROM
+                "sarana_bantu_pemandu" a
+                INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
+                INNER JOIN "cabang" c ON a."cabang_id" = c."id"
+                INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
+                LEFT JOIN "personil" e ON a."personil_id" = e."id"
+            WHERE a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
+                AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
+            GROUP BY a."asset_kapal_id"
+        `;
 
-    var output1 = await f.query(query);
-    var output = output1.rows;
+        var output1 = await f.query(query);
+        var output = output1.rows;
 
-    result(null, output);
+        result(null, output);
+    } else {
+        result(null, { "status": "error no data" });
+    }
 };
 
 module.exports = Report;
