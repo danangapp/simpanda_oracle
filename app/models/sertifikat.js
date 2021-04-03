@@ -42,7 +42,7 @@ Sertifikat.create = async(newSertifikat, result, cabang_id, user_id) => {
 
 Sertifikat.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT a.*, c.\"nama\" as \"tipe_cert\", d.\"nama\" as \"jenis_cert\" FROM \"sertifikat\" a INNER JOIN \"sertifikat\" b ON a.\"sertifikat_id\" = b.\"id\" INNER JOIN \"tipe_cert\" c ON a.\"tipe_cert_id\" = c.\"id\" INNER JOIN \"jenis_cert\" d ON c.\"jenis_cert_id\" = d.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	var queryText = "SELECT a.* , a1.\"nama\" as \"jenis_cert\", a2.\"nama\" as \"tipe_cert\", a3.\"*\", a4.\"nama_asset\" as \"asset_kapal\" FROM \"sertifikat\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\"  LEFT JOIN \"tipe_cert\" a2 ON a.\"tipe_cert_id\" = a2.\"id\"  LEFT JOIN \"personil\" a3 ON a.\"personil_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.* , a1.\"nama\" as \"jenis_cert\", a2.\"nama\" as \"tipe_cert\", a3.*, a4.\"nama_asset\" as \"asset_kapal\" FROM \"sertifikat\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\"  LEFT JOIN \"tipe_cert\" a2 ON a.\"tipe_cert_id\" = a2.\"id\"  LEFT JOIN \"personil\" a3 ON a.\"personil_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 	const sertifikat = { "sertifikat": resQuery.rows }
@@ -52,7 +52,7 @@ Sertifikat.findById = async (id, result) => {
 
 Sertifikat.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "sertifikat");
-    var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\", a2.\"nama\" as \"tipe_cert\", a3.\"*\", a4.\"nama_asset\" as \"asset_kapal\" FROM \"sertifikat\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\"  LEFT JOIN \"tipe_cert\" a2 ON a.\"tipe_cert_id\" = a2.\"id\"  LEFT JOIN \"personil\" a3 ON a.\"personil_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\" ";
+    var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\", a2.\"nama\" as \"tipe_cert\", a3.*, a4.\"nama_asset\" as \"asset_kapal\" FROM \"sertifikat\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\"  LEFT JOIN \"tipe_cert\" a2 ON a.\"tipe_cert_id\" = a2.\"id\"  LEFT JOIN \"personil\" a3 ON a.\"personil_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"jenis_cert_id\" LIKE '%" + param.q + "%' OR a.\"tipe_cert_id\" LIKE '%" + param.q + "%' OR a.\"personil_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"no_sertifikat\" LIKE '%" + param.q + "%' OR a.\"issuer\" LIKE '%" + param.q + "%' OR a.\"tempat_keluar_sertifikat\" LIKE '%" + param.q + "%' OR a.\"tanggal_keluar_sertifikat\" LIKE '%" + param.q + "%' OR a.\"tanggal_expire\" LIKE '%" + param.q + "%' OR a.\"reminder_date1\" LIKE '%" + param.q + "%' OR a.\"reminder_date3\" LIKE '%" + param.q + "%' OR a.\"reminder_date6\" LIKE '%" + param.q + "%' OR a.\"sertifikat\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%'";	

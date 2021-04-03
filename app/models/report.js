@@ -203,7 +203,7 @@ Report.crewlist = async (req, result, cabang_id) => {
             INNER JOIN "cabang" c ON a."cabang_id" = c."id"
             INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
             LEFT JOIN "personil" e ON a."personil_id" = e."id"
-        WHERE a."cabang_id" = '${cabang_id}'
+        WHERE a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
             AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
         GROUP BY a."asset_kapal_id"
     `;
