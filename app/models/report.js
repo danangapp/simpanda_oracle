@@ -68,8 +68,8 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
 Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var query = `SELECT
                     b."question",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN '' ELSE '' END ) AS "baik",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN '' ELSE '' END ) AS "rusak",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
+                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
                     a."tanggal_awal",
                     a."tanggal_akhir",
                     a."keterangan",
@@ -86,7 +86,6 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var output = output1.rows;
     var arr = {};
     arr['pk'] = output;
-    // console.log(arr)
 
     var d = new Date();
     var t = d.getTime();
