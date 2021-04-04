@@ -146,33 +146,64 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
 
 
 Report.evaluasipelimpahan = async (id, result, cabang_id) => {
-    var query = `SELECT
-                    b."question",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN '' ELSE '' END ) AS "baik",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN '' ELSE '' END ) AS "rusak",
-                    a."tanggal_awal",
-                    a."tanggal_akhir",
-                    a."keterangan",
-                    ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
-                FROM
-                    "pemeriksaan_kapal_check_data" a
-                INNER JOIN "pemeriksaan_kapal_check" b ON a."pemeriksaan_kapal_check_id" = b."id"
-                WHERE
-                    a."pemeriksaan_kapal_id" = '${id}'
-                ORDER BY
-                    b."id"`;
-
+    var query = `SELECT * FROM "evaluasi_pelimpahan" WHERE "id" = '${id}'`;
     var output1 = await f.query(query);
-    var output = output1.rows;
-    var arr = {};
-    arr['pk'] = output;
-    // console.log(arr)
+    var output = output1.rows[0];
+    const cabang = output.cabang_id;
+    var arr = {}, personil = [], radio = [], tunda = [], kepil = [], pandu = [];
+
+    query = `SELECT
+                a.*,
+                b."nama",
+                '' AS "tingkat",
+                '' AS "keterangan"
+            FROM
+                "sertifikat" a
+                INNER JOIN "personil" b ON a."personil_id" = b."id"
+            WHERE
+                b."cabang_id" = '${cabang}'`;
+    output1 = await f.query(query);
+    personil = output1.rows;
+    radio = output1.rows;
+
+
+    query = `SELECT
+                *
+            FROM
+                "asset_kapal"
+            WHERE
+                "cabang_id" = '${cabang}'`;
+    output1 = await f.query(query);
+    const rows = output1.rows;
+    var kepil = [], pandu = [], tunda = [];
+    for (var a in rows) {
+        if (rows[a].tipe_asset_id == "1") {
+            tunda.push(rows[a]);
+        }
+        if (rows[a].tipe_asset_id == "2") {
+            pandu.push(rows[a]);
+        }
+        if (rows[a].tipe_asset_id == "3") {
+            kepil.push(rows[a]);
+        }
+    }
+
+    arr['personil'] = personil;
+    arr['radio'] = radio;
+    arr['tunda'] = tunda;
+    arr['pandu'] = pandu;
+    arr['kepil'] = kepil;
+
 
     var d = new Date();
     var t = d.getTime();
     fs.readFile('./report/Report-Inspection-Evaluasi Pelimpahan.xlsx', function async(err, dt) {
         var template = new XlsxTemplate(dt);
         template.substitute(1, arr);
+        template.substitute(2, arr);
+        template.substitute(3, arr);
+        template.substitute(4, arr);
+        template.substitute(5, arr);
         var out = template.generate();
         const fileName = './files/reports/evaluasipelimpahan' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
