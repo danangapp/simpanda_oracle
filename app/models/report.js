@@ -32,6 +32,7 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
     arr["v" + "00"] = output[0].status_ijazah_id == 1 ? "" : "";
     arr["tv" + "00"] = output[0].status_ijazah_id == 2 ? "" : "";
     arr["ta" + "00"] = output[0].status_ijazah_id == 0 ? "" : "";
+    console.log(arr);
 
     query = `SELECT a.*, b."tipe_asset_id" FROM "sbp_data" a INNER JOIN "sarana_bantu_pemandu" b ON 
         a."sarana_bantu_pemandu_id" = b."id" WHERE a."sarana_bantu_pemandu_id" = '${id}' ORDER BY a."question_id"`;
