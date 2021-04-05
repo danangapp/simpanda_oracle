@@ -24,7 +24,6 @@ User.create = async (newUser, result) => {
 	var id = await f.getid("user");
 	const hv = await f.headerValue(newUser, id);
 	var queryText = "INSERT INTO \"user\" " + hv + " RETURN \"id\" INTO :id";
-	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newUser.id;
 	const res = await exec;
@@ -33,7 +32,8 @@ User.create = async (newUser, result) => {
 };
 
 User.findById = async (id, result) => {
-	var queryText = "SELECT a.\"username\", a.\"nama\", \"a.user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a.\"accessToken\", a.\"refreshToken\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"  WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.\"username\", a.\"nama\", a.\"user_group_id\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"  WHERE a.\"id\" = '" + id + "'";
+	console.log(queryText);
 	const exec = f.query(queryText);
 	const res = await exec;
 	result(null, res.rows[0]);
@@ -41,7 +41,7 @@ User.findById = async (id, result) => {
 
 User.getAll = async (param, result) => {
 	var wheres = f.getParam(param);
-	var query = "SELECT a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
+	var query = "SELECT a.\"id\", a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"username\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"password\" LIKE '%" + param.q + "%' OR a.\"user_group_id\" LIKE '%" + param.q + "%' OR a.\"role_id\" LIKE '%" + param.q + "%' OR a.\"accessToken\" LIKE '%" + param.q + "%' OR a.\"refreshToken\" LIKE '%" + param.q + "%'";
@@ -50,7 +50,6 @@ User.getAll = async (param, result) => {
 
 	query += wheres;
 	const exec = f.query(query);
-	console.log(query);
 	const res = await exec;
 	result(null, res.rows);
 }
@@ -107,12 +106,10 @@ User.login = async (req, result) => {
 
 User.updateById = async (id, user, result) => {
 
-	var arr = ["username", "nama", "password", "user_group_id", "role_id", "accessToken", "refreshToken"];
+	var arr = ["username", "nama", "password", "user_group_id", "role_id"];
+	user.password = f.hashCode(user.password)
 	var str = f.getValueUpdate(user, id, arr);
-	if (objek.action != null) {
-		const hv = await f.headerValue(objek, "activity_log");
-		f.query("INSERT INTO \"activity_log\" " + hv, 2);
-	}
+	// console.log(str);
 	f.query("UPDATE \"user\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...user });
 };
