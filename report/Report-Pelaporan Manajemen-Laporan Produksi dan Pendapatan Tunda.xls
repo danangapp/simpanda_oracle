@@ -1,0 +1,242 @@
+
+<div style="text-align:center;font-size:10px;font-weight:bold;font-family:Verdana,sans-serif;">
+		  LAPORAN PRODUKSI GERAKAN DAN PENDAPATAN PENUNDAAN KAPAL
+	  <br />
+</div>
+
+<div style="text-align:center;font-size:10px;font-family:Verdana,sans-serif;">
+	     PT. PELABUHAN INDONESIA II (PERSERO)
+	  <br />
+</div>
+
+<style>
+.main {
+	font-family: 	Verdana, sans-serif;
+	font-size:	10px;
+}
+</style>
+<table class="main">
+   <tr></tr>
+	<tr>
+		<td colspan=3>LOKASI PELABUHAN</td>
+		<td align="center">:</td>
+		<td colspan=7>TANJUNG PRIOK</td>
+	</tr>
+	<tr>
+		<td colspan=3>BULAN / TAHUN</td>
+		<td align="center">:</td>
+		<td colspan=7 align="left">MARCH 2021</td>
+	</tr>
+</table>
+<table class="main" border="1"  cellspacing="0" cellpadding="0" >
+	  <tr>
+			<th rowspan=3>NO</th>
+			<th rowspan=3>NAMA KAPAL TUNDA</th>
+         	<th rowspan=3>HP</th>
+         	<th rowspan=2 colspan=3>GERAKAN</th>
+         	<th rowspan=3>TOTAL WAKTU PENUNDAAN (MENIT)</th>
+         	<th colspan=2>PENDAPATAN</th>
+			<th colspan=2>PNBP</th>
+	  </tr>
+
+	  <tr>
+	  		<th>PER HP</th>
+			<th>TOTAL</th>
+			<th>PER HP (5%)</th>
+			<th>TOTAL (5%)</th>
+	  </tr>
+
+	  <tr>
+			<th>DALAM NEGERI</th>
+			<th>LUAR NEGERI</th>
+			<th>TOTAL</th>
+			<th>Rp</th>
+			<th>Rp</th>
+			<th>Rp</th>
+			<th>Rp</th>
+	  </tr>
+
+	<tr>
+		<td align="center">1</td>
+		<td>ARJUNA II</td>
+		<td align="center">1240</td>
+		<td align="center">25</td>
+		<td align="center">0</td>
+		<td align="center">25</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1541</td>
+		<td style="mso-number-format:\#\,\#\#0\;">9063</td>
+		<td style="mso-number-format:\#\,\#\#0\;">11239650</td>
+		<td style="mso-number-format:\#\,\#\#0\;">453</td>
+		<td style="mso-number-format:\#\,\#\#0\;">561983</td>
+	</tr>
+	<tr>
+		<td align="center">2</td>
+		<td>BATAVIA II</td>
+		<td align="center">3200</td>
+		<td align="center">6</td>
+		<td align="center">17</td>
+		<td align="center">23</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1378</td>
+		<td style="mso-number-format:\#\,\#\#0\;">76735</td>
+		<td style="mso-number-format:\#\,\#\#0\;">245549435</td>
+		<td style="mso-number-format:\#\,\#\#0\;">3837</td>
+		<td style="mso-number-format:\#\,\#\#0\;">12277472</td>
+	</tr>
+	<tr>
+		<td align="center">3</td>
+		<td>BATAVIA IV</td>
+		<td align="center">3200</td>
+		<td align="center">6</td>
+		<td align="center">12</td>
+		<td align="center">18</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1056</td>
+		<td style="mso-number-format:\#\,\#\#0\;">61750</td>
+		<td style="mso-number-format:\#\,\#\#0\;">197598657</td>
+		<td style="mso-number-format:\#\,\#\#0\;">3088</td>
+		<td style="mso-number-format:\#\,\#\#0\;">9879933</td>
+	</tr>
+	<tr>
+		<td align="center">4</td>
+		<td>BESTWIN 88</td>
+		<td align="center">1200</td>
+		<td align="center">20</td>
+		<td align="center">0</td>
+		<td align="center">20</td>
+		<td style="mso-number-format:\#\,\#\#0\;">840</td>
+		<td style="mso-number-format:\#\,\#\#0\;">18761</td>
+		<td style="mso-number-format:\#\,\#\#0\;">22513043</td>
+		<td style="mso-number-format:\#\,\#\#0\;">938</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1125652</td>
+	</tr>
+	<tr>
+		<td align="center">5</td>
+		<td>BIMA 034</td>
+		<td align="center">2400</td>
+		<td align="center">11</td>
+		<td align="center">12</td>
+		<td align="center">23</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1316</td>
+		<td style="mso-number-format:\#\,\#\#0\;">66360</td>
+		<td style="mso-number-format:\#\,\#\#0\;">159264720</td>
+		<td style="mso-number-format:\#\,\#\#0\;">3318</td>
+		<td style="mso-number-format:\#\,\#\#0\;">7963236</td>
+	</tr>
+	<tr>
+		<td align="center">6</td>
+		<td>BIMA 035</td>
+		<td align="center">3200</td>
+		<td align="center">11</td>
+		<td align="center">10</td>
+		<td align="center">21</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1050</td>
+		<td style="mso-number-format:\#\,\#\#0\;">44238</td>
+		<td style="mso-number-format:\#\,\#\#0\;">141557646</td>
+		<td style="mso-number-format:\#\,\#\#0\;">2212</td>
+		<td style="mso-number-format:\#\,\#\#0\;">7077882</td>
+	</tr>
+	<tr>
+		<td align="center">7</td>
+		<td>BIMA II</td>
+		<td align="center">2380</td>
+		<td align="center">24</td>
+		<td align="center">2</td>
+		<td align="center">26</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1421</td>
+		<td style="mso-number-format:\#\,\#\#0\;">11538</td>
+		<td style="mso-number-format:\#\,\#\#0\;">27464551</td>
+		<td style="mso-number-format:\#\,\#\#0\;">577</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1373228</td>
+	</tr>
+	<tr>
+		<td align="center">8</td>
+		<td>BIMA III</td>
+		<td align="center">2380</td>
+		<td align="center">15</td>
+		<td align="center">9</td>
+		<td align="center">24</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1370</td>
+		<td style="mso-number-format:\#\,\#\#0\;">48643</td>
+		<td style="mso-number-format:\#\,\#\#0\;">115773975</td>
+		<td style="mso-number-format:\#\,\#\#0\;">2432</td>
+		<td style="mso-number-format:\#\,\#\#0\;">5788699</td>
+	</tr>
+	<tr>
+		<td align="center">9</td>
+		<td>BIMA XI</td>
+		<td align="center">2400</td>
+		<td align="center">23</td>
+		<td align="center">4</td>
+		<td align="center">27</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1871</td>
+		<td style="mso-number-format:\#\,\#\#0\;">20661</td>
+		<td style="mso-number-format:\#\,\#\#0\;">49584341</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1033</td>
+		<td style="mso-number-format:\#\,\#\#0\;">2479217</td>
+	</tr>
+	<tr>
+		<td align="center">10</td>
+		<td>JAYAKARTA 1</td>
+		<td align="center">2400</td>
+		<td align="center">23</td>
+		<td align="center">3</td>
+		<td align="center">26</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1434</td>
+		<td style="mso-number-format:\#\,\#\#0\;">15211</td>
+		<td style="mso-number-format:\#\,\#\#0\;">36511913</td>
+		<td style="mso-number-format:\#\,\#\#0\;">761</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1825596</td>
+	</tr>
+	<tr>
+		<td align="center">11</td>
+		<td>KT IPCM Abimanyu III</td>
+		<td align="center">4400</td>
+		<td align="center">1</td>
+		<td align="center">16</td>
+		<td align="center">17</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1157</td>
+		<td style="mso-number-format:\#\,\#\#0\;">82203</td>
+		<td style="mso-number-format:\#\,\#\#0\;">361700993</td>
+		<td style="mso-number-format:\#\,\#\#0\;">4110</td>
+		<td style="mso-number-format:\#\,\#\#0\;">18085050</td>
+	</tr>
+	<tr>
+		<td align="center">12</td>
+		<td>KT. PULAU SEBESI I-212</td>
+		<td align="center">2400</td>
+		<td align="center">19</td>
+		<td align="center">7</td>
+		<td align="center">26</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1253</td>
+		<td style="mso-number-format:\#\,\#\#0\;">47239</td>
+		<td style="mso-number-format:\#\,\#\#0\;">113374583</td>
+		<td style="mso-number-format:\#\,\#\#0\;">2362</td>
+		<td style="mso-number-format:\#\,\#\#0\;">5668729</td>
+	</tr>
+	<tr>
+		<td align="center">13</td>
+		<td>TB HTS3 /TB SACCI HARBOUR</td>
+		<td align="center">4000</td>
+		<td align="center">3</td>
+		<td align="center">19</td>
+		<td align="center">22</td>
+		<td style="mso-number-format:\#\,\#\#0\;">1435</td>
+		<td style="mso-number-format:\#\,\#\#0\;">82243</td>
+		<td style="mso-number-format:\#\,\#\#0\;">328967644</td>
+		<td style="mso-number-format:\#\,\#\#0\;">4112</td>
+		<td style="mso-number-format:\#\,\#\#0\;">16448382</td>
+	</tr>
+	<tr>
+		<td align="center">14</td>
+		<td>TB IPCM ABIMANYU IV</td>
+		<td align="center">4400</td>
+		<td align="center">0</td>
+		<td align="center">1</td>
+		<td align="center">1</td>
+		<td style="mso-number-format:\#\,\#\#0\;">0</td>
+		<td style="mso-number-format:\#\,\#\#0\;">0</td>
+		<td style="mso-number-format:\#\,\#\#0\;">0</td>
+		<td style="mso-number-format:\#\,\#\#0\;">0</td>
+		<td style="mso-number-format:\#\,\#\#0\;">0</td>
+	</tr>
+ 
+</table>

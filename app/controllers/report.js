@@ -117,6 +117,50 @@ exports.crewlist = async (req, res) => {
                 });
             }
         } else {
+            var filePath = './files/reports/crewlist' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+        }
+    }, req.cabang_id);
+};
+
+
+exports.pelaporanmanagement = async (req, res) => {
+    Report.pelaporanmanagement(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
+            res.send(data);
+        }
+    }, req.cabang_id);
+};
+
+
+exports.pilotship = async (req, res) => {
+    Report.pilotship(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
             res.send(data);
         }
     }, req.cabang_id);

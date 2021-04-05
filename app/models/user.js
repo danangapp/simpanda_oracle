@@ -19,10 +19,12 @@ User.create = async (newUser, result) => {
 	var token = function () {
 		return rand() + rand(); // to make it longer
 	};
-	newUser.accessToken = f.hashCode(token())
+	// newUser.accessToken = f.hashCode(token())
 	newUser.password = f.hashCode(newUser.password)
-	const hv = await f.headerValue(newUser, "user");
+	var id = await f.getid("user");
+	const hv = await f.headerValue(newUser, id);
 	var queryText = "INSERT INTO \"user\" " + hv + " RETURN \"id\" INTO :id";
+	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newUser.id;
 	const res = await exec;

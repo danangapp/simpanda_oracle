@@ -217,6 +217,55 @@ Report.crewlist = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date;
         const date1 = date.split("-");
+        var arr = {};
+
+        var query = `SELECT
+                b."nama_asset" AS "nama_asset",
+                e."nipp" AS "nipp",
+                e."nama" AS "personil",
+                e."jabatan" AS "jabatan",
+                e."nomor_hp" AS "nomor_hp",
+                e."manning" AS "manning",
+                e."agency" AS "agency",
+                c."nama" AS "cabang",
+                d."nama" AS "fleet",
+                a."keterangan" AS "keterangan_sarana_bantu"
+            FROM
+                "sarana_bantu_pemandu" a
+                INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
+                INNER JOIN "cabang" c ON a."cabang_id" = c."id"
+                INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
+                LEFT JOIN "personil" e ON a."personil_id" = e."id"
+            WHERE a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
+                AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
+        `;
+
+        var output1 = await f.query(query);
+        arr['pandu'] = output1.rows;
+        console.log(arr.pandu);
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/crewList.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/crewlist' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+
+        // result(null, output);
+    } else {
+        result(null, { "status": "error no data" });
+    }
+};
+
+
+Report.pelaporanmanagement = async (req, result, cabang_id) => {
+    if (req.fields.date) {
+        const date = req.fields.date;
+        const date1 = date.split("-");
 
         var query = `SELECT
                 MAX(b."nama_asset") AS "nama_asset",
@@ -238,6 +287,51 @@ Report.crewlist = async (req, result, cabang_id) => {
             WHERE a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
                 AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
             GROUP BY a."asset_kapal_id"
+        `;
+
+        var output1 = await f.query(query);
+        var output = output1.rows;
+
+        result(null, output);
+    } else {
+        result(null, { "status": "error no data" });
+    }
+};
+
+
+Report.pilotship = async (req, result, cabang_id) => {
+    if (req.fields.date) {
+        const date = req.fields.date;
+        const date1 = date.split("-");
+
+        var query = `SELECT a."date", a."id", b."tunda", c."pandu", d."kepil" FROM (
+                        SELECT MAX(c."nama") as "nama", a."date", MAX(a."id") AS "id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "personil" c ON c."asset_kapal_id" = b."asset_kapal_id"
+                        WHERE a."cabang_id" = '5'
+                        GROUP BY c."id", a."date"
+                    ) a
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "tunda", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '1' --tunda
+                        AND a."cabang_id" = '5'
+                    ) b ON a."id" = b."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "pandu", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '2' --kepil
+                        AND a."cabang_id" = '5'
+                    ) c ON a."id" = c."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "kepil", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '3' --kepil
+                        AND a."cabang_id" = '5'
+                    ) d ON a."id" = d."id"
         `;
 
         var output1 = await f.query(query);

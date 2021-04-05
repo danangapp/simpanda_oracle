@@ -3,12 +3,12 @@ var objek = new Object();
 
 // constructor
 const UserGroup = function (usergroup) {
-    this.nama = usergroup.nama;
-    this.keterangan = usergroup.keterangan;
-    this.cabang_id = usergroup.cabang_id;
+	this.nama = usergroup.nama;
+	this.keterangan = usergroup.keterangan;
+	this.cabang_id = usergroup.cabang_id;
 };
 
-UserGroup.create = async(newUserGroup, result, cabang_id, user_id) => {
+UserGroup.create = async (newUserGroup, result, cabang_id, user_id) => {
 	const user_access = newUserGroup.user_access;
 	delete newUserGroup.user_access;
 	var id = await f.getid("user_group");
@@ -19,44 +19,41 @@ UserGroup.create = async(newUserGroup, result, cabang_id, user_id) => {
 	const res = await exec;
 
 	for (var i in user_access) {
-	    const x = user_access[i];
-		x['user_group_id'] = id;
-	
-	    var header = "", value = "";
-	    for (var a in x) {
-	        const val = x[a];
-	        header += a + ", ";
-			if (a != "user_access") {
-			    value += "'" + val + "', ";
-			} else {
-			    var fileName = f.uploadFile64('user_group', val);
-			    value += "'" + fileName + "', ";
-			}
-	    }
-	    value = value.substring(0, value.length - 2);
-	    header = header.substring(0, header.length - 2);
-		f.query("INSERT INTO user_access (" + header + ") values (" + value + ")");
+		const x = user_access[i];
+		var a = {};
+		a['user_group_id'] = id;
+		a['menu_id'] = x;
+		// console.log(a);
+
+		var id_access = await f.getid("user_access");
+		const hv = await f.headerValue(a, id_access);
+		var queryText = "INSERT INTO \"user_access\" " + hv;
+		await f.query(queryText);
 	}
 
 	result(null, { id: id, ...newUserGroup });
 };
 
 UserGroup.findById = async (id, result) => {
-	const resQuery = await f.query("SELECT * FROM \"user_access\" WHERE \"user_group_id\" = '" + id + "'");
+	const resQuery = await f.query(`SELECT b."nama", b."id" FROM "user_access" a INNER JOIN "menu" b ON a."menu_id" = b."id" WHERE a."user_group_id" = '${id}'`);
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-		const user_access = { "user_access": resQuery }
-	let merge = { ...res.rows[0], ...user_access }	
+	var x = {};
+	for (var a in resQuery.rows) {
+		x[resQuery.rows[a].nama] = resQuery.rows[a].id
+	}
+	const user_access = { "user_access": x }
+	let merge = { ...res.rows[0], ...user_access }
 	result(null, merge);
 }
 
 UserGroup.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "user_group");
-    var query = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\" ";
+	var wheres = f.getParam(param, "user_group");
+	var query = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -68,36 +65,22 @@ UserGroup.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-UserGroup.updateById = async(id, usergroup, result, user_id) => {
-		const user_access = usergroup.user_access;
-		var arr = ["user_group_id", "menu_id"]
-		f.query("DELETE FROM \"user_access\" WHERE \"user_group_id\"='" + id + "'");
-		for (var i in user_access) {
-		    const x = user_access[i];
-		
-		    var header = "", value = "";
-			x['user_group_id'] = id;
-		    for (var a in x) {
-		        var val = x[a];
-				var adadiTable = 0
-				for (var b in arr) {
-					if (a == arr[b]) {
-						adadiTable = 1;
-						break;
-					}
-				}
+UserGroup.updateById = async (id, usergroup, result, user_id) => {
+	const user_access = usergroup.user_access;
+	var arr = ["user_group_id", "menu_id"]
+	f.query("DELETE FROM \"user_access\" WHERE \"user_group_id\"='" + id + "'");
+	for (var i in user_access) {
+		const x = user_access[i];
+		var a = {};
+		a['user_group_id'] = id;
+		a['menu_id'] = x;
 
-				if (adadiTable == 1) {
-					header += a + ", ";
-					value += "'" + val + "', ";
-				}
-		    }
-		    value = value.substring(0, value.length - 2);
-		    header = header.substring(0, header.length - 2);
-		
-			f.query("INSERT INTO user_access (" + header + ") values (" + value + ")");
-		}
-		delete usergroup.user_access;
+		var id_access = await f.getid("user_access");
+		const hv = await f.headerValue(a, id_access);
+		var queryText = "INSERT INTO \"user_access\" " + hv;
+		await f.query(queryText);
+	}
+	delete usergroup.user_access;
 
 	var arr = ["nama", "keterangan", "cabang_id"];
 	var str = f.getValueUpdate(usergroup, id, arr);
@@ -107,11 +90,11 @@ UserGroup.updateById = async(id, usergroup, result, user_id) => {
 	objek.keterangan = usergroup.keterangan;
 	objek.item = "usergroup";
 	objek.user_id = user_id;
-	if(usergroup.approval_status_id == 1){
+	if (usergroup.approval_status_id == 1) {
 		objek.remark = "Pengajuan disetujui oleh pusat";
-	}else if(usergroup.approval_status_id == 2){
+	} else if (usergroup.approval_status_id == 2) {
 		objek.remark = "Pengajuan ditolak oleh pusat";
-	}else if(usergroup.approval_status_id == 0){
+	} else if (usergroup.approval_status_id == 0) {
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
