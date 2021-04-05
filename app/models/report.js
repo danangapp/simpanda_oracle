@@ -241,21 +241,9 @@ Report.crewlist = async (req, result, cabang_id) => {
         `;
 
         var output1 = await f.query(query);
-        arr['pandu'] = output1.rows;
-        console.log(arr.pandu);
+        var output = output1.rows;
 
-        var d = new Date();
-        var t = d.getTime();
-        fs.readFile('./report/crewList.xlsx', function async(err, dt) {
-            var template = new XlsxTemplate(dt);
-            template.substitute(1, arr);
-            var out = template.generate();
-            const fileName = './files/reports/crewlist' + t + '.xlsx';
-            fs.writeFileSync(fileName, out, 'binary');
-            result(null, t + '.xlsx');
-        });
-
-        // result(null, output);
+        result(null, output);
     } else {
         result(null, { "status": "error no data" });
     }

@@ -117,13 +117,7 @@ exports.crewlist = async (req, res) => {
                 });
             }
         } else {
-            var filePath = './files/reports/crewlist' + data;
-            res.download(filePath, function (err) {
-                if (err) console.log(err);
-                fs.unlink(filePath, function () {
-                    console.log("File was deleted")
-                });
-            });
+            res.send(data);
         }
     }, req.cabang_id);
 };
