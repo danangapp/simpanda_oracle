@@ -3,12 +3,12 @@ var objek = new Object();
 
 // constructor
 const ArmadaJaga = function (armadajaga) {
-    this.from = armadajaga.from;
-    this.to = armadajaga.to;
-    this.armada_schedule_id = armadajaga.armada_schedule_id;
+	this.from = armadajaga.from;
+	this.to = armadajaga.to;
+	this.armada_schedule_id = armadajaga.armada_schedule_id;
 };
 
-ArmadaJaga.create = async(newArmadaJaga, result, cabang_id, user_id) => {
+ArmadaJaga.create = async (newArmadaJaga, result, cabang_id, user_id) => {
 	var id = await f.getid("armada_jaga");
 	const hv = await f.headerValue(newArmadaJaga, id);
 	var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
@@ -27,11 +27,11 @@ ArmadaJaga.findById = async (id, result) => {
 }
 
 ArmadaJaga.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "armada_jaga");
-    var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" ";
+	var wheres = f.getParam(param, "armada_jaga");
+	var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"from\" LIKE '%" + param.q + "%' OR a.\"to\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"from\" LIKE '%" + param.q + "%' OR a.\"to\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -42,7 +42,7 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
+ArmadaJaga.updateById = async (id, armadajaga, result, user_id) => {
 
 	var arr = ["from", "to", "armada_schedule_id"];
 	var str = f.getValueUpdate(armadajaga, id, arr);
@@ -52,11 +52,11 @@ ArmadaJaga.updateById = async(id, armadajaga, result, user_id) => {
 	objek.keterangan = armadajaga.keterangan;
 	objek.item = "armadajaga";
 	objek.user_id = user_id;
-	if(armadajaga.approval_status_id == 1){
+	if (armadajaga.approval_status_id == 1) {
 		objek.remark = "Pengajuan disetujui oleh pusat";
-	}else if(armadajaga.approval_status_id == 2){
+	} else if (armadajaga.approval_status_id == 2) {
 		objek.remark = "Pengajuan ditolak oleh pusat";
-	}else if(armadajaga.approval_status_id == 0){
+	} else if (armadajaga.approval_status_id == 0) {
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
