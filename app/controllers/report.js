@@ -136,7 +136,62 @@ exports.pelaporanmanagement = async (req, res) => {
                 });
             }
         } else {
-            res.send(data);
+            console.log("danang", data)
+            var filePath = './files/reports/PelaporanManajemen' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+        }
+    }, req.cabang_id);
+};
+
+exports.pelaporantunda = async (req, res) => {
+    Report.pelaporantunda(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
+            var filePath = './files/reports/PelaporanTunda' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
+        }
+    }, req.cabang_id);
+};
+
+exports.pelaporanpandu = async (req, res) => {
+    Report.pelaporanpandu(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
+            var filePath = './files/reports/PelaporanPandu' + data;
+            res.download(filePath, function (err) {
+                if (err) console.log(err);
+                fs.unlink(filePath, function () {
+                    console.log("File was deleted")
+                });
+            });
         }
     }, req.cabang_id);
 };

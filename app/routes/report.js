@@ -7,5 +7,7 @@ module.exports = app => {
     app.get("/report/evaluasipelimpahan/:id", report.evaluasipelimpahan);
     app.post("/report/crewlist", report.crewlist);
     app.post("/report/pelaporanmanagement", report.pelaporanmanagement);
+    app.post("/report/pelaporanmanagementtunda", report.pelaporantunda);
+    app.post("/report/pelaporanmanagementpandu", report.pelaporanpandu);
     app.post("/report/pilotship", report.pilotship);
 };

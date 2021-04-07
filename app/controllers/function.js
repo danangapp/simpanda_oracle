@@ -367,5 +367,42 @@ module.exports = {
             fs.unlink(dest); // Delete the file async. (But we don't check the result)
             if (cb) cb(err.message);
         });
+    },
+    querySimop: async function (query, insert = 0) {
+        let connection;
+        try {
+            connection = await oracledb.getConnection({
+                user: "KAPAL_CABANG",
+                password: "kapal_cabang",
+                connectString: "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.10.33.118)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=PELDB)))",
+                externalAuth: false
+            });
+
+            if (insert == 1) {
+                const result = await connection.execute(
+                    query,
+                    { id: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }
+                );
+
+                return result;
+            } else if (insert == 2) {
+                const result = await connection.execute(query);
+
+                return result;
+            } else {
+                const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                return result;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            if (connection) {
+                try {
+                    await connection.close();
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
     }
 };
