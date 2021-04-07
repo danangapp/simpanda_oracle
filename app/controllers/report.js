@@ -214,3 +214,39 @@ exports.pilotship = async (req, res) => {
         }
     }, req.cabang_id);
 };
+
+exports.personelpeformance = async (req, res) => {
+    Report.personelpeformance(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
+            res.send(data);
+        }
+    }, req.cabang_id);
+};
+
+exports.shippeformance = async (req, res) => {
+    Report.shippeformance(req, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `Not found report with id ${req.params.id}.`
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retrieving report with id " + req.params.id
+                });
+            }
+        } else {
+            res.send(data);
+        }
+    }, req.cabang_id);
+};

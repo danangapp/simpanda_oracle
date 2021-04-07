@@ -10,4 +10,6 @@ module.exports = app => {
     app.post("/report/pelaporanmanagementtunda", report.pelaporantunda);
     app.post("/report/pelaporanmanagementpandu", report.pelaporanpandu);
     app.post("/report/pilotship", report.pilotship);
+    app.post("/report/personelpeformance", report.personelpeformance);
+    app.post("/report/shippeformance", report.shippeformance);
 };

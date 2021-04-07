@@ -689,5 +689,95 @@ Report.pilotship = async (req, result, cabang_id) => {
     }
 };
 
+
+Report.personelpeformance = async (req, result, cabang_id) => {
+    if (req.fields.date) {
+        const date = req.fields.date;
+        const date1 = date.split("-");
+
+        var query = `SELECT a."date", a."id", b."tunda", c."pandu", d."kepil" FROM (
+                        SELECT MAX(c."nama") as "nama", a."date", MAX(a."id") AS "id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "personil" c ON c."asset_kapal_id" = b."asset_kapal_id"
+                        WHERE a."cabang_id" = '5'
+                        GROUP BY c."id", a."date"
+                    ) a
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "tunda", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '1' --tunda
+                        AND a."cabang_id" = '5'
+                    ) b ON a."id" = b."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "pandu", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '2' --kepil
+                        AND a."cabang_id" = '5'
+                    ) c ON a."id" = c."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "kepil", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '3' --kepil
+                        AND a."cabang_id" = '5'
+                    ) d ON a."id" = d."id"
+        `;
+
+        var output1 = await f.query(query);
+        var output = output1.rows;
+
+        result(null, output);
+    } else {
+        result(null, { "status": "error no data" });
+    }
+};
+
+
+Report.shippeformance = async (req, result, cabang_id) => {
+    if (req.fields.date) {
+        const date = req.fields.date;
+        const date1 = date.split("-");
+
+        var query = `SELECT a."date", a."id", b."tunda", c."pandu", d."kepil" FROM (
+                        SELECT MAX(c."nama") as "nama", a."date", MAX(a."id") AS "id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "personil" c ON c."asset_kapal_id" = b."asset_kapal_id"
+                        WHERE a."cabang_id" = '5'
+                        GROUP BY c."id", a."date"
+                    ) a
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "tunda", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '1' --tunda
+                        AND a."cabang_id" = '5'
+                    ) b ON a."id" = b."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "pandu", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '2' --kepil
+                        AND a."cabang_id" = '5'
+                    ) c ON a."id" = c."id"
+                    LEFT JOIN (
+                        SELECT c."nama_asset" AS "kepil", a."id" FROM "armada_schedule" a
+                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
+                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
+                        WHERE a."tipe_asset_id" = '3' --kepil
+                        AND a."cabang_id" = '5'
+                    ) d ON a."id" = d."id"
+        `;
+
+        var output1 = await f.query(query);
+        var output = output1.rows;
+
+        result(null, output);
+    } else {
+        result(null, { "status": "error no data" });
+    }
+};
+
 module.exports = Report;
 
