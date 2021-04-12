@@ -36,7 +36,7 @@ PanduJaga.getAll = async (param, result, cabang_id) => {
 
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
-	console.log(query);
+	// console.log(query);
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);

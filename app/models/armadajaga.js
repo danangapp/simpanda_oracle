@@ -28,7 +28,7 @@ ArmadaJaga.findById = async (id, result) => {
 
 ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "armada_jaga");
-	var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" ";
+	var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\", a2.\"nama_asset\" as \"asset_kapal\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"from\" LIKE '%" + param.q + "%' OR a.\"to\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";
@@ -36,6 +36,7 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	}
 
 	query += wheres;
+	console.log(query);
 	query += "ORDER BY a.\"id\" DESC";
 	const exec = f.query(query);
 	const res = await exec;
