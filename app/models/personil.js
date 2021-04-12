@@ -16,7 +16,6 @@ const cekBody = (rows) => {
 		"kdPersPanduCbg": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id
 	}
 	if (rows.simop_kd_pers_pandu) {
-		// console.log("lewat 1");
 		esbBody['kdPersPanduCbg'] = "";
 		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 
@@ -36,6 +35,32 @@ const cekBody = (rows) => {
 
 	return dt;
 }
+
+
+const cekBodyBandar = (rows) => {
+	var dt;
+	var esbBody = {
+		"simopKdPersPandu": "123",
+		"nama": rows.nama,
+		"nipp": rows.nip,
+		"kelas": rows.kelas,
+		"cabangId": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+		"enable": 1,
+		"tipePersonilId": 1,
+		"approvalStatusId": 1,
+		"panduBandarLautId": 1,
+		"isFromSimop": true
+	}
+
+	dt = {
+		"opInsertPersonilSimpandaRequest": {
+			"esbBody": esbBody
+		}
+	}
+
+	return dt;
+}
+
 
 // constructor
 const Personil = function (personil) {
@@ -176,6 +201,23 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 
 		simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
+			.then(async function (response) {
+
+
+			}).catch(function (error) {
+				console.log(error);
+			});
+
+		var dt = cekBodyBandar(rows);
+		simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
+			.then(async function (response) {
+
+
+			}).catch(function (error) {
+				console.log(error);
+			});
+
+		simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
 			.then(async function (response) {
 
 

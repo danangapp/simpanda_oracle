@@ -25,6 +25,17 @@ module.exports = {
         const options = this.options(url, data);
         return axios(options)
     },
+    insertPandu: function (data, statusInsert = 1, cabang) {
+        var url
+        if (statusInsert == 1) {
+            url = "http://10.88.48.57:5555/restv2/simpanda/insertPersonil" + cabang;
+        } else {
+            url = "http://10.88.48.57:5555/restv2/simpanda/updatePersonil" + cabang;
+        }
+        // console.log(url);
+        const options = this.options(url, data);
+        return axios(options)
+    },
     insertFasilitasKapal: function (data, statusInsert = 1, cabang) {
         var url
         if (statusInsert == 1) {
