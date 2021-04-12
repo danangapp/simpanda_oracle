@@ -21,7 +21,7 @@ module.exports = {
         var dateString = str;
         var dateObj = new Date(dateString);
         var momentObj = moment(dateObj);
-        var momentString = momentObj.format(formatdate); // 2016-07-15
+        var momentString = momentObj.format(formatdate);
         return momentString;
     },
     uploadFile: function (folders, files, updateTo) {
@@ -158,8 +158,12 @@ module.exports = {
 
                     if (a != "id") {
                         if (ada_tgl == 1) {
-                            val = this.toDate(val);
-                            value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                            if (val != "") {
+                                val = this.toDate(val);
+                                value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                            } else {
+                                value += "null, ";
+                            }
                         } else if (ada_tglTime == 1) {
                             value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
                         } else {

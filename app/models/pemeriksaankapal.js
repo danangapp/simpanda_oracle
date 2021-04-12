@@ -3,31 +3,31 @@ var objek = new Object();
 
 // constructor
 const PemeriksaanKapal = function (pemeriksaankapal) {
-    this.approval_status_id = pemeriksaankapal.approval_status_id;
-    this.enable = pemeriksaankapal.enable;
-    this.asset_kapal_id = pemeriksaankapal.asset_kapal_id;
-    this.cabang_id = pemeriksaankapal.cabang_id;
+	this.approval_status_id = pemeriksaankapal.approval_status_id;
+	this.enable = pemeriksaankapal.enable;
+	this.asset_kapal_id = pemeriksaankapal.asset_kapal_id;
+	this.cabang_id = pemeriksaankapal.cabang_id;
 };
 
 const setActivity = (objects, koneksi = 1) => {
-		objek.date = f.toDate(objects.date);
-		objek.item = 'pemeriksaankapal';
-		objek.action = objects.approval_status_id;
-		objek.user_id = objects.user_id;
-		objek.remark = objects.remark;
-		objek.koneksi = koneksi;
-		objek.keterangan = objects.keterangan;
-		delete objects.date;
-		delete objects.item;
-		delete objects.action;
-		delete objects.user_id;
-		delete objects.remark;
-		delete objects.koneksi;
-		delete objects.keterangan;
-		return objects
+	objek.date = f.toDate(objects.date);
+	objek.item = 'pemeriksaankapal';
+	objek.action = objects.approval_status_id;
+	objek.user_id = objects.user_id;
+	objek.remark = objects.remark;
+	objek.koneksi = koneksi;
+	objek.keterangan = objects.keterangan;
+	delete objects.date;
+	delete objects.item;
+	delete objects.action;
+	delete objects.user_id;
+	delete objects.remark;
+	delete objects.koneksi;
+	delete objects.keterangan;
+	return objects
 };
 
-PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id) => {
+PemeriksaanKapal.create = async (newPemeriksaanKapal, result, cabang_id, user_id) => {
 	newPemeriksaanKapal = setActivity(newPemeriksaanKapal);
 	var check = newPemeriksaanKapal.check;
 	delete newPemeriksaanKapal.check;
@@ -35,18 +35,21 @@ PemeriksaanKapal.create = async(newPemeriksaanKapal, result, cabang_id, user_id)
 	const hvs = await f.headerValue(newPemeriksaanKapal, id);
 	const res = f.query(`INSERT INTO "pemeriksaan_kapal"` + hvs, newPemeriksaanKapal);
 	for (var i in check) {
-	    check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
-	    var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
-		if (check[i].gambar) {;
-			if (check[i].gambar.substring(0, 4) == "data") {;
+		check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
+		var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
+		if (check[i].gambar) {
+			;
+			if (check[i].gambar.substring(0, 4) == "data") {
+				;
 				check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
 			};
 		};
 		delete check[i].id;
 		delete check[i].filetext;
-	    check[i]['pemeriksaan_kapal_id'] = id;
-	    const hval = await f.headerValue(check[i], id_pkcd);
-	    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
+		check[i]['pemeriksaan_kapal_id'] = id;
+		const hval = await f.headerValue(check[i], id_pkcd);
+		// console.log(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
+		await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 	}
 
 	objek.koneksi = id;
@@ -66,18 +69,18 @@ PemeriksaanKapal.findById = async (id, result) => {
 	var queryText = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '2' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"  WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
-		const check = { "check": resQuery.rows }
+	const check = { "check": resQuery.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
-	let merge = { ...res.rows[0], ...check, ...activityLog }	
+	let merge = { ...res.rows[0], ...check, ...activityLog }
 	result(null, merge);
 }
 
 PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "pemeriksaan_kapal");
-    var query = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '2' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"";
+	var wheres = f.getParam(param, "pemeriksaan_kapal");
+	var query = "SELECT a.* , a2.\"jumlah_temuan\", a3.\"nama_asset\" as \"asset_kapal\", a4.\"nama\" as \"cabang\" FROM \"pemeriksaan_kapal\" a   LEFT JOIN ( SELECT \"pemeriksaan_kapal_id\", \"kondisi_id\", COUNT( \"kondisi_id\" ) AS \"jumlah_temuan\" FROM \"pemeriksaan_kapal_check_data\" WHERE \"kondisi_id\" = '2' GROUP BY \"pemeriksaan_kapal_id\", \"kondisi_id\" ) a2 ON a2.\"pemeriksaan_kapal_id\" = a.\"id\" LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"cabang\" a4 ON a4.\"id\" = a.\"cabang_id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -89,24 +92,25 @@ PemeriksaanKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
+PemeriksaanKapal.updateById = async (id, pemeriksaankapal, result, user_id) => {
 
-	if(pemeriksaankapal.check){
+	if (pemeriksaankapal.check) {
 		var check = pemeriksaankapal.check;
 		await f.query("DELETE \"pemeriksaan_kapal_check_data\" WHERE \"pemeriksaan_kapal_id\"='" + id + "'");
 		for (var i in check) {
-		    check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
-		    var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
-			if (check[i].gambar) {;
-				if (check[i].gambar.substring(0, 4) == "data") {;
+			var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
+			if (check[i].gambar) {
+				;
+				if (check[i].gambar.substring(0, 4) == "data") {
+					;
 					check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
 				};
 			};
 			delete check[i].id;
 			delete check[i].filetext;
-		    check[i]['pemeriksaan_kapal_id'] = id;
-		    const hval = await f.headerValue(check[i], id_pkcd);
-		    await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
+			check[i]['pemeriksaan_kapal_id'] = id;
+			const hval = await f.headerValue(check[i], id_pkcd);
+			await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 		}
 		delete pemeriksaankapal.check;
 
@@ -119,11 +123,11 @@ PemeriksaanKapal.updateById = async(id, pemeriksaankapal, result, user_id) => {
 	objek.keterangan = pemeriksaankapal.keterangan;
 	objek.item = "pemeriksaankapal";
 	objek.user_id = user_id;
-	if(pemeriksaankapal.approval_status_id == 1){
+	if (pemeriksaankapal.approval_status_id == 1) {
 		objek.remark = "Pengajuan disetujui oleh pusat";
-	}else if(pemeriksaankapal.approval_status_id == 2){
+	} else if (pemeriksaankapal.approval_status_id == 2) {
 		objek.remark = "Pengajuan ditolak oleh pusat";
-	}else if(pemeriksaankapal.approval_status_id == 0){
+	} else if (pemeriksaankapal.approval_status_id == 0) {
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
