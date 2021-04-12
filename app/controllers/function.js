@@ -196,7 +196,7 @@ module.exports = {
             }
         } else if (db === "pandu_jaga") {
             if (i == "pandu_bandar_laut_id") {
-                column = `a1."pandu_bandar_laut_id"`;
+                column = `a2."pandu_bandar_laut_id"`;
             }
 
             if (i == "date") {
