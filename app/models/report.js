@@ -241,6 +241,7 @@ Report.crewlist = async (req, result, cabang_id) => {
                 AND e."tipe_personil_id" IN ('2', '3', '4')
                 AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
         `;
+        console.log(query);
 
         var output1 = await f.query(query);
         var output = output1.rows;

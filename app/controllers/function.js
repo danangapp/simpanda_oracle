@@ -404,5 +404,50 @@ module.exports = {
                 }
             }
         }
+    },
+    approvalStatus: async function (table, data, objek, id, user_id) {
+        const id_activity_log = await this.getid("activity_log");
+        objek.koneksi = id;
+        objek.action = data.approval_status_id;
+        objek.keterangan = data.keterangan;
+        objek.item = table;
+        objek.user_id = user_id;
+        if (data.approval_status_id == 1) {
+            objek.remark = "Pengajuan disetujui oleh pusat";
+        } else if (data.approval_status_id == 2) {
+            objek.remark = "Pengajuan ditolak oleh pusat";
+        } else if (data.approval_status_id == 0) {
+            objek.remark = "Pengajuan dirubah oleh admin cabang";
+        }
+        const hval = await this.headerValue(objek, id_activity_log);
+        await this.query("INSERT INTO \"activity_log\" " + hval, 2);
+    },
+    getOneRowById: async function (table, id) {
+        const rows = await this.query(`SELECT * FROM "${table}" WHERE "id" ='${id}'`);
+        return rows.rows[0];
+    },
+    checkDataId: async function (table, id, checkData) {
+        var rows = await this.getOneRowById(table, id, checkData);
+        // console.log(rows);
+        for (var a in rows) {
+            for (var c in arrDate) {
+                if (a == arrDate[c]) {
+                    rows[a] = this.toDate(rows[a]);
+                }
+            }
+            for (var b in checkData) {
+                if (b == a && checkData[b]) {
+                    rows[a] = checkData[b];
+                    break;
+                }
+            }
+        }
+        var arr = {}
+        for (var a in rows) {
+            if (rows[a]) {
+                arr[a] = rows[a];
+            }
+        }
+        return arr;
     }
 };
