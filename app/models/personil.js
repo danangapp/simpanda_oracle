@@ -183,47 +183,50 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id"];
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
-		var dt = cekBody(rows);
-		simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-			.then(async function (response) {
-				if (rows.simop_kd_pers_pandu) {
-					// console.log(response.data)
-				} else {
-					personil['simop_kd_pers_pandu'] = response.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
-				}
+		var dt;
+		if (rows.pandu_bandar_laut_id == 2) {
+			dt = cekBody(rows);
+			simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
+				.then(async function (response) {
+					if (rows.simop_kd_pers_pandu) {
+						// console.log(response.data)
+					} else {
+						personil['simop_kd_pers_pandu'] = response.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+					}
 
-				var str = f.getValueUpdate(personil, id, arr);
-				await f.approvalStatus("personil", personil, objek, id, user_id)
-				await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-			}).catch(function (error) {
-				console.log(error);
-			});
-
-
-		simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-			.then(async function (response) {
+					var str = f.getValueUpdate(personil, id, arr);
+					await f.approvalStatus("personil", personil, objek, id, user_id)
+					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+				}).catch(function (error) {
+					console.log(error);
+				});
 
 
-			}).catch(function (error) {
-				console.log(error);
-			});
-
-		var dt = cekBodyBandar(rows);
-		simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-			.then(async function (response) {
+			simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
+				.then(async function (response) {
 
 
-			}).catch(function (error) {
-				console.log(error);
-			});
+				}).catch(function (error) {
+					console.log(error);
+				});
+		} else {
+			dt = cekBodyBandar(rows);
+			simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
+				.then(async function (response) {
 
-		simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-			.then(async function (response) {
+
+				}).catch(function (error) {
+					console.log(error);
+				});
+
+			simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
+				.then(async function (response) {
 
 
-			}).catch(function (error) {
-				console.log(error);
-			});
+				}).catch(function (error) {
+					console.log(error);
+				});
+		}
 
 	}
 
