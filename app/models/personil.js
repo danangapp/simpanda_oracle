@@ -40,23 +40,30 @@ const cekBody = (rows) => {
 const cekBodyBandar = (rows) => {
 	var dt;
 	var esbBody = {
-		"simopKdPersPandu": "123",
-		"nama": rows.nama,
-		"nipp": rows.nip,
-		"kelas": rows.kelas,
-		"cabangId": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
-		"enable": 1,
-		"tipePersonilId": 1,
-		"approvalStatusId": 1,
-		"panduBandarLautId": 1,
-		"isFromSimop": true
+		"nmPersPandu": rows.nama,
+		"nipp": rows.nip || "0",
+		"kelas": rows.kelas || "0",
+		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+		"enable": "1",
+		"kdPersPanduCbg": ""
 	}
 
-	dt = {
-		"opInsertPersonilSimpandaRequest": {
-			"esbBody": esbBody
+	if (rows.simop_kd_pers_pandu) {
+		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
+		dt = {
+			"opUpdateMstPersPanduCabangRequest": {
+				"esbBody": esbBody
+			}
+		}
+	} else {
+		// console.log("lewat 2");
+		dt = {
+			"opInsertMstPersPanduCabangRequest": {
+				"esbBody": esbBody
+			}
 		}
 	}
+
 
 	return dt;
 }
@@ -211,21 +218,27 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				});
 		} else {
 			dt = cekBodyBandar(rows);
+			console.log(dt);
 			simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
 				.then(async function (response) {
-
-
+					if (rows.simop_kd_pers_pandu) {
+						// console.log(response.data)
+					} else {
+						personil['simop_kd_pers_pandu'] = response.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+					}
+					var str = f.getValueUpdate(personil, id, arr);
+					await f.approvalStatus("personil", personil, objek, id, user_id)
+					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 				}).catch(function (error) {
 					console.log(error);
 				});
 
-			simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-				.then(async function (response) {
+			// simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
+			// 	.then(async function (response) {
 
-
-				}).catch(function (error) {
-					console.log(error);
-				});
+			// 	}).catch(function (error) {
+			// 		console.log(error);
+			// 	});
 		}
 
 	}

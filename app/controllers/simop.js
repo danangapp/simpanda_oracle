@@ -28,9 +28,9 @@ module.exports = {
     insertPandu: function (data, statusInsert = 1, cabang) {
         var url
         if (statusInsert == 1) {
-            url = "http://10.88.48.57:5555/restv2/simpanda/insertPersonil" + cabang;
+            url = "http://10.88.48.57:5555/restv2/simpanda/insertPandu/" + cabang;
         } else {
-            url = "http://10.88.48.57:5555/restv2/simpanda/updatePersonil" + cabang;
+            url = "http://10.88.48.57:5555/restv2/simpanda/updatePandu/" + cabang;
         }
         // console.log(url);
         const options = this.options(url, data);
