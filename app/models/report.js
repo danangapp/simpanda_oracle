@@ -1,11 +1,29 @@
 const f = require('../controllers/function');
 const fs = require('fs');
+var moment = require('moment');
 var XlsxTemplate = require('xlsx-template');
 const createReport = require('docx-templates').default;
-var query_asli = `SELECT a.*, round( 0.05 * pendapatan_pandu, 0 ) pnbp_pandu, round( 0.05 * pendapatan_tunda, 0 ) pnbp_tunda, round( 0.05 * pendapatan_pandu, 0 ) + round( 0.05 * pendapatan_tunda, 0 ) jumlah_pnbp FROM (SELECT c.kd_cabang, c.nm_cabang, bkt_pandu.kd_ppkb, to_char( bkt_pandu.jam_pandu_naik, 'mm-yyyy' ) periode, bkt_pandu.no_ukk, bkt_pandu.no_bkt_pandu, pkk.tgl_jam_tiba, bkt_pandu.ppkb_ke, bkt_pandu.draft_depan, bkt_pandu.draft_belakang, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat1, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat1, (SELECT mst_kapal.kp_loa FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat1, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat1, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat1, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat1, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat2, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat2, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat2, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat2, mst_kapal.nm_kapal, mst_kapal.jn_kapal, mst_kapal.kp_grt, mst_kapal.kp_loa, mst_kapal.kd_bendera, mst_agen.kd_agen, mst_pers_pandu.nm_pers_pandu, to_char( pkk.tgl_jam_tiba, 'dd-mm-yyyy' ) tgl_tiba, to_char( pkk.tgl_jam_tiba, 'hh24:mi' ) jam_tiba, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'dd-mm-yyyy' ) tgl_pmt, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'hh24:mi' ) jam_pmt, to_char( bkt_pandu.jam_pandu_naik, 'hh24:mi' ) pnk, to_char( bkt_pandu.jam_kapal_gerak, 'hh24:mi' ) kb, to_char( bkt_pandu.jam_pandu_naik, 'dd-mm-yyyy hh24:mi' ) mulai_pelaksanaan, to_char( bkt_pandu.jam_pandu_turun, 'dd-mm-yyyy hh24:mi' ) selesai_pelaksanaan, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) pnd, ( CASE WHEN bkt_pandu.jam_pandu_naik > ppkb_pandu.tgl_jam_pmt_pandu_d THEN f_selisih_jam ( ppkb_pandu.tgl_jam_pmt_pandu_d, bkt_pandu.jam_pandu_naik ) ELSE '00:00' END ) wt, (CASE WHEN bkt_pandu.kd_gerakan = 1 AND ppkb_pandu.tgl_jam_pmt_pandu_d > pkk.tgl_jam_tiba THEN trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 - trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) pt, (CASE WHEN bkt_pandu.kd_gerakan = 3 AND bkt_pandu.jam_pandu_turun > pkk.tgl_jam_tiba THEN trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 - trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) trt, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) at_jam, (CASE bkt_pandu.pandu_dari WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_sebelum ) ELSE bkt_pandu.pandu_dari END ) pandu_dari, (CASE bkt_pandu.pandu_ke WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_berikut ) ELSE bkt_pandu.pandu_ke END ) pandu_ke, bkt_pandu.kd_gerakan, mst_gerakan.gerakan, bkt_pandu.tgl_mpandu, mst_agen.nm_agen, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) nm_kapal_1, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) hp_kapal_1, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) nm_kapal_2, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) hp_kapal_2, to_char( bkt_tunda.tgl_jam_tiba_kpl1, 'hh24:mi' ) mulai_tunda, to_char( bkt_tunda.tgl_jam_brngkt_kpl1, 'hh24:mi' ) selesai_tunda, f_selisih_jam ( bkt_tunda.tgl_jam_tiba_kpl1, bkt_tunda.tgl_jam_brngkt_kpl1 ) lama_tunda, bkt_pandu.ket_pandu, mst_keterangan_pandu.keterangan || ', ' || ( SELECT keterangan FROM kapal_prod.mst_ket_pandu_khusus WHERE kd_keterangan_pandu = bkt_pandu.ket_pandu ) AS keterangan_pandu, decode( pkk.kd_pelayaran, '1', 'ln', '2', 'dn', '3', 'rkyt', '4', 'prnts' ) AS pelayaran, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'pandu'), 0 ) pendapatan_pandu, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'tunda'), 0 ) pendapatan_tunda, mst_dermaga.dermaga FROM bkt_pandu, bkt_tunda, ppkb_detail, ppkb_pandu, ppkb, pkk, mst_kapal_agen, mst_kapal, mst_pers_pandu, mst_gerakan, mst_agen, mst_keterangan_pandu, mst_cabang c, mst_kade, mst_dermaga WHERE bkt_pandu.no_bkt_pandu = bkt_tunda.no_bkt_tunda ( + ) AND mst_kapal_agen.kd_cabang = c.kd_cabang AND bkt_pandu.kd_ppkb = ppkb_detail.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_detail.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb_pandu.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_pandu.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb.kd_ppkb AND ppkb.no_ukk = pkk.no_ukk AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal AND ( bkt_pandu.kd_pers_pandu = mst_pers_pandu.kd_pers_pandu AND SUBSTR( bkt_pandu.kd_ppkb, 5, 2 ) = mst_pers_pandu.KD_CABANG ) AND bkt_pandu.kd_gerakan = mst_gerakan.kd_gerakan AND mst_kapal_agen.kd_agen = mst_agen.kd_agen AND bkt_pandu.ket_pandu = mst_keterangan_pandu.kd_keterangan_pandu AND ppkb_detail.kade_tujuan = mst_kade.kd_kade AND mst_kade.kd_dermaga = mst_dermaga.kd_dermaga ) a`;
+var query_asli = `SELECT a.*, round( 0.05 * pendapatan_pandu, 0 ) pnbp_pandu, round( 0.05 * pendapatan_tunda, 0 ) pnbp_tunda, round( 0.05 * pendapatan_pandu, 0 ) + round( 0.05 * pendapatan_tunda, 0 ) jumlah_pnbp FROM (SELECT c.kd_cabang, c.nm_cabang, bkt_pandu.kd_ppkb, to_char( bkt_pandu.jam_pandu_naik, 'mm-yyyy' ) periode, bkt_pandu.no_ukk, bkt_pandu.no_bkt_pandu, pkk.tgl_jam_tiba, bkt_pandu.ppkb_ke, bkt_pandu.draft_depan, bkt_pandu.draft_belakang, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat1, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat1, (SELECT mst_kapal.kp_loa FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat1, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat1, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat1, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat1, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat2, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat2, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat2, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat2, mst_kapal.nm_kapal, mst_kapal.jn_kapal, mst_kapal.kp_grt, mst_kapal.kp_loa, mst_kapal.kd_bendera, mst_agen.kd_agen, mst_pers_pandu.nm_pers_pandu, to_char( pkk.tgl_jam_tiba, 'dd-mm-yyyy' ) tgl_tiba, to_char( pkk.tgl_jam_tiba, 'hh24:mi' ) jam_tiba, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'dd-mm-yyyy' ) tgl_pmt, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'hh24:mi' ) jam_pmt, to_char( bkt_pandu.jam_pandu_naik, 'hh24:mi' ) pnk, to_char( bkt_pandu.jam_kapal_gerak, 'hh24:mi' ) kb, bkt_pandu.jam_pandu_naik,  to_char( bkt_pandu.jam_pandu_naik, 'dd-mm-yyyy hh24:mi' ) mulai_pelaksanaan, to_char( bkt_pandu.jam_pandu_turun, 'dd-mm-yyyy hh24:mi' ) selesai_pelaksanaan, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) pnd, round((bkt_pandu.jam_pandu_turun - bkt_pandu.jam_pandu_naik) * 24*60) pnd_minute, ( CASE WHEN bkt_pandu.jam_pandu_naik > ppkb_pandu.tgl_jam_pmt_pandu_d THEN f_selisih_jam ( ppkb_pandu.tgl_jam_pmt_pandu_d, bkt_pandu.jam_pandu_naik ) ELSE '00:00' END ) wt, round( ( bkt_pandu.jam_pandu_naik - ppkb_pandu.tgl_jam_pmt_pandu_d ) * 24 * 60 ) wt_minute,(CASE WHEN bkt_pandu.kd_gerakan = 1 AND ppkb_pandu.tgl_jam_pmt_pandu_d > pkk.tgl_jam_tiba THEN trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 - trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) pt, (CASE WHEN bkt_pandu.kd_gerakan = 3 AND bkt_pandu.jam_pandu_turun > pkk.tgl_jam_tiba THEN trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 - trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) trt, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) at_jam, (CASE bkt_pandu.pandu_dari WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_sebelum ) ELSE bkt_pandu.pandu_dari END ) pandu_dari, (CASE bkt_pandu.pandu_ke WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_berikut ) ELSE bkt_pandu.pandu_ke END ) pandu_ke, bkt_pandu.kd_gerakan, mst_gerakan.gerakan, bkt_pandu.tgl_mpandu, mst_agen.nm_agen, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) nm_kapal_1, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) hp_kapal_1, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) nm_kapal_2, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) hp_kapal_2, to_char( bkt_tunda.tgl_jam_tiba_kpl1, 'hh24:mi' ) mulai_tunda, to_char( bkt_tunda.tgl_jam_brngkt_kpl1, 'hh24:mi' ) selesai_tunda, f_selisih_jam ( bkt_tunda.tgl_jam_tiba_kpl1, bkt_tunda.tgl_jam_brngkt_kpl1 ) lama_tunda, bkt_pandu.ket_pandu, mst_keterangan_pandu.keterangan || ', ' || ( SELECT keterangan FROM kapal_prod.mst_ket_pandu_khusus WHERE kd_keterangan_pandu = bkt_pandu.ket_pandu ) AS keterangan_pandu, decode( pkk.kd_pelayaran, '1', 'ln', '2', 'dn', '3', 'rkyt', '4', 'prnts' ) AS pelayaran, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'pandu'), 0 ) pendapatan_pandu, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'tunda'), 0 ) pendapatan_tunda, mst_dermaga.dermaga FROM bkt_pandu, bkt_tunda, ppkb_detail, ppkb_pandu, ppkb, pkk, mst_kapal_agen, mst_kapal, mst_pers_pandu, mst_gerakan, mst_agen, mst_keterangan_pandu, mst_cabang c, mst_kade, mst_dermaga WHERE bkt_pandu.no_bkt_pandu = bkt_tunda.no_bkt_tunda ( + ) AND mst_kapal_agen.kd_cabang = c.kd_cabang AND bkt_pandu.kd_ppkb = ppkb_detail.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_detail.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb_pandu.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_pandu.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb.kd_ppkb AND ppkb.no_ukk = pkk.no_ukk AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal AND ( bkt_pandu.kd_pers_pandu = mst_pers_pandu.kd_pers_pandu AND SUBSTR( bkt_pandu.kd_ppkb, 5, 2 ) = mst_pers_pandu.KD_CABANG ) AND bkt_pandu.kd_gerakan = mst_gerakan.kd_gerakan AND mst_kapal_agen.kd_agen = mst_agen.kd_agen AND bkt_pandu.ket_pandu = mst_keterangan_pandu.kd_keterangan_pandu AND ppkb_detail.kade_tujuan = mst_kade.kd_kade AND mst_kade.kd_dermaga = mst_dermaga.kd_dermaga ) a`;
 const Report = function (report) {
     this.nama = report.nama;
 };
+
+const queryPandu = function (cabang, date, dbCabang = "") {
+    return `SELECT KD_PROSES, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' AND TO_NUMBER( KD_PROSES ) >= 3 AND TO_NUMBER( KD_PROSES ) <= 6 GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
+};
+
+const queryTunda = function (cabang, date, dbCabang = "") {
+    return `SELECT KD_PROSES, NM_KPL, HP_KPL, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, TRUNC( SUM( LAMA_TUNDA_KPL ) / 60 ) AS LAMA_TUNDA_KPL, NVL( SUM( PENDAPATAN_PER_HP ), 0 ) AS PENDAPATAN_PER_HP, NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) AS PENDAPATAN_TOTAL_KPL, ROUND( 0.05 * NVL( SUM( PENDAPATAN_PER_HP ), 0 ) ) AS PNBP_PER_HP, ROUND( 0.05 * NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) ) AS PNBP_TOTAL_KPL FROM ${dbCabang}V_PRODUKSI_KAPAL_TUNDA_CT WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' AND TO_NUMBER( KD_PROSES ) >= 3 AND TO_NUMBER( KD_PROSES ) <= 6 GROUP BY KD_PROSES, NM_KPL, HP_KPL ORDER BY NM_KPL`;
+};
+
+const getCabang = async function (cabang) {
+    const query = `SELECT "nama" FROM "cabang" WHERE "id" ='${cabang}'`;
+    const output1 = await f.query(query);
+    const output = output1.rows;
+    console.log(output[0].nama);
+    return output[0].nama;
+};
+
 
 Report.saranabantupemandu = async (id, result, cabang_id) => {
     var query = `SELECT a."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
@@ -482,68 +500,17 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
 
 
 Report.pelaporantunda = async (req, result, cabang_id) => {
+
     if (req.fields.date) {
-        const date = req.fields.date;
-        // const cabang_id = req.fields.cabang_id;
-        // var query = `select a.*, round(0.05*pendapatan_pandu,0) pnbp_pandu, round(0.05*pendapatan_tunda,0) pnbp_tunda, round(0.05*pendapatan_pandu,0) + round(0.05*pendapatan_tunda,0) jumlah_pnbp from ( select c.nm_cabang, bkt_pandu.kd_ppkb, to_char(bkt_pandu.jam_pandu_naik,'mm-yyyy') periode, bkt_pandu.no_ukk, bkt_pandu.no_bkt_pandu, pkk.tgl_jam_tiba, bkt_pandu.ppkb_ke, bkt_pandu.draft_depan, bkt_pandu.draft_belakang, ( select mst_kapal.nm_kapal from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat1, ( select mst_kapal.kp_grt from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat1, ( select mst_kapal.kp_loa from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat1, ( select mst_kapal.kd_bendera from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat1, ( select pkk.draft_depan from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat1, ( select pkk.draft_belakang from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk1 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat1, ( select mst_kapal.nm_kapal from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat2, ( select mst_kapal.kp_grt from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat2, ( select mst_kapal.kp_grt from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat2, ( select mst_kapal.kd_bendera from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat2, ( select pkk.draft_depan from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat2, ( select pkk.draft_belakang from pkk, mst_kapal_agen, mst_kapal where pkk.no_ukk = bkt_pandu.no_ukk2 and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat2, mst_kapal.nm_kapal, mst_kapal.jn_kapal, mst_kapal.kp_grt, mst_kapal.kp_loa, mst_kapal.kd_bendera, mst_agen.kd_agen, mst_pers_pandu.nm_pers_pandu, to_char (pkk.tgl_jam_tiba, 'dd-mm-yyyy') tgl_tiba, to_char (pkk.tgl_jam_tiba, 'hh24:mi') jam_tiba, to_char (ppkb_pandu.tgl_jam_pmt_pandu_d, 'dd-mm-yyyy') tgl_pmt, to_char (ppkb_pandu.tgl_jam_pmt_pandu_d, 'hh24:mi') jam_pmt, to_char (bkt_pandu.jam_pandu_naik, 'hh24:mi') pnk, to_char (bkt_pandu.jam_kapal_gerak, 'hh24:mi') kb, to_char (bkt_pandu.jam_pandu_naik, 'dd-mm-yyyy hh24:mi') mulai_pelaksanaan, to_char (bkt_pandu.jam_pandu_turun, 'dd-mm-yyyy hh24:mi') selesai_pelaksanaan, f_selisih_jam (bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun) pnd, ( case when bkt_pandu.jam_pandu_naik > ppkb_pandu.tgl_jam_pmt_pandu_d then f_selisih_jam (ppkb_pandu.tgl_jam_pmt_pandu_d, bkt_pandu.jam_pandu_naik) else '00:00' end ) wt, ( case when bkt_pandu.kd_gerakan = 1 and ppkb_pandu.tgl_jam_pmt_pandu_d > pkk.tgl_jam_tiba then trunc((ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba) * 24) || ':' || trunc(((ppkb_pandu.tgl_jam_pmt_pandu_d-pkk.tgl_jam_tiba)* 24 - trunc((ppkb_pandu.tgl_jam_pmt_pandu_d-pkk.tgl_jam_tiba)* 24))* 60) else '00:00' end ) pt, ( case when bkt_pandu.kd_gerakan = 3 and bkt_pandu.jam_pandu_turun > pkk.tgl_jam_tiba then trunc((bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba) * 24) || ':' || trunc(((bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba)* 24 - trunc((bkt_pandu.jam_pandu_turun-pkk.tgl_jam_tiba) * 24)) * 60) else '00:00' end ) trt, f_selisih_jam (bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun) at_jam, ( case bkt_pandu.pandu_dari when '9999' then ( select mst_pelabuhan.nm_pelabuhan from mst_pelabuhan where mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_sebelum) else bkt_pandu.pandu_dari end ) pandu_dari, ( case bkt_pandu.pandu_ke when '9999' then (select mst_pelabuhan.nm_pelabuhan from mst_pelabuhan where mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_berikut) else bkt_pandu.pandu_ke end ) pandu_ke, bkt_pandu.kd_gerakan, mst_gerakan.gerakan, bkt_pandu.tgl_mpandu, mst_agen.nm_agen, ( select mst_fasilitas.nm_fas from mst_fasilitas where bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) nm_kapal_1, ( select mst_fasilitas.nm_fas from mst_fasilitas where bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) nm_kapal_2, to_char (bkt_tunda.tgl_jam_tiba_kpl1, 'hh24:mi') mulai_tunda, to_char (bkt_tunda.tgl_jam_brngkt_kpl1, 'hh24:mi') selesai_tunda, f_selisih_jam (bkt_tunda.tgl_jam_tiba_kpl1, bkt_tunda.tgl_jam_brngkt_kpl1) lama_tunda, bkt_pandu.ket_pandu, mst_keterangan_pandu.keterangan || ', ' || (select keterangan from kapal_prod.mst_ket_pandu_khusus where kd_keterangan_pandu = bkt_pandu.ket_pandu) as keterangan_pandu, decode ( pkk.kd_pelayaran, '1', 'ln', '2', 'dn', '3', 'rkyt', '4', 'prnts' ) as pelayaran, nvl ( ( select sum(nvl(amount,0)) from kapal_cabang.simkeu_data_nota_tmp a where a.no_ukk = pkk.no_ukk and a.no_bukti = bkt_pandu.no_bkt_pandu and a.type_pelayanan = 'pandu' ), 0 ) pendapatan_pandu, nvl ( ( select sum(nvl(amount,0)) from kapal_cabang.simkeu_data_nota_tmp a where a.no_ukk = pkk.no_ukk and a.no_bukti = bkt_pandu.no_bkt_pandu and a.type_pelayanan = 'tunda' ), 0 ) pendapatan_tunda, mst_dermaga.dermaga from bkt_pandu, bkt_tunda, ppkb_detail, ppkb_pandu, ppkb, pkk, mst_kapal_agen, mst_kapal, mst_pers_pandu, mst_gerakan, mst_agen, mst_keterangan_pandu, mst_cabang c, mst_kade, mst_dermaga WHERE bkt_pandu.no_bkt_pandu = bkt_tunda.no_bkt_tunda(+) and mst_kapal_agen.kd_cabang = c.kd_cabang and bkt_pandu.kd_ppkb = ppkb_detail.kd_ppkb and bkt_pandu.ppkb_ke = ppkb_detail.ppkb_ke and bkt_pandu.kd_ppkb = ppkb_pandu.kd_ppkb and bkt_pandu.ppkb_ke = ppkb_pandu.ppkb_ke and bkt_pandu.kd_ppkb = ppkb.kd_ppkb and ppkb.no_ukk = pkk.no_ukk and pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen and mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal and (bkt_pandu.kd_pers_pandu = mst_pers_pandu.kd_pers_pandu and SUBSTR(bkt_pandu.kd_ppkb, 5, 2) = mst_pers_pandu.KD_CABANG) and bkt_pandu.kd_gerakan = mst_gerakan.kd_gerakan and mst_kapal_agen.kd_agen = mst_agen.kd_agen and bkt_pandu.ket_pandu = mst_keterangan_pandu.kd_keterangan_pandu and ppkb_detail.kade_tujuan = mst_kade.kd_kade and mst_kade.kd_dermaga=mst_dermaga.kd_dermaga and to_char(bkt_pandu.jam_pandu_naik,'YYYY-MM') in ('${date}') and  c.kd_cabang in ('${cabang_id}') ) a order by a.kd_ppkb`;
-        var nm_kapal = 0, hp = 0, gr_dl = 0, gr_ln = 0, gr_total = 0, total_tunda = 0, perhp = 0, total_perhp = 0, percent_perhp = 0, percent_pertotal = 0;
-        var query = `SELECT NM_KAPAL as "nm_kapal" FROM (
-                    ${query_asli}
-                ) a
-                WHERE a.kd_cabang = '04'
-                GROUP BY NM_KAPAL
-                ORDER BY NM_KAPAL`;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        var arr = {}, query = queryTunda(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
+        query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
+        console.log(query);
         var output1 = await f.querySimop(query);
-        // console.log(output1.row);
-        var brow = output1.rows
-        var no = 1;
-        var arr = [];
-        for (var a in brow) {
-            brow[a]['no'] = no;
-            // brow[a]['nm_kapal'] = nm_kapal;
-            brow[a]['hp'] = hp;
-            brow[a]['gr_dl'] = gr_dl;
-            brow[a]['gr_ln'] = gr_ln;
-            brow[a]['gr_total'] = gr_total;
-            brow[a]['total_tunda'] = total_tunda;
-            brow[a]['perhp'] = perhp;
-            brow[a]['total_perhp'] = total_perhp;
-            brow[a]['percent_perhp'] = percent_perhp;
-            brow[a]['percent_pertotal'] = percent_pertotal;
-            no++;
-        }
 
-
-        query = `SELECT a.pelayaran, count(a.pelayaran) as "countnya" FROM (
-                ${query_asli}                
-            	) a
-            WHERE a.kd_cabang='04'
-            GROUP BY a.pelayaran`;
-        output1 = await f.querySimop(query);
-        var arr = {};
-        var getRow = output1.rows;
-        var cb = "";
-        for (var a in getRow) {
-            const pelayaran = getRow[a].PELAYARAN;
-            if (pelayaran == "dn") {
-                gr_dl = getRow[a].countnya;
-            }
-
-            if (pelayaran == "ln") {
-                gr_ln = getRow[a].countnya;
-            }
-
-            if (gr_dl != "" && gr_ln != "") {
-                for (var b in brow) {
-                    brow[b]['gr_dl'] = gr_dl;
-                    brow[b]['gr_ln'] = gr_ln;
-                    brow[b]['gr_total'] = parseInt(gr_dl) + parseInt(gr_ln);
-                }
-            }
-        }
-
-        arr['global'] = brow;
-        // console.log(arr);
+        arr['global'] = output1.rows;
+        arr['cabang'] = await getCabang(parseInt(cabang));
+        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
 
         var d = new Date();
         var t = d.getTime();
@@ -556,57 +523,24 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             result(null, t + '.xlsx');
         });
 
-        // result(null, output1.rows);
+        result(null, output1.rows);
     } else {
         result(null, { "status": "error no data" });
     }
+
 };
 
 
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        // const date = req.fields.date;
-        var cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
-        var gr_dn = 0, gr_ln = 0, gr_total = 0, gt_dn = 0, gt_ln = 0, gt_total = 0, pnd_dn = 0, pnd_ln = 0, pnd_total = 0, wt_dn = 0, wt_ln = 0, wt_total = 0, pdpt = 0, pnbp = 0;
-        var query = `SELECT a.NM_PERS_PANDU, a.PELAYARAN, COUNT(a.NM_PERS_PANDU) AS JUMLAH, SUM(a.KP_GRT) AS GT FROM (
-                        ${query_asli}
-                    ) a WHERE a.kd_cabang='${cabang}' GROUP BY a.NM_PERS_PANDU, a.PELAYARAN ORDER BY a.NM_PERS_PANDU, a.pelayaran`;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        var arr = {}, query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
+        query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
         var output1 = await f.querySimop(query);
-        console.log(query_asli);
 
-        var brow = output1.rows
-        var no = 1;
-        var arr = [];
-        var merge = [];
-        var mergeObj = {};
-        var cek_dn = 0, cek_ln = 0, cek_pandu = "";
-        var no_merge = 0;
-
-        for (var a in brow) {
-            brow[a]['no'] = no;
-            if (cek_pandu != brow[a]['NM_PERS_PANDU']) {
-                no_merge++;
-                mergeObj = {}
-                mergeObj['no'] = no_merge;
-                mergeObj['NM_PERS_PANDU'] = cek_pandu;
-                mergeObj['gr_dn'] = cek_dn == 1 ? gr_dn : 0;;
-                mergeObj['gr_ln'] = cek_ln == 1 ? gr_ln : 0;;
-                mergeObj['gr_total'] = mergeObj['gr_dn'] + mergeObj['gr_ln'];
-                merge.push(mergeObj);
-                cek_pandu = brow[a]['NM_PERS_PANDU'];
-            }
-            if (brow[a]['PELAYARAN'] == "dn") {
-                gr_dn = brow[a].JUMLAH;
-                cek_dn = 1;
-            }
-            if (brow[a]['PELAYARAN'] == "ln") {
-                gr_ln = brow[a].JUMLAH;
-                cek_ln = 1;
-            }
-            no++;
-        }
-        arr['global'] = mergeObj;
-        console.log(mergeObj);
+        arr['global'] = output1.rows;
+        arr['cabang'] = await getCabang(parseInt(cabang));
+        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
 
         var d = new Date();
         var t = d.getTime();
@@ -619,7 +553,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             result(null, t + '.xlsx');
         });
 
-        // result(null, output1.rows);
+        result(null, output1.rows);
     } else {
         result(null, { "status": "error no data" });
     }

@@ -37,7 +37,7 @@ const cekBody = (rows) => {
 }
 
 
-const cekBodyBandar = (rows) => {
+const cekBodyBandar = (rows, cabang = "Cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -49,21 +49,36 @@ const cekBodyBandar = (rows) => {
 	}
 
 	if (rows.simop_kd_pers_pandu) {
-		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
-		dt = {
-			"opUpdateMstPersPanduCabangRequest": {
-				"esbBody": esbBody
+		if (cabang == "cabang") {
+			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
+			dt = {
+				"opUpdateMstPersPanduCabangResponse": {
+					"esbBody": esbBody
+				}
+			}
+		} else {
+			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
+			dt = {
+				"opUpdateMstPersPanduProdResponse": {
+					"esbBody": esbBody
+				}
 			}
 		}
 	} else {
-		// console.log("lewat 2");
-		dt = {
-			"opInsertMstPersPanduCabangRequest": {
-				"esbBody": esbBody
+		if (cabang == "cabang") {
+			dt = {
+				"opInsertMstPersPanduCabangRequest": {
+					"esbBody": esbBody
+				}
+			}
+		} else {
+			dt = {
+				"opUpdateMstPersPanduProdResponse": {
+					"esbBody": esbBody
+				}
 			}
 		}
 	}
-
 
 	return dt;
 }
@@ -96,6 +111,7 @@ const Personil = function (personil) {
 	this.skpp_tanggal_mulai = personil.skpp_tanggal_mulai;
 	this.skpp_tanggal_selesai = personil.skpp_tanggal_selesai;
 	this.pandu_bandar_laut_id = personil.pandu_bandar_laut_id;
+	this.manning = personil.manning;
 	this.date = personil.date;
 	this.item = personil.item;
 	this.action = personil.action;

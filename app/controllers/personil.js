@@ -35,6 +35,7 @@ exports.create = (req, res) => {
         skpp_tanggal_mulai: f.toDate(req.fields.skpp_tanggal_mulai),
         skpp_tanggal_selesai: f.toDate(req.fields.skpp_tanggal_selesai),
         pandu_bandar_laut_id: req.fields.pandu_bandar_laut_id,
+        manning: req.fields.manning,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
@@ -44,28 +45,28 @@ exports.create = (req, res) => {
         keterangan: req.fields.keterangan,
     };
 
-	var used = {};
-	for (var i in personil) {
-	    if (personil[i] == undefined) {
-	        delete personil[i];
-	    }
-	}
+    var used = {};
+    for (var i in personil) {
+        if (personil[i] == undefined) {
+            delete personil[i];
+        }
+    }
 
-	if (req.fields.cv) {
-	    personil.cv = f.uploadFile64('personil', req.fields.cv);
-	}
+    if (req.fields.cv) {
+        personil.cv = f.uploadFile64('personil', req.fields.cv);
+    }
 
-	if (req.fields.sk) {
-	    personil.sk = f.uploadFile64('personil', req.fields.sk);
-	}
+    if (req.fields.sk) {
+        personil.sk = f.uploadFile64('personil', req.fields.sk);
+    }
 
-	if (req.fields.skpp) {
-	    personil.skpp = f.uploadFile64('personil', req.fields.skpp);
-	}
+    if (req.fields.skpp) {
+        personil.skpp = f.uploadFile64('personil', req.fields.skpp);
+    }
 
-	if (req.fields.surat_kesehatan) {
-	    personil.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
-	}
+    if (req.fields.surat_kesehatan) {
+        personil.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
+    }
 
     Personil.create(personil, (err, data) => {
         if (err)
@@ -112,43 +113,43 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal_lahir = f.toDate(req.fields.tanggal_lahir);
-	req.fields.tanggal_mulai = f.toDate(req.fields.tanggal_mulai);
-	req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
-	req.fields.skpp_tanggal_mulai = f.toDate(req.fields.skpp_tanggal_mulai);
-	req.fields.skpp_tanggal_selesai = f.toDate(req.fields.skpp_tanggal_selesai);
-	req.fields.date = f.toDate(req.fields.date);
-	if (req.fields.cv) {
-		if (req.fields.cv.substring(0, 4) == "data") {
-		    req.fields.cv = f.uploadFile64('personil', req.fields.cv);
-		} else {
-		    delete req.fields.cv
-		}
-	}
+    req.fields.tanggal_lahir = f.toDate(req.fields.tanggal_lahir);
+    req.fields.tanggal_mulai = f.toDate(req.fields.tanggal_mulai);
+    req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
+    req.fields.skpp_tanggal_mulai = f.toDate(req.fields.skpp_tanggal_mulai);
+    req.fields.skpp_tanggal_selesai = f.toDate(req.fields.skpp_tanggal_selesai);
+    req.fields.date = f.toDate(req.fields.date);
+    if (req.fields.cv) {
+        if (req.fields.cv.substring(0, 4) == "data") {
+            req.fields.cv = f.uploadFile64('personil', req.fields.cv);
+        } else {
+            delete req.fields.cv
+        }
+    }
 
-	if (req.fields.sk) {
-		if (req.fields.sk.substring(0, 4) == "data") {
-		    req.fields.sk = f.uploadFile64('personil', req.fields.sk);
-		} else {
-		    delete req.fields.sk
-		}
-	}
+    if (req.fields.sk) {
+        if (req.fields.sk.substring(0, 4) == "data") {
+            req.fields.sk = f.uploadFile64('personil', req.fields.sk);
+        } else {
+            delete req.fields.sk
+        }
+    }
 
-	if (req.fields.skpp) {
-		if (req.fields.skpp.substring(0, 4) == "data") {
-		    req.fields.skpp = f.uploadFile64('personil', req.fields.skpp);
-		} else {
-		    delete req.fields.skpp
-		}
-	}
+    if (req.fields.skpp) {
+        if (req.fields.skpp.substring(0, 4) == "data") {
+            req.fields.skpp = f.uploadFile64('personil', req.fields.skpp);
+        } else {
+            delete req.fields.skpp
+        }
+    }
 
-	if (req.fields.surat_kesehatan) {
-		if (req.fields.surat_kesehatan.substring(0, 4) == "data") {
-		    req.fields.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
-		} else {
-		    delete req.fields.surat_kesehatan
-		}
-	}
+    if (req.fields.surat_kesehatan) {
+        if (req.fields.surat_kesehatan.substring(0, 4) == "data") {
+            req.fields.surat_kesehatan = f.uploadFile64('personil', req.fields.surat_kesehatan);
+        } else {
+            delete req.fields.surat_kesehatan
+        }
+    }
 
 
     Personil.updateById(
