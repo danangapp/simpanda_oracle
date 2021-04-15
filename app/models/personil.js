@@ -111,6 +111,7 @@ const Personil = function (personil) {
 	this.skpp_tanggal_mulai = personil.skpp_tanggal_mulai;
 	this.skpp_tanggal_selesai = personil.skpp_tanggal_selesai;
 	this.pandu_bandar_laut_id = personil.pandu_bandar_laut_id;
+	this.manning = personil.manning;
 	this.date = personil.date;
 	this.item = personil.item;
 	this.action = personil.action;
