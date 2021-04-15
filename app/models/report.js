@@ -510,7 +510,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
         arr['global'] = output1.rows;
         arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(date.substring(5, 7)).format("YYYY");
+        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
 
         var d = new Date();
         var t = d.getTime();
@@ -540,7 +540,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
 
         arr['global'] = output1.rows;
         arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(date.substring(5, 7)).format("YYYY");
+        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
 
         var d = new Date();
         var t = d.getTime();
