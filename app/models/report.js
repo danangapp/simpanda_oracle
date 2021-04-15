@@ -32,7 +32,7 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
     arr["v" + "00"] = output[0].status_ijazah_id == 1 ? "" : "";
     arr["tv" + "00"] = output[0].status_ijazah_id == 2 ? "" : "";
     arr["ta" + "00"] = output[0].status_ijazah_id == 0 ? "" : "";
-    console.log(arr);
+    // console.log(arr);
 
     query = `SELECT a.*, b."tipe_asset_id" FROM "sbp_data" a INNER JOIN "sarana_bantu_pemandu" b ON 
         a."sarana_bantu_pemandu_id" = b."id" WHERE a."sarana_bantu_pemandu_id" = '${id}' ORDER BY a."question_id"`;
@@ -716,6 +716,274 @@ Report.shippeformance = async (req, result, cabang_id) => {
         result(null, { "status": "error no data" });
     }
 };
+
+Report.pandu = async (req, result, cabang_id) => {
+    
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+       
+
+        var query = `SELECT rownum as no,
+            a."nama" as nama,
+            b."nama" as tipe_personil,
+            c."nama" as cabang,
+            d."nama" as approval_status,
+            e."nama" as pandu_bandar_laut,
+            f."nama" as status_kepegawaian,
+            g."nama" as ena,
+            h."no_sertifikat" as no_sertifikat,
+            h."issuer" as lembaga,
+            i."nama" as jeniscert,
+            j."nama" as tipecert,
+            a.*,
+            to_char(a."tanggal_lahir",'DD-MM-YYYY') as tanggal_lahir,
+            to_char(a."tanggal_mulai",'DD-MM-YYYY') as tanggal_mulai,
+            to_char(a."tanggal_selesai",'DD-MM-YYYY') as tanggal_selesai,
+            to_char(a."skpp_tanggal_mulai",'DD-MM-YYYY') as skpp_tanggal_mulai,
+            to_char(a."skpp_tanggal_selesai",'DD-MM-YYYY') as skpp_tanggal_selesai,
+            to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
+            to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
+
+            from "personil" a
+            LEFT JOIN "tipe_personil" b ON a."tipe_personil_id" = b."id"
+            LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
+            LEFT JOIN "approval_status" d ON a."approval_status_id" = d."id"
+            LEFT JOIN "pandu_bandar_laut" e ON a."pandu_bandar_laut_id" = e."id"
+            LEFT JOIN "status_kepegawaian" f ON a."status_kepegawaian_id" = f."id"
+            LEFT JOIN "enable" g ON a."enable" = g."id"
+            LEFT JOIN "sertifikat" h ON a."id" = h."personil_id"
+            LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
+            LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
+            WHERE a."id" IN (${cabang})
+        `;
+        
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        // console.log(f.toDate(output[6].tanggal_lahir, "DD-MMM-YYYY"))
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Personil Pandu.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/pandu' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
+
+Report.pendukungpandu = async (req, result, cabang_id) => {
+    
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+       
+        var query = `SELECT rownum as no,
+            a."nama" as nama,
+            b."nama" as tipe_personil,
+            c."nama" as cabang,
+            d."nama" as approval_status,
+            e."nama" as pandu_bandar_laut,
+            f."nama" as status_kepegawaian,
+            g."nama" as ena,
+            h."no_sertifikat" as no_sertifikat,
+            h."issuer" as lembaga,
+            i."nama" as jeniscert,
+            j."nama" as tipecert,
+            k."nama_asset" as kapal,
+            a.*,
+            to_char(a."tanggal_lahir",'DD-MM-YYYY') as tanggal_lahir,
+            to_char(a."tanggal_mulai",'DD-MM-YYYY') as tanggal_mulai,
+            to_char(a."tanggal_selesai",'DD-MM-YYYY') as tanggal_selesai,
+            to_char(a."skpp_tanggal_mulai",'DD-MM-YYYY') as skpp_tanggal_mulai,
+            to_char(a."skpp_tanggal_selesai",'DD-MM-YYYY') as skpp_tanggal_selesai,
+            to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
+            to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
+
+            from "personil" a
+            LEFT JOIN "tipe_personil" b ON a."tipe_personil_id" = b."id"
+            LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
+            LEFT JOIN "approval_status" d ON a."approval_status_id" = d."id"
+            LEFT JOIN "pandu_bandar_laut" e ON a."pandu_bandar_laut_id" = e."id"
+            LEFT JOIN "status_kepegawaian" f ON a."status_kepegawaian_id" = f."id"
+            LEFT JOIN "enable" g ON a."enable" = g."id"
+            LEFT JOIN "sertifikat" h ON a."id" = h."personil_id"
+            LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
+            LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
+            LEFT JOIN "asset_kapal" k ON k."id" = a."asset_kapal_id"
+            WHERE a."id" IN (${cabang})
+        `;
+        
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Personil Pendukung Pandu.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/pendukungpandu' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
+
+Report.kapal = async (req, result, cabang_id) => {
+    
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+
+        var query = `SELECT rownum as no,
+            c."nama" as cabang,
+            a."nama_asset" as nama_asset,
+            a."horse_power" as hp,
+            a."tahun_perolehan" as tahun_peroleh,
+            b."nama" as jenis_asset,
+            a."nilai_perolehan" as nilai,
+            a."loa" as loa,
+            a."breadth" as breadth,
+            a."depth" as depth,
+            a."draft_max" as draft,
+            a."tahun_pembuatan" as tahun_buat,
+            a."negara_pembuat" as negara,
+            a."kontruksi" as konstruksi,
+            a."klas" as klas,
+            a."no_registrasi" as no_registrasi,
+            a."port_of_registration" as port_of_registration,
+            a."gross_tonnage" as gross_tonnage,
+            a."kecepatan" as kecepatan,
+            a."bolard_pull" as bolard_pull,
+            h."no_sertifikat" as no_sertifikat,
+            h."issuer" as lembaga,
+            i."nama" as jeniscert,
+            j."nama" as tipecert,
+            
+            to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
+            to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
+        
+            from "asset_kapal" a
+            LEFT JOIN "tipe_asset" b ON a."tipe_asset_id" = b."id"
+            LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
+            LEFT JOIN "sertifikat" h ON a."id" = h."personil_id"
+            LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
+            LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
+            WHERE a."id" IN (${cabang})
+        `;
+        
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Asset Kapal.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/kapal' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
+
+Report.stasiunpandu = async (req, result, cabang_id) => {
+    
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+
+        var query = `SELECT rownum as no,
+            c."nama" as cabang,
+            b."nama" as jenis_asset,
+            a."nama" as nama_asset,
+            a."nomor_asset" as nomor_asset,
+            a."tahun_perolehan" as tahun_peroleh,
+            d."nama" as kondisi,
+            a."nilai_perolehan" as nilai
+            
+            from "asset_stasiun_equipment" a
+            LEFT JOIN "tipe_asset" b ON a."tipe_asset_id" = b."id"
+            LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
+            LEFT JOIN "kondisi" d ON d."id" = a."kondisi"
+            WHERE a."id" IN (${cabang})
+        `;
+        
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Asset Stasiun Pandu.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/stasiunpandu' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
+
+Report.rumahdinas = async (req, result, cabang_id) => {
+    
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+
+        var query = `SELECT rownum as no,
+            a."nama_asset" as nama_asset,
+            a."no_asset" as nomor_asset,
+            a."tahun_perolehan" as tahun_peroleh,
+            a."alamat" as alamat,
+            a."wilayah" as wilayah,
+            a."satuan" as satuan,
+            a."nilai_perolehan" as nilai_peroleh,
+            a."nilai_buku" as nilai_buku,
+            a."nilai" as nilai_perawatan,
+            a."catatan" as catatan_perawatan,
+            
+            to_char(a."tanggal",'DD-MM-YYYY') as tanggal_perawatan
+        
+            from "asset_rumah_dinas" a
+            WHERE a."id" IN (${cabang})
+        `;
+        
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Asset Rumah Dinas.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/rumahdinas' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
 
 module.exports = Report;
 
