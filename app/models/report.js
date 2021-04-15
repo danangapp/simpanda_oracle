@@ -510,7 +510,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
         arr['global'] = output1.rows;
         arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
+        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
         var d = new Date();
         var t = d.getTime();
@@ -540,7 +540,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
 
         arr['global'] = output1.rows;
         arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(date.substring(0, 4)).format("MMMM") + " " + moment().month(parseInt(date.substring(5, 7))).format("YYYY");
+        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
         var d = new Date();
         var t = d.getTime();
@@ -652,10 +652,10 @@ Report.shippeformance = async (req, result, cabang_id) => {
 };
 
 Report.pandu = async (req, result, cabang_id) => {
-    
+
     if (req.fields) {
         const cabang = req.fields.cabang_id;
-       
+
 
         var query = `SELECT rownum as no,
             a."nama" as nama,
@@ -690,7 +690,7 @@ Report.pandu = async (req, result, cabang_id) => {
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             WHERE a."id" IN (${cabang})
         `;
-        
+
         var output1 = await f.query(query);
         var output = output1.rows;
         // console.log(f.toDate(output[6].tanggal_lahir, "DD-MMM-YYYY"))
@@ -713,10 +713,10 @@ Report.pandu = async (req, result, cabang_id) => {
 }
 
 Report.pendukungpandu = async (req, result, cabang_id) => {
-    
+
     if (req.fields) {
         const cabang = req.fields.cabang_id;
-       
+
         var query = `SELECT rownum as no,
             a."nama" as nama,
             b."nama" as tipe_personil,
@@ -752,7 +752,7 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
             LEFT JOIN "asset_kapal" k ON k."id" = a."asset_kapal_id"
             WHERE a."id" IN (${cabang})
         `;
-        
+
         var output1 = await f.query(query);
         var output = output1.rows;
         var arr = {};
@@ -774,7 +774,7 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
 }
 
 Report.kapal = async (req, result, cabang_id) => {
-    
+
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
@@ -814,7 +814,7 @@ Report.kapal = async (req, result, cabang_id) => {
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             WHERE a."id" IN (${cabang})
         `;
-        
+
         var output1 = await f.query(query);
         var output = output1.rows;
         var arr = {};
@@ -836,7 +836,7 @@ Report.kapal = async (req, result, cabang_id) => {
 }
 
 Report.stasiunpandu = async (req, result, cabang_id) => {
-    
+
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
@@ -855,7 +855,7 @@ Report.stasiunpandu = async (req, result, cabang_id) => {
             LEFT JOIN "kondisi" d ON d."id" = a."kondisi"
             WHERE a."id" IN (${cabang})
         `;
-        
+
         var output1 = await f.query(query);
         var output = output1.rows;
         var arr = {};
@@ -877,7 +877,7 @@ Report.stasiunpandu = async (req, result, cabang_id) => {
 }
 
 Report.rumahdinas = async (req, result, cabang_id) => {
-    
+
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
@@ -898,7 +898,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             from "asset_rumah_dinas" a
             WHERE a."id" IN (${cabang})
         `;
-        
+
         var output1 = await f.query(query);
         var output = output1.rows;
         var arr = {};
