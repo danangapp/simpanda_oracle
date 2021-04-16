@@ -17,12 +17,15 @@ moment.updateLocale(moment.locale(), { invalidDate: null })
 const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl"];
 const arrDateTime = ["expired"];
 module.exports = {
-    toDate: function (str, formatdate = 'YYYY-MM-DD') {
-        var dateString = str;
-        var dateObj = new Date(dateString);
-        var momentObj = moment(dateObj);
-        var momentString = momentObj.format(formatdate);
-        return momentString;
+    // toDate: function (str, formatdate = 'YYYY-MM-DD') {
+    //     var dateString = str;
+    //     var dateObj = new Date(dateString);
+    //     var momentObj = moment(dateObj);
+    //     var momentString = momentObj.format(formatdate);
+    //     return momentString;
+    // },
+    toDate: function (str) {
+        return moment(str).format('YYYY-MM-DD');
     },
     uploadFile: function (folders, files, updateTo) {
         var str = files.path;
