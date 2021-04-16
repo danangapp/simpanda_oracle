@@ -657,7 +657,10 @@ Report.pandu = async (req, result, cabang_id) => {
         const cabang = req.fields.cabang_id;
 
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             a."nama" as nama,
             b."nama" as tipe_personil,
             c."nama" as cabang,
@@ -689,6 +692,10 @@ Report.pandu = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+        ) z
+        
+        
         `;
 
         var output1 = await f.query(query);
@@ -717,7 +724,10 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             a."nama" as nama,
             b."nama" as tipe_personil,
             c."nama" as cabang,
@@ -751,6 +761,8 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "asset_kapal" k ON k."id" = a."asset_kapal_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+            ) z
         `;
 
         var output1 = await f.query(query);
@@ -778,7 +790,10 @@ Report.kapal = async (req, result, cabang_id) => {
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             c."nama" as cabang,
             a."nama_asset" as nama_asset,
             a."horse_power" as hp,
@@ -802,6 +817,7 @@ Report.kapal = async (req, result, cabang_id) => {
             h."issuer" as lembaga,
             i."nama" as jeniscert,
             j."nama" as tipecert,
+            k."nama" as kepemilikan,
             
             to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
             to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
@@ -809,10 +825,13 @@ Report.kapal = async (req, result, cabang_id) => {
             from "asset_kapal" a
             LEFT JOIN "tipe_asset" b ON a."tipe_asset_id" = b."id"
             LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
-            LEFT JOIN "sertifikat" h ON a."id" = h."personil_id"
+            LEFT JOIN "sertifikat" h ON a."id" = h."asset_kapal_id"
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
+            LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+        ) z
         `;
 
         var output1 = await f.query(query);
