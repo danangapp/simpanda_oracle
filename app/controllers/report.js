@@ -136,7 +136,7 @@ exports.pelaporanmanagement = async (req, res) => {
                 });
             }
         } else {
-            console.log("danang", data)
+            // console.log("danang", data)
             var filePath = './files/reports/PelaporanManajemen' + data;
             res.download(filePath, function (err) {
                 if (err) console.log(err);
@@ -252,7 +252,7 @@ exports.shippeformance = async (req, res) => {
 };
 
 exports.pandu = async (req, res) => {
-    
+
     Report.pandu(req, (err, data) => {
         console.log(data)
         if (err) {
@@ -278,7 +278,7 @@ exports.pandu = async (req, res) => {
 };
 
 exports.pendukungpandu = async (req, res) => {
-    
+
     Report.pendukungpandu(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
@@ -303,7 +303,7 @@ exports.pendukungpandu = async (req, res) => {
 };
 
 exports.kapal = async (req, res) => {
-    
+
     Report.kapal(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
@@ -328,7 +328,7 @@ exports.kapal = async (req, res) => {
 };
 
 exports.stasiunpandu = async (req, res) => {
-    
+
     Report.stasiunpandu(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
@@ -353,7 +353,7 @@ exports.stasiunpandu = async (req, res) => {
 };
 
 exports.rumahdinas = async (req, res) => {
-    
+
     Report.rumahdinas(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
