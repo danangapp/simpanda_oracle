@@ -27,7 +27,6 @@ User.create = async (newUser, result) => {
 	const exec = f.query(queryText, 1);
 	delete newUser.id;
 	const res = await exec;
-	console.log(res.outBinds);
 	result(null, { id: res.outBinds.id[0], ...newUser });
 };
 
