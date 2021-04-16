@@ -16,6 +16,7 @@ const AssetRumahDinas = function (assetrumahdinas) {
 	this.enable = assetrumahdinas.enable;
 	this.alamat = assetrumahdinas.alamat;
 	this.keterangan = assetrumahdinas.keterangan;
+	this.no_asset = assetrumahdinas.no_asset;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -84,7 +85,7 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 
 AssetRumahDinas.updateById = async (id, assetrumahdinas, result, user_id) => {
 
-	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan"];
+	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan", "no_asset"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
