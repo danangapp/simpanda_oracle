@@ -27,12 +27,12 @@ exports.create = (req, res) => {
         keterangan: req.fields.keterangan,
     };
 
-	var used = {};
-	for (var i in assetstasiunequipment) {
-	    if (assetstasiunequipment[i] == undefined) {
-	        delete assetstasiunequipment[i];
-	    }
-	}
+    var used = {};
+    for (var i in assetstasiunequipment) {
+        if (assetstasiunequipment[i] == undefined) {
+            delete assetstasiunequipment[i];
+        }
+    }
 
     AssetStasiunEquipment.create(assetstasiunequipment, (err, data) => {
         if (err)
