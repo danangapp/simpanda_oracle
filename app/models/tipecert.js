@@ -3,12 +3,12 @@ var objek = new Object();
 
 // constructor
 const TipeCert = function (tipecert) {
-    this.nama = tipecert.nama;
-    this.remark = tipecert.remark;
-    this.jenis_cert_id = tipecert.jenis_cert_id;
+	this.nama = tipecert.nama;
+	this.remark = tipecert.remark;
+	this.jenis_cert_id = tipecert.jenis_cert_id;
 };
 
-TipeCert.create = async(newTipeCert, result, cabang_id, user_id) => {
+TipeCert.create = async (newTipeCert, result, cabang_id, user_id) => {
 	var id = await f.getid("tipe_cert");
 	const hv = await f.headerValue(newTipeCert, id);
 	var queryText = "INSERT INTO \"tipe_cert\" " + hv + " RETURN \"id\" INTO :id";
@@ -27,11 +27,16 @@ TipeCert.findById = async (id, result) => {
 }
 
 TipeCert.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "tipe_cert");
-    var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\" FROM \"tipe_cert\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\" ";
+	if (param.jenis_cert_id == 'false') {
+		delete param.jenis_cert_id;
+	}
+	var wheres = f.getParam(param, "tipe_cert");
+
+	// console.log("danang", param.jenis_cert_id);
+	var query = "SELECT a.* , a1.\"nama\" as \"jenis_cert\" FROM \"tipe_cert\" a  LEFT JOIN \"jenis_cert\" a1 ON a.\"jenis_cert_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"remark\" LIKE '%" + param.q + "%' OR a.\"jenis_cert_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"remark\" LIKE '%" + param.q + "%' OR a.\"jenis_cert_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -42,7 +47,7 @@ TipeCert.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-TipeCert.updateById = async(id, tipecert, result, user_id) => {
+TipeCert.updateById = async (id, tipecert, result, user_id) => {
 
 	var arr = ["nama", "remark", "jenis_cert_id"];
 	var str = f.getValueUpdate(tipecert, id, arr);
@@ -52,11 +57,11 @@ TipeCert.updateById = async(id, tipecert, result, user_id) => {
 	objek.keterangan = tipecert.keterangan;
 	objek.item = "tipecert";
 	objek.user_id = user_id;
-	if(tipecert.approval_status_id == 1){
+	if (tipecert.approval_status_id == 1) {
 		objek.remark = "Pengajuan disetujui oleh pusat";
-	}else if(tipecert.approval_status_id == 2){
+	} else if (tipecert.approval_status_id == 2) {
 		objek.remark = "Pengajuan ditolak oleh pusat";
-	}else if(tipecert.approval_status_id == 0){
+	} else if (tipecert.approval_status_id == 0) {
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
