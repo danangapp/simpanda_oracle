@@ -210,7 +210,18 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         }
     }
 
-    arr['ep'] = EP[0];
+    var ep = EP[0];
+    ep['cek1'] = ep.check_laporan_bulanan == 1 ? "V" : "";
+    ep['uncek1'] = ep.check_laporan_bulanan == 0 ? "V" : "";
+    ep['cek2'] = ep.check_bukti_pembayaran_pnpb == 1 ? "V" : "";
+    ep['uncek2'] = ep.check_bukti_pembayaran_pnpb == 0 ? "V" : "";
+    ep['cek3'] = ep.check_sispro == 1 ? "V" : "";
+    ep['uncek3'] = ep.check_sispro == 0 ? "V" : "";
+    ep['cek4'] = ep.check_tarif_jasa_pandu_tunda == 1 ? "V" : "";
+    ep['uncek4'] = ep.check_tarif_jasa_pandu_tunda == 0 ? "V" : "";
+    ep['cek5'] = ep.check_data_dukung == 1 ? "V" : "";
+    ep['uncek5'] = ep.check_data_dukung == 0 ? "V" : "";
+    arr['ep'] = ep;
     arr['personil'] = personil;
     arr['radio'] = radio;
     arr['tunda'] = tunda;
@@ -228,6 +239,8 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         template.substitute(3, arr);
         template.substitute(4, arr);
         template.substitute(5, arr);
+        template.substitute(6, arr);
+        template.substitute(7, arr);
         var out = template.generate();
         const fileName = './files/reports/evaluasipelimpahan' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
