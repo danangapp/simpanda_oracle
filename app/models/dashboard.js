@@ -12,6 +12,7 @@ Dashboard.statisticresume = async (param, result) => {
     } else {
         queryText = `SELECT max(b."id") as "id", max(b."nama") as "nama", COUNT( a."cabang_id" ) AS "total" FROM "asset_kapal" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" WHERE a."enable" = 1 AND a."approval_status_id" = 1 AND a."tipe_asset_id" = 2  AND a."cabang_id" = '${param.cabang_id}' GROUP BY a."cabang_id"`;
     }
+    console.log(queryText);
     const exec = f.query(queryText);
     const res = await exec;
     result(null, res.rows);

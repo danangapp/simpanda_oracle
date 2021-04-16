@@ -26,9 +26,9 @@ const getCabang = async function (cabang) {
 
 
 Report.saranabantupemandu = async (id, result, cabang_id) => {
-    var query = `SELECT a."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
+    var query = `SELECT d."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
         b."negara_pembuat", b."horse_power", b."kecepatan", c."nama" AS "cabang", a."pelaksana", a."tanggal_pemeriksaan" FROM "sarana_bantu_pemandu" a
-        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" WHERE a."id" = '${id}'`;
+        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" INNER JOIN "personil" d ON a."personil_id" = d."id" WHERE a."id" = '${id}'`;
     var output1 = await f.query(query);
     var output = output1.rows;
     var arr = {}
