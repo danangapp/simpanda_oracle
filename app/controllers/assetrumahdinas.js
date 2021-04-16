@@ -26,15 +26,17 @@ exports.create = (req, res) => {
         user_id: req.fields.user_id,
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
+        no_asset: req.fields.no_asset,
+        alamat: req.fields.alamat,
         keterangan: req.fields.keterangan,
     };
 
-	var used = {};
-	for (var i in assetrumahdinas) {
-	    if (assetrumahdinas[i] == undefined) {
-	        delete assetrumahdinas[i];
-	    }
-	}
+    var used = {};
+    for (var i in assetrumahdinas) {
+        if (assetrumahdinas[i] == undefined) {
+            delete assetrumahdinas[i];
+        }
+    }
 
     AssetRumahDinas.create(assetrumahdinas, (err, data) => {
         if (err)
@@ -81,7 +83,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal = f.toDate(req.fields.tanggal);
+    req.fields.tanggal = f.toDate(req.fields.tanggal);
 
     AssetRumahDinas.updateById(
         req.params.id,

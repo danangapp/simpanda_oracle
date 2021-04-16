@@ -26,9 +26,9 @@ const getCabang = async function (cabang) {
 
 
 Report.saranabantupemandu = async (id, result, cabang_id) => {
-    var query = `SELECT a."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
+    var query = `SELECT d."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
         b."negara_pembuat", b."horse_power", b."kecepatan", c."nama" AS "cabang", a."pelaksana", a."tanggal_pemeriksaan" FROM "sarana_bantu_pemandu" a
-        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" WHERE a."id" = '${id}'`;
+        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" INNER JOIN "personil" d ON a."personil_id" = d."id" WHERE a."id" = '${id}'`;
     var output1 = await f.query(query);
     var output = output1.rows;
     var arr = {}
@@ -86,6 +86,7 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
 
 Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var query = `SELECT
+                    ROWNUM "NO",
                     b."question",
                     ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
                     ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
@@ -103,7 +104,13 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
 
     var output1 = await f.query(query);
     var output = output1.rows;
+
+    query = `SELECT b."nama", c."nama_asset" FROM "pemeriksaan_kapal" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id" WHERE a."id" = '${id}'`;
+    output1 = await f.query(query);
     var arr = {};
+    arr['cabang'] = output1.rows[0].nama;
+    arr['kapal'] = output1.rows[0].nama_asset;
+    // console.log(cabang);
     arr['pk'] = output;
 
     var d = new Date();
@@ -210,7 +217,18 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         }
     }
 
-    arr['ep'] = EP[0];
+    var ep = EP[0];
+    ep['cek1'] = ep.check_laporan_bulanan == 1 ? "V" : "";
+    ep['uncek1'] = ep.check_laporan_bulanan == 0 ? "V" : "";
+    ep['cek2'] = ep.check_bukti_pembayaran_pnpb == 1 ? "V" : "";
+    ep['uncek2'] = ep.check_bukti_pembayaran_pnpb == 0 ? "V" : "";
+    ep['cek3'] = ep.check_sispro == 1 ? "V" : "";
+    ep['uncek3'] = ep.check_sispro == 0 ? "V" : "";
+    ep['cek4'] = ep.check_tarif_jasa_pandu_tunda == 1 ? "V" : "";
+    ep['uncek4'] = ep.check_tarif_jasa_pandu_tunda == 0 ? "V" : "";
+    ep['cek5'] = ep.check_data_dukung == 1 ? "V" : "";
+    ep['uncek5'] = ep.check_data_dukung == 0 ? "V" : "";
+    arr['ep'] = ep;
     arr['personil'] = personil;
     arr['radio'] = radio;
     arr['tunda'] = tunda;
@@ -228,6 +246,8 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         template.substitute(3, arr);
         template.substitute(4, arr);
         template.substitute(5, arr);
+        template.substitute(6, arr);
+        template.substitute(7, arr);
         var out = template.generate();
         const fileName = './files/reports/evaluasipelimpahan' + t + '.xlsx';
         fs.writeFileSync(fileName, out, 'binary');
@@ -562,7 +582,10 @@ Report.pandu = async (req, result, cabang_id) => {
         const cabang = req.fields.cabang_id;
 
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             a."nama" as nama,
             b."nama" as tipe_personil,
             c."nama" as cabang,
@@ -594,6 +617,10 @@ Report.pandu = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+        ) z
+        
+        
         `;
 
         var output1 = await f.query(query);
@@ -622,7 +649,10 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             a."nama" as nama,
             b."nama" as tipe_personil,
             c."nama" as cabang,
@@ -656,6 +686,8 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "asset_kapal" k ON k."id" = a."asset_kapal_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+            ) z
         `;
 
         var output1 = await f.query(query);
@@ -683,7 +715,10 @@ Report.kapal = async (req, result, cabang_id) => {
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
-        var query = `SELECT rownum as no,
+        var query = `
+        SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
             c."nama" as cabang,
             a."nama_asset" as nama_asset,
             a."horse_power" as hp,
@@ -707,6 +742,7 @@ Report.kapal = async (req, result, cabang_id) => {
             h."issuer" as lembaga,
             i."nama" as jeniscert,
             j."nama" as tipecert,
+            k."nama" as kepemilikan,
             
             to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
             to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
@@ -714,10 +750,13 @@ Report.kapal = async (req, result, cabang_id) => {
             from "asset_kapal" a
             LEFT JOIN "tipe_asset" b ON a."tipe_asset_id" = b."id"
             LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
-            LEFT JOIN "sertifikat" h ON a."id" = h."personil_id"
+            LEFT JOIN "sertifikat" h ON a."id" = h."asset_kapal_id"
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
+            LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
             WHERE a."id" IN (${cabang})
+            ORDER BY c."id" asc
+        ) z
         `;
 
         var output1 = await f.query(query);

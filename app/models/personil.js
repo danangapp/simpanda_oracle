@@ -203,7 +203,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	}
 	delete personil.sertifikat;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning"];
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
 		var dt;
@@ -220,6 +220,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 					var str = f.getValueUpdate(personil, id, arr);
 					await f.approvalStatus("personil", personil, objek, id, user_id)
 					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+					console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 				}).catch(function (error) {
 					console.log(error);
 				});
@@ -245,6 +246,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 					var str = f.getValueUpdate(personil, id, arr);
 					await f.approvalStatus("personil", personil, objek, id, user_id)
 					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+					console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 				}).catch(function (error) {
 					console.log(error);
 				});
