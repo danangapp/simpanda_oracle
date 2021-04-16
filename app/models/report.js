@@ -168,7 +168,11 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     var output1 = await f.query(query);
     var output = output1.rows[0];
     const cabang = output.cabang_id;
-    var arr = {}, personil = [], radio = [], tunda = [], kepil = [], pandu = [];
+    var arr = {}, personil = [], radio = [], tunda = [], kepil = [], pandu = [], EP = [];
+
+    query = `SELECT * FROM "evaluasi_pelimpahan" WHERE "id" = '${id}'`;
+    output1 = await f.query(query);
+    EP = output1.rows;
 
     query = `SELECT
                 a.*,
@@ -206,11 +210,13 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
         }
     }
 
+    arr['ep'] = EP[0];
     arr['personil'] = personil;
     arr['radio'] = radio;
     arr['tunda'] = tunda;
     arr['pandu'] = pandu;
     arr['kepil'] = kepil;
+    console.log(arr.tunda);
 
 
     var d = new Date();
