@@ -86,6 +86,7 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
 
 Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var query = `SELECT
+                    ROWNUM "NO",
                     b."question",
                     ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
                     ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
@@ -103,7 +104,13 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
 
     var output1 = await f.query(query);
     var output = output1.rows;
+
+    query = `SELECT b."nama", c."nama_asset" FROM "pemeriksaan_kapal" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id" WHERE a."id" = '${id}'`;
+    output1 = await f.query(query);
     var arr = {};
+    arr['cabang'] = output1.rows[0].nama;
+    arr['kapal'] = output1.rows[0].nama_asset;
+    // console.log(cabang);
     arr['pk'] = output;
 
     var d = new Date();
