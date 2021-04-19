@@ -16,6 +16,7 @@ oracledb.autoCommit = true
 moment.updateLocale(moment.locale(), { invalidDate: null })
 const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl"];
 const arrDateTime = ["expired"];
+const arrTime = ["from", "to"];
 module.exports = {
     // toDate: function (str, formatdate = 'YYYY-MM-DD') {
     //     var dateString = str;
@@ -147,6 +148,7 @@ module.exports = {
 
                     var ada_tgl = 0;
                     var ada_tglTime = 0;
+                    var adaTime = 0;
                     for (var c in arrDate) {
                         if (a == arrDate[c]) {
                             ada_tgl = 1;
@@ -159,16 +161,24 @@ module.exports = {
                         }
                     }
 
+                    for (var c in arrTime) {
+                        if (a == arrTime[c]) {
+                            adaTime = 1;
+                        }
+                    }
+
                     if (a != "id") {
                         if (ada_tgl == 1) {
                             if (val != "") {
                                 val = this.toDate(val);
-                                value += "TO_DATE('" + val + "', 'yyyy/mm/dd') , ";
+                                value += "TO_DATE('" + val + "', 'yyyy/mm/dd'), ";
                             } else {
                                 value += "null, ";
                             }
                         } else if (ada_tglTime == 1) {
-                            value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS') , ";
+                            value += "TO_DATE('" + val + "', 'yyyy/mm/dd HH24:MI:SS'), ";
+                        } else if (adaTime == 1) {
+                            value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
                         } else {
                             value += "'" + val + "', ";
                         }

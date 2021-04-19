@@ -523,6 +523,7 @@ Report.pilotship = async (req, result, cabang_id) => {
                         AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
                     ) d ON a."id" = d."id"                        
         `;
+        console.log(query);
 
         var output1 = await f.query(query);
         var output = output1.rows;
