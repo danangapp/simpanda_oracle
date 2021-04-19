@@ -160,6 +160,7 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
 	var id = await f.getid("personil");
+	newPersonil['cabang_id'] = parseInt(newPersonil.cabang_id);
 	const hv = await f.headerValue(newPersonil, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
@@ -213,6 +214,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
+	personil['cabang_id'] = parseInt(personil.cabang_id);
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
