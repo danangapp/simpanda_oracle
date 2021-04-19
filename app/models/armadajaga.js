@@ -12,7 +12,6 @@ ArmadaJaga.create = async (newArmadaJaga, result, cabang_id, user_id) => {
 	var id = await f.getid("armada_jaga");
 	const hv = await f.headerValue(newArmadaJaga, id);
 	var queryText = "INSERT INTO \"armada_jaga\" " + hv + " RETURN \"id\" INTO :id";
-	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newArmadaJaga.id;
 	const res = await exec;

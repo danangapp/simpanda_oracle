@@ -285,6 +285,7 @@ module.exports = {
             if (object[i] != undefined && adadiTable == 1) {
                 var value = object[i];
                 var ada_tgl = 0;
+                var adaTime = 0;
                 for (var c in arrDate) {
                     if (i == arrDate[c]) {
                         ada_tgl = 1;
@@ -292,9 +293,18 @@ module.exports = {
                     }
                 }
 
+                for (var c in arrTime) {
+                    if (i == arrTime[c]) {
+                        adaTime = 1;
+                    }
+                }
+
                 if (ada_tgl == 1) {
                     value = this.toDate(value);
                     str += "\"" + i + "\" = TO_DATE('" + value + "', 'yyyy/mm/dd'), ";
+                } else if (adaTime == 1) {
+                    value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
+                    str += `"${i}" = TRUNC(SYSDATE) + INTERVAL '${value}' HOUR TO MINUTE, `;
                 } else {
                     str += "\"" + i + "\" = '" + value + "', ";
                 }

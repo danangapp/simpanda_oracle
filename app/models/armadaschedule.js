@@ -3,18 +3,18 @@ var objek = new Object();
 
 // constructor
 const ArmadaSchedule = function (armadaschedule) {
-    this.date = armadaschedule.date;
-    this.cabang_id = armadaschedule.cabang_id;
-    this.tipe_asset_id = armadaschedule.tipe_asset_id;
-    this.asset_kapal_id = armadaschedule.asset_kapal_id;
-    this.status = armadaschedule.status;
-    this.jam_pengoperasian = armadaschedule.jam_pengoperasian;
-    this.reliability = armadaschedule.reliability;
-    this.keterangan = armadaschedule.keterangan;
-    this.armada_jaga_id = armadaschedule.armada_jaga_id;
+	this.date = armadaschedule.date;
+	this.cabang_id = armadaschedule.cabang_id;
+	this.tipe_asset_id = armadaschedule.tipe_asset_id;
+	this.asset_kapal_id = armadaschedule.asset_kapal_id;
+	this.status = armadaschedule.status;
+	this.jam_pengoperasian = armadaschedule.jam_pengoperasian;
+	this.reliability = armadaschedule.reliability;
+	this.keterangan = armadaschedule.keterangan;
+	this.armada_jaga_id = armadaschedule.armada_jaga_id;
 };
 
-ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => {
+ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) => {
 	var newArmadaScheduleDate = newArmadaSchedule.date;
 	var armada = newArmadaSchedule.armada;
 	delete newArmadaSchedule.armada;
@@ -37,21 +37,21 @@ ArmadaSchedule.create = async(newArmadaSchedule, result, cabang_id, user_id) => 
 };
 
 ArmadaSchedule.findById = async (id, result) => {
-	const resQuery = await f.query("SELECT * FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
-	var queryText = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\"   WHERE a.\"id\" = '" + id + "'";
+	const resQuery = await f.query("SELECT \"armada_schedule_id\", \"available\", \"keterangan\", \"asset_kapal_id\",TO_CHAR(\"from\", 'HH24:mi') AS \"from\", TO_CHAR(\"to\", 'HH24:mi') AS \"to\" FROM \"armada_jaga\" WHERE \"armada_schedule_id\" = '" + id + "'");
+	var queryText = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\", TO_CHAR(a4.\"from\", 'HH24:mi') AS \"from\", TO_CHAR(a4.\"to\", 'HH24:mi') AS \"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"armada_jaga\" a4 ON a.\"id\" = a4.\"armada_schedule_id\" WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
 	const armada = { "armada": resQuery.rows }
-	let merge = { ...res.rows[0], ...armada }	
+	let merge = { ...res.rows[0], ...armada }
 	result(null, merge);
 }
 
 ArmadaSchedule.getAll = async (param, result, cabang_id) => {
-    var wheres = f.getParam(param, "armada_schedule");
-    var query = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\" ";
+	var wheres = f.getParam(param, "armada_schedule");
+	var query = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\", a4.\"from\", a4.\"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\"  LEFT JOIN \"armada_jaga\" a4 ON a.\"armada_jaga_id\" = a4.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";	
+		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status\" LIKE '%" + param.q + "%' OR a.\"jam_pengoperasian\" LIKE '%" + param.q + "%' OR a.\"reliability\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"armada_jaga_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
@@ -63,7 +63,7 @@ ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-ArmadaSchedule.updateById = async(id, armadaschedule, result, user_id) => {
+ArmadaSchedule.updateById = async (id, armadaschedule, result, user_id) => {
 	var armada = armadaschedule.armada;
 	delete armadaschedule.armada;
 
@@ -84,11 +84,11 @@ ArmadaSchedule.updateById = async(id, armadaschedule, result, user_id) => {
 	objek.keterangan = armadaschedule.keterangan;
 	objek.item = "armadaschedule";
 	objek.user_id = user_id;
-	if(armadaschedule.approval_status_id == 1){
+	if (armadaschedule.approval_status_id == 1) {
 		objek.remark = "Pengajuan disetujui oleh pusat";
-	}else if(armadaschedule.approval_status_id == 2){
+	} else if (armadaschedule.approval_status_id == 2) {
 		objek.remark = "Pengajuan ditolak oleh pusat";
-	}else if(armadaschedule.approval_status_id == 0){
+	} else if (armadaschedule.approval_status_id == 0) {
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
