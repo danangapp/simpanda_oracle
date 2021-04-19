@@ -5,7 +5,7 @@ const axios = require('axios').default;
 
 
 
-const cekBody = (rows) => {
+const cekBody = (rows, cabang = "cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -19,16 +19,32 @@ const cekBody = (rows) => {
 		esbBody['kdPersPanduCbg'] = "";
 		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 
-		dt = {
-			"opUpdateMstPersPanduLautCabangRequest": {
-				"esbBody": esbBody
+		if (cabang == "cabang") {
+			dt = {
+				"opUpdateMstPersPanduLautCabangRequest": {
+					"esbBody": esbBody
+				}
+			}
+		} else {
+			dt = {
+				"opUpdateMstPersPanduLautProdRequest": {
+					"esbBody": esbBody
+				}
 			}
 		}
 	} else {
-		// console.log("lewat 2");
-		dt = {
-			"opInsertMstPanduLautCabangRequest": {
-				"esbBody": esbBody
+
+		if (cabang == "cabang") {
+			dt = {
+				"opInsertMstPanduLautCabangRequest": {
+					"esbBody": esbBody
+				}
+			}
+		} else {
+			dt = {
+				"opInsertMstPanduLautProdRequest": {
+					"esbBody": esbBody
+				}
 			}
 		}
 	}
@@ -37,7 +53,7 @@ const cekBody = (rows) => {
 }
 
 
-const cekBodyBandar = (rows, cabang = "Cabang") => {
+const cekBodyBandar = (rows, cabang = "cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -144,6 +160,7 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
 	var id = await f.getid("personil");
+	newPersonil['cabang_id'] = parseInt(newPersonil.cabang_id);
 	const hv = await f.headerValue(newPersonil, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
@@ -197,6 +214,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
+	personil['cabang_id'] = parseInt(personil.cabang_id);
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
@@ -204,62 +222,43 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	}
 	delete personil.sertifikat;
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning"];
+	// console.log("yoi");
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
-		var dt;
+		var dt, smp;
+
+		// console.log(rows.pandu_bandar_laut_id);
 		if (rows.pandu_bandar_laut_id == 2) {
 			dt = cekBody(rows);
-			simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-				.then(async function (response) {
-					if (rows.simop_kd_pers_pandu) {
-						// console.log(response.data)
-					} else {
-						personil['simop_kd_pers_pandu'] = response.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
-					}
+			smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
+			if (rows.simop_kd_pers_pandu_cbg == undefined) {
+				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+			}
 
-					var str = f.getValueUpdate(personil, id, arr);
-					await f.approvalStatus("personil", personil, objek, id, user_id)
-					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-					console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
-				}).catch(function (error) {
-					console.log(error);
-				});
-
-
-			simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-				.then(async function (response) {
-
-
-				}).catch(function (error) {
-					console.log(error);
-				});
+			// dt = cekBody(rows, "prod");
+			// smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
+			// if (rows.simop_kd_pers_pandu == undefined) {
+			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
+			// }
+			// console.log(dt);
 		} else {
 			dt = cekBodyBandar(rows);
-			console.log(dt);
-			simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-				.then(async function (response) {
-					if (rows.simop_kd_pers_pandu) {
-						// console.log(response.data)
-					} else {
-						personil['simop_kd_pers_pandu'] = response.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
-					}
-					var str = f.getValueUpdate(personil, id, arr);
-					await f.approvalStatus("personil", personil, objek, id, user_id)
-					await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-					console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
-				}).catch(function (error) {
-					console.log(error);
-				});
+			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang");
+			if (rows.simop_kd_pers_pandu_cbg == undefined) {
+				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+			}
 
-			// simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-			// 	.then(async function (response) {
-
-			// 	}).catch(function (error) {
-			// 		console.log(error);
-			// 	});
+			// smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod");
+			// dt = cekBodyBandar(rows, "prod");
+			// if (rows.simop_kd_pers_pandu == undefined) {
+			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
+			// }			
 		}
-
 	}
+
+	var str = f.getValueUpdate(personil, id, arr);
+	await f.approvalStatus("personil", personil, objek, id, user_id)
+	await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 
 	result(null, { id: id, ...personil });
 };

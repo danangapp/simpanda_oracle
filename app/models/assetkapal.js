@@ -78,6 +78,7 @@ const setActivity = (objects, koneksi = 1) => {
 AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	const sertifikat = newAssetKapal.sertifikat;
 	delete newAssetKapal.sertifikat;
+	newAssetKapal['cabang_id'] = parseInt(newAssetKapal.cabang_id);
 	newAssetKapal = setActivity(newAssetKapal);
 	var id = await f.getid("asset_kapal");
 	const hv = await f.headerValue(newAssetKapal, id);
@@ -130,6 +131,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	const sertifikat = assetkapal.sertifikat;
+	assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");

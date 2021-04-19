@@ -494,7 +494,8 @@ Report.pilotship = async (req, result, cabang_id) => {
                         SELECT MAX(c."nama") as "nama", a."date", MAX(a."id") AS "id" FROM "armada_schedule" a
                         INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
                         INNER JOIN "personil" c ON c."asset_kapal_id" = b."asset_kapal_id"
-                        WHERE a."cabang_id" = '5'
+                        WHERE a."cabang_id" = '${req.fields.cabang_id}'
+                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
                         GROUP BY c."id", a."date"
                     ) a
                     LEFT JOIN (
@@ -502,22 +503,25 @@ Report.pilotship = async (req, result, cabang_id) => {
                         INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
                         INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
                         WHERE a."tipe_asset_id" = '1' --tunda
-                        AND a."cabang_id" = '5'
+                        AND a."cabang_id" = '${req.fields.cabang_id}'
+                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
                     ) b ON a."id" = b."id"
                     LEFT JOIN (
                         SELECT c."nama_asset" AS "pandu", a."id" FROM "armada_schedule" a
                         INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
                         INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
                         WHERE a."tipe_asset_id" = '2' --kepil
-                        AND a."cabang_id" = '5'
+                        AND a."cabang_id" = '${req.fields.cabang_id}'
+                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
                     ) c ON a."id" = c."id"
                     LEFT JOIN (
                         SELECT c."nama_asset" AS "kepil", a."id" FROM "armada_schedule" a
                         INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
                         INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
                         WHERE a."tipe_asset_id" = '3' --kepil
-                        AND a."cabang_id" = '5'
-                    ) d ON a."id" = d."id"
+                        AND a."cabang_id" = '${req.fields.cabang_id}'
+                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
+                    ) d ON a."id" = d."id"                        
         `;
 
         var output1 = await f.query(query);
