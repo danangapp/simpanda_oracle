@@ -24,7 +24,7 @@ Dashboard.cetivicatevalidity = async (param, result) => {
     if (param.cabang_id == 0) {
         queryText = `SELECT "tanggal_expire", "personil_id", "personil"."tipe_personil_id", "sertifikat"."asset_kapal_id" FROM "sertifikat" LEFT JOIN "personil" ON "sertifikat"."personil_id" = "personil"."id" LEFT JOIN "asset_kapal" ON "sertifikat"."asset_kapal_id" = "asset_kapal"."id" WHERE "tanggal_expire" > SYSDATE`;
     } else {
-        queryText = `SELECT "tanggal_expire", "personil_id", "personil"."tipe_personil_id", "sertifikat"."asset_kapal_id" FROM "sertifikat" LEFT JOIN "personil" ON "sertifikat"."personil_id" = "personil"."id" LEFT JOIN "asset_kapal" ON "sertifikat"."asset_kapal_id" = "asset_kapal"."id" AND a."cabang_id" = '${param.cabang_id}' WHERE "tanggal_expire" > SYSDATE`;
+        queryText = `SELECT "tanggal_expire", "personil_id", "personil"."tipe_personil_id", "sertifikat"."asset_kapal_id" FROM "sertifikat" LEFT JOIN "personil" ON "sertifikat"."personil_id" = "personil"."id" LEFT JOIN "asset_kapal" ON "sertifikat"."asset_kapal_id" = "asset_kapal"."id" AND personil."cabang_id" = '${param.cabang_id}' WHERE "tanggal_expire" > SYSDATE`;
     }
     const exec = f.query(queryText);
     const res = await exec;
