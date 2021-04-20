@@ -59,7 +59,7 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		"nmPersPandu": rows.nama,
 		"nipp": rows.nip || "0",
 		"kelas": rows.kelas || "0",
-		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
 		"enable": "1",
 		"kdPersPanduCbg": ""
 	}
@@ -210,15 +210,12 @@ Personil.getAll = async (param, result, cabang_id) => {
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
-	console.log(query);
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
-
-	personil['cabang_id'] = parseInt(personil.cabang_id);
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
@@ -243,12 +240,12 @@ Personil.updateById = async (id, personil, result, user_id) => {
 			}
 		} else {
 			dt = cekBodyBandar(rows, rows.cabang_id != 1 ? "cabang" : "prod");
-			console.log(rows.cabang_id);
 			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 			if (rows.simop_kd_pers_pandu == undefined) {
 				if (rows.cabang_id > 1) {
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
 				} else {
+					console.log(4);
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
 				}
 			}
@@ -258,6 +255,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	var str = f.getValueUpdate(personil, id, arr);
 	await f.approvalStatus("personil", personil, objek, id, user_id)
 	if (personil.is_from_simop) {
+		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
