@@ -20,7 +20,7 @@ const getCabang = async function (cabang) {
     const query = `SELECT "nama" FROM "cabang" WHERE "id" ='${cabang}'`;
     const output1 = await f.query(query);
     const output = output1.rows;
-    console.log(output[0].nama);
+    // console.log(output[0].nama);
     return output[0].nama;
 };
 
@@ -234,7 +234,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     arr['tunda'] = tunda;
     arr['pandu'] = pandu;
     arr['kepil'] = kepil;
-    console.log(arr.tunda);
+    // console.log(arr.tunda);
 
 
     var d = new Date();
@@ -285,7 +285,7 @@ Report.crewlist = async (req, result, cabang_id) => {
                 AND e."tipe_personil_id" IN ('2', '3', '4')
                 AND to_char(a."tanggal_pemeriksaan",'MM')='${date1[1]}' AND to_char(a."tanggal_pemeriksaan",'YYYY')='${date1[0]}'
         `;
-        console.log(query);
+        // console.log(query);
 
         var output1 = await f.query(query);
         var output = output1.rows;
@@ -523,7 +523,6 @@ Report.pilotship = async (req, result, cabang_id) => {
                         AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
                     ) d ON a."id" = d."id"                        
         `;
-        console.log(query);
 
         var output1 = await f.query(query);
         var output = output1.rows;
