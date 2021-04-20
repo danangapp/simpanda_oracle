@@ -258,7 +258,8 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 	var str = f.getValueUpdate(personil, id, arr);
 	await f.approvalStatus("personil", personil, objek, id, user_id)
-	if (personil.isFromSimop) {
+	console.log(personil);
+	if (personil.is_from_simop) {
 		console.log("lewat 1");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	} else {
