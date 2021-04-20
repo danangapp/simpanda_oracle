@@ -9,13 +9,13 @@ const cekBody = (rows, cabang = "cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
-		"nipp": rows.nip,
+		"nipp": rows.nipp,
 		"kelas": rows.kelas,
 		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
 		"enable": "1",
 		"kdPersPanduCbg": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id
 	}
-	if (rows.simop_kd_pers_pandu) {
+	if (rows.simop_kd_pers_pandu != undefined) {
 		esbBody['kdPersPanduCbg'] = "";
 		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 
@@ -33,7 +33,7 @@ const cekBody = (rows, cabang = "cabang") => {
 			}
 		}
 	} else {
-
+		// console.log('lewat kemari aja');
 		if (cabang == "cabang") {
 			dt = {
 				"opInsertMstPanduLautCabangRequest": {
@@ -64,32 +64,34 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		"kdPersPanduCbg": ""
 	}
 
-	if (rows.simop_kd_pers_pandu) {
+	if (rows.simop_kd_pers_pandu != undefined) {
 		if (cabang == "cabang") {
 			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 			dt = {
-				"opUpdateMstPersPanduCabangResponse": {
+				"opUpdateMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
 			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 			dt = {
-				"opUpdateMstPersPanduProdResponse": {
+				"opUpdateMstPersPanduProdRequest": {
 					"esbBody": esbBody
 				}
 			}
 		}
 	} else {
 		if (cabang == "cabang") {
+			console.log("lewat 1")
 			dt = {
 				"opInsertMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
+			console.log("lewat 2")
 			dt = {
-				"opUpdateMstPersPanduProdResponse": {
+				"opInsertMstPersPanduProdRequest": {
 					"esbBody": esbBody
 				}
 			}
@@ -215,6 +217,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
+
 	personil['cabang_id'] = parseInt(personil.cabang_id);
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
@@ -228,32 +231,27 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		const rows = await f.checkDataId("personil", id, personil);
 		var dt, smp;
 
-		// console.log(rows.pandu_bandar_laut_id);
 		if (rows.pandu_bandar_laut_id == 2) {
-			dt = cekBody(rows);
-			smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-			if (rows.simop_kd_pers_pandu_cbg == undefined) {
-				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+			dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
+			if (rows.simop_kd_pers_pandu == undefined) {
+				if (rows.cabang_id > 1) {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+				} else {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
+				}
 			}
-
-			// dt = cekBody(rows, "prod");
-			// smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-			// if (rows.simop_kd_pers_pandu == undefined) {
-			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
-			// }
-			// console.log(dt);
 		} else {
-			dt = cekBodyBandar(rows);
-			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang");
-			if (rows.simop_kd_pers_pandu_cbg == undefined) {
-				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+			dt = cekBodyBandar(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			console.log(rows.cabang_id);
+			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
+			if (rows.simop_kd_pers_pandu == undefined) {
+				if (rows.cabang_id > 1) {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+				} else {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
+				}
 			}
-
-			// smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod");
-			// dt = cekBodyBandar(rows, "prod");
-			// if (rows.simop_kd_pers_pandu == undefined) {
-			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
-			// }			
 		}
 	}
 
