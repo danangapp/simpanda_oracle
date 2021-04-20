@@ -162,7 +162,12 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		assetkapal['simop_kd_fas'] = "SM" + id;
 		var str = f.getValueUpdate(assetkapal, id, arr);
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
-		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+		if (assetkapal.is_from_simop) {
+			await f.query("UPDATE \"assetkapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
+		} else {
+			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+		}
+
 	}
 
 	result(null, { id: id, ...assetkapal });

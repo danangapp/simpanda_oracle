@@ -208,6 +208,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
+	console.log(query);
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
@@ -259,10 +260,8 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	var str = f.getValueUpdate(personil, id, arr);
 	await f.approvalStatus("personil", personil, objek, id, user_id)
 	if (personil.is_from_simop) {
-		console.log("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
-		console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 
