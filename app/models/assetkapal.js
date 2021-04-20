@@ -144,27 +144,29 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		// console.log(dt);
 
 		// console.log(rows.simop_kd_fas ? 2 : 1);
-		var dt = await simop.cekBody("SM" + id, rows);
-		simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "cabang")
-			.then(async function (response) {
-				// console.log(response.data);
-			}).catch(function (error) {
-				console.log(error);
-			});
+		// var dt = await simop.cekBody("SM" + id, rows);
+		// simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "cabang")
+		// 	.then(async function (response) {
+		// 		// console.log(response.data);
+		// 	}).catch(function (error) {
+		// 		console.log(error);
+		// 	});
 
-		var dt = await simop.cekBody("SM" + id, rows);
-		simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "prod")
-			.then(async function (response) {
-				// console.log(response.data);
-			}).catch(function (error) {
-				console.log(error);
-			});
-		assetkapal['simop_kd_fas'] = "SM" + id;
+		// var dt = await simop.cekBody("SM" + id, rows);
+		// simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "prod")
+		// 	.then(async function (response) {
+		// 		// console.log(response.data);
+		// 	}).catch(function (error) {
+		// 		console.log(error);
+		// 	});
+		// assetkapal['simop_kd_fas'] = "SM" + id;
 		var str = f.getValueUpdate(assetkapal, id, arr);
-		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
+		// await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
 		if (assetkapal.is_from_simop) {
+			console.log("UPDATE \"assetkapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 			await f.query("UPDATE \"assetkapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 		} else {
+			console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'");
 			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 		}
 
