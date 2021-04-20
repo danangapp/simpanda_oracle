@@ -536,18 +536,16 @@ Report.pilotship = async (req, result, cabang_id) => {
 
 
 Report.personelpeformance = async (req, result, cabang_id) => {
-    console.log(req.fields)
     if (req.fields.date) {
         const date = req.fields.date;
         const cabang = req.fields.cabang_id;
-
-        var query = `
-            SELECT NM_PERS_PANDU AS "nm_pers_pandu", COUNT(NM_PERS_PANDU) AS "gerakan", '2000' AS "total_gt", '1500' AS "waiting_time" FROM (
-                ${query_asli}
-            ) a
-            WHERE a.kd_cabang='${cabang}'
-            GROUP BY NM_PERS_PANDU
-        `;
+        var query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
+        query = `SELECT ROWNUM NO, 
+                a.NM_PERS_PANDU AS "nm_pers_pandu",
+                a.TOTAL_GERAKAN AS "gerakan",
+                a.TOTAL_GT AS "total_gt",
+                a.TOTAL_LAMA_PANDU AS "waiting_time"
+                FROM (${query}) a`;
 
         var output1 = await f.querySimop(query);
         var output = output1.rows;
@@ -563,14 +561,12 @@ Report.shippeformance = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date;
         const cabang = req.fields.cabang_id;
-
-        var query = `
-            SELECT a.NM_KAPAL AS "nm_kapal", COUNT(a.NM_KAPAL) AS "gerakan", '1500' AS "total_waktu" FROM (
-                ${query_asli}
-            ) a
-            WHERE a.kd_cabang='${cabang}'
-            GROUP BY a.NM_KAPAL
-        `;
+        var query = queryTunda(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
+        query = `SELECT ROWNUM NO, 
+                a.NM_KPL AS "nm_kapal", 
+                a.TOTAL_GERAKAN AS "gerakan", 
+                a.LAMA_TUNDA_KPL AS "total_waktu" 
+                FROM (${query}) a`;
 
         var output1 = await f.querySimop(query);
         var output = output1.rows;
