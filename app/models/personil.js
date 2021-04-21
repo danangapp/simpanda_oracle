@@ -54,6 +54,7 @@ const cekBody = (rows, cabang = "cabang") => {
 
 
 const cekBodyBandar = (rows, cabang = "cabang") => {
+	console.log(rows)
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -199,15 +200,41 @@ Personil.findById = async (id, result) => {
 
 Personil.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "personil");
+	// console.log(param.sertifikat)
+	// console.log(wheres)
+	if (param.sertifikat != undefined) {
+		if (param.sertifikat == "min5Bulan") {
+			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
+		}else if (param.sertifikat == '511Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
+		}
+	}
+
 	wheres = wheres.replace(`a."flag"`, `a1."flag"`);
 	var query = "SELECT a.* , a1.\"flag\" as \"flag\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_kepegawaian\", a6.\"nama\" as \"cabang\", a7.\"nama\" as \"pandu_bandar_laut\" , a1.\"nama\" as \"tipe_personil\" FROM \"personil\" a  LEFT JOIN \"tipe_personil\" a1 ON a.\"tipe_personil_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_kepegawaian\" a5 ON a.\"status_kepegawaian_id\" = a5.\"id\"  LEFT JOIN \"cabang\" a6 ON a.\"cabang_id\" = a6.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a7 ON a.\"pandu_bandar_laut_id\" = a7.\"id\" ";
+	
+	if (param.sertifikat != undefined) {
+		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
+		// wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
+		if (param.sertifikat == "min5Bulan") {
+			wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)'
+		}else if (param.sertifikat == '511Bulan') {
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		}
+		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
+	}
+
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"tipe_personil_id\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"simop_kd_pers_pandu\" LIKE '%" + param.q + "%' OR a.\"simop_kd_pers_pandu_cbg\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"kelas\" LIKE '%" + param.q + "%' OR a.\"tempat_lahir\" LIKE '%" + param.q + "%' OR a.\"tanggal_lahir\" LIKE '%" + param.q + "%' OR a.\"nipp\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"status_kepegawaian_id\" LIKE '%" + param.q + "%' OR a.\"cv\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"nomor_sk\" LIKE '%" + param.q + "%' OR a.\"tanggal_mulai\" LIKE '%" + param.q + "%' OR a.\"tanggal_selesai\" LIKE '%" + param.q + "%' OR a.\"sk\" LIKE '%" + param.q + "%' OR a.\"skpp\" LIKE '%" + param.q + "%' OR a.\"surat_kesehatan\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%' OR a.\"skpp_tanggal_mulai\" LIKE '%" + param.q + "%' OR a.\"skpp_tanggal_selesai\" LIKE '%" + param.q + "%' OR a.\"pandu_bandar_laut_id\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
-	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
+	wheres += f.whereCabang(cabang_id, `a.\"cabang_id\"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
 	const exec = f.query(query);
