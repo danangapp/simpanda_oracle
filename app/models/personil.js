@@ -54,6 +54,7 @@ const cekBody = (rows, cabang = "cabang") => {
 
 
 const cekBodyBandar = (rows, cabang = "cabang") => {
+	console.log(rows)
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
