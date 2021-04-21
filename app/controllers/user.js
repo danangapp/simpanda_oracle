@@ -1,9 +1,9 @@
 const User = require("../models/user.js");
-const f = require('./function');
+const f = require('./function'); 
 
 exports.create = (req, res) => {
     if (!req.fields) {
-        res.status(400).send({
+        return res.status(400).send({
             message: "Content can not be empty!"
         });
     }
@@ -27,11 +27,11 @@ exports.create = (req, res) => {
 
     User.create(user, (err, data) => {
         if (err)
-            res.status(500).send({
+            return res.status(500).send({
                 message:
                     err.message || "Some error occurred while creating the User."
             });
-        else res.send(data);
+        else return res.send(data);
     });
 };
 
