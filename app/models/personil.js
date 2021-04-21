@@ -9,13 +9,13 @@ const cekBody = (rows, cabang = "cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
-		"nipp": rows.nip,
+		"nipp": rows.nipp,
 		"kelas": rows.kelas,
 		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
 		"enable": "1",
 		"kdPersPanduCbg": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id
 	}
-	if (rows.simop_kd_pers_pandu) {
+	if (rows.simop_kd_pers_pandu != undefined) {
 		esbBody['kdPersPanduCbg'] = "";
 		esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 
@@ -33,7 +33,7 @@ const cekBody = (rows, cabang = "cabang") => {
 			}
 		}
 	} else {
-
+		// console.log('lewat kemari aja');
 		if (cabang == "cabang") {
 			dt = {
 				"opInsertMstPanduLautCabangRequest": {
@@ -54,42 +54,45 @@ const cekBody = (rows, cabang = "cabang") => {
 
 
 const cekBodyBandar = (rows, cabang = "cabang") => {
+	console.log(rows)
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
 		"nipp": rows.nip || "0",
 		"kelas": rows.kelas || "0",
-		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
 		"enable": "1",
 		"kdPersPanduCbg": ""
 	}
 
-	if (rows.simop_kd_pers_pandu) {
+	if (rows.simop_kd_pers_pandu != undefined) {
 		if (cabang == "cabang") {
 			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 			dt = {
-				"opUpdateMstPersPanduCabangResponse": {
+				"opUpdateMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
 			esbBody['kdPersPandu'] = rows.simop_kd_pers_pandu;
 			dt = {
-				"opUpdateMstPersPanduProdResponse": {
+				"opUpdateMstPersPanduProdRequest": {
 					"esbBody": esbBody
 				}
 			}
 		}
 	} else {
 		if (cabang == "cabang") {
+			console.log("lewat 1")
 			dt = {
 				"opInsertMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
+			console.log("lewat 2")
 			dt = {
-				"opUpdateMstPersPanduProdResponse": {
+				"opInsertMstPersPanduProdRequest": {
 					"esbBody": esbBody
 				}
 			}
@@ -240,7 +243,6 @@ Personil.getAll = async (param, result, cabang_id) => {
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
-	personil['cabang_id'] = parseInt(personil.cabang_id);
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
@@ -253,42 +255,36 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		const rows = await f.checkDataId("personil", id, personil);
 		var dt, smp;
 
-		// console.log(rows.pandu_bandar_laut_id);
 		if (rows.pandu_bandar_laut_id == 2) {
-			dt = cekBody(rows);
-			smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang")
-			if (rows.simop_kd_pers_pandu_cbg == undefined) {
-				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+			dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
+			if (rows.simop_kd_pers_pandu == undefined) {
+				if (rows.cabang_id > 1) {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+				} else {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
+				}
 			}
-
-			// dt = cekBody(rows, "prod");
-			// smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod")
-			// if (rows.simop_kd_pers_pandu == undefined) {
-			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
-			// }
-			// console.log(dt);
 		} else {
-			dt = cekBodyBandar(rows);
-			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "cabang");
-			if (rows.simop_kd_pers_pandu_cbg == undefined) {
-				personil['simop_kd_pers_pandu_cbg'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+			dt = cekBodyBandar(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
+			if (rows.simop_kd_pers_pandu == undefined) {
+				if (rows.cabang_id > 1) {
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+				} else {
+					console.log(4);
+					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
+				}
 			}
-
-			// smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, "prod");
-			// dt = cekBodyBandar(rows, "prod");
-			// if (rows.simop_kd_pers_pandu == undefined) {
-			// 	personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
-			// }			
 		}
 	}
 
 	var str = f.getValueUpdate(personil, id, arr);
 	await f.approvalStatus("personil", personil, objek, id, user_id)
-	if (personil.isFromSimop) {
-		console.log("lewat 1");
-		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	if (personil.is_from_simop) {
+		personil['cabang_id'] = parseInt(personil.cabang_id);
+		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
-		console.log("lewat 2");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 

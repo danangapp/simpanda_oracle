@@ -166,27 +166,18 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	if (assetkapal.approval_status_id == "1") {
 		const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 		// console.log(dt);
-
 		// console.log(rows.simop_kd_fas ? 2 : 1);
-		var dt = await simop.cekBody("SM" + id, rows);
-		simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "cabang")
-			.then(async function (response) {
-				// console.log(response.data);
-			}).catch(function (error) {
-				console.log(error);
-			});
-
-		var dt = await simop.cekBody("SM" + id, rows);
-		simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, "prod")
-			.then(async function (response) {
-				// console.log(response.data);
-			}).catch(function (error) {
-				console.log(error);
-			});
+		var dt = await simop.cekBody("SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
+		var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		assetkapal['simop_kd_fas'] = "SM" + id;
 		var str = f.getValueUpdate(assetkapal, id, arr);
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
-		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+		if (assetkapal.is_from_simop) {
+			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
+		} else {
+			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+		}
+
 	}
 
 	result(null, { id: id, ...assetkapal });
