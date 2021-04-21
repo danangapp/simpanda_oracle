@@ -487,47 +487,121 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
 
 Report.pilotship = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date;
-        const date1 = date.split("-");
-
-        var query = `SELECT a."date", a."id", b."tunda", c."pandu", d."kepil" FROM (
-                        SELECT MAX(c."nama") as "nama", a."date", MAX(a."id") AS "id" FROM "armada_schedule" a
-                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
-                        INNER JOIN "personil" c ON c."asset_kapal_id" = b."asset_kapal_id"
-                        WHERE a."cabang_id" = '${req.fields.cabang_id}'
-                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
-                        GROUP BY c."id", a."date"
-                    ) a
-                    LEFT JOIN (
-                        SELECT c."nama_asset" AS "tunda", a."id" FROM "armada_schedule" a
-                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
-                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
-                        WHERE a."tipe_asset_id" = '1' --tunda
-                        AND a."cabang_id" = '${req.fields.cabang_id}'
-                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
-                    ) b ON a."id" = b."id"
-                    LEFT JOIN (
-                        SELECT c."nama_asset" AS "pandu", a."id" FROM "armada_schedule" a
-                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
-                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
-                        WHERE a."tipe_asset_id" = '2' --kepil
-                        AND a."cabang_id" = '${req.fields.cabang_id}'
-                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
-                    ) c ON a."id" = c."id"
-                    LEFT JOIN (
-                        SELECT c."nama_asset" AS "kepil", a."id" FROM "armada_schedule" a
-                        INNER JOIN "armada_jaga" b ON a."id" = b."armada_schedule_id"
-                        INNER JOIN "asset_kapal" c ON c."id" = b."asset_kapal_id"
-                        WHERE a."tipe_asset_id" = '3' --kepil
-                        AND a."cabang_id" = '${req.fields.cabang_id}'
-                        AND TO_CHAR(a."date", 'YYYY-MM') = '${req.fields.date}'
-                    ) d ON a."id" = d."id"                        
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        var arr = {};
+        query = `
+            SELECT
+                a."day", a."date", b."personil", b."bandar"
+            FROM
+                (
+                SELECT
+                    TO_CHAR( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'YYYY-MM-DD' ) AS "date",
+                    LEVEL AS "day"
+                FROM
+                    dual CONNECT BY TRUNC( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'MM' ) = TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) 
+                ) a
+                LEFT JOIN (
+                    SELECT
+                        TO_CHAR( a."from", 'YYYY-MM-DD' ) AS "date", c."nama" AS "personil", MAX(d."nama") as "bandar"
+                    FROM
+                        "pandu_jaga" a
+                    INNER JOIN "pandu_schedule" b ON a."pandu_schedule_id" = b."id"
+                    INNER JOIN "personil" c ON a."personil_id" = c."id"
+                    INNER JOIN "pandu_bandar_laut" d ON c."pandu_bandar_laut_id" = d."id"
+                    WHERE
+                        b."cabang_id" = '${req.fields.cabang_id}' 
+                        AND TO_CHAR(a."from", 'YYYY-MM') = '${req.fields.date}'
+                    GROUP BY
+                        TO_CHAR( a."from", 'YYYY-MM-DD' ), c."nama", a."kehadiran"
+            ) b ON a."date" = b."date"
+                ORDER BY a."day"
         `;
 
-        var output1 = await f.query(query);
-        var output = output1.rows;
+        query_get_kapal = `
+            SELECT
+                NVL(a."day", '') AS "day",
+                NVL(a."date", '') AS "date",
+                NVL(b."nama_asset", '') AS "armada",
+                NVL(b."jam_operasi", '') AS "jam_operasi",
+                NVL(ROUND( b."jam_operasi" / 24 * 100, 2 ), '') AS "availability",
+                NVL(b."keterangan", '') AS "keterangan",
+                NVL(b."tipe_asset", '') AS "tipe_kapal"
+            FROM
+                (
+                SELECT
+                    TO_CHAR( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'YYYY-MM-DD' ) AS "date",
+                    LEVEL AS "day" 
+                FROM
+                    dual CONNECT BY TRUNC( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'MM' ) = TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) 
+                ) a
+                LEFT JOIN (
+                SELECT
+                    TO_CHAR( a."from", 'YYYY-MM-DD' ) AS "date",
+                    b."nama_asset",
+                    MAX( a."keterangan" ) AS "keterangan",
+                    SUM( ROUND( ( a."to" - a."from" ) * 24, 2 ) ) AS "jam_operasi",
+                    MAX( d."nama" ) AS "tipe_asset" 
+                FROM
+                    "armada_jaga" a
+                    INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
+                    INNER JOIN "armada_schedule" c ON a."armada_schedule_id" = c."id"
+                    INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id" 
+                WHERE
+                    a."available" = '1' 
+                    AND c."cabang_id" = '${req.fields.cabang_id}' 
+                    AND TO_CHAR( c."date", 'YYYY-MM' ) = '${req.fields.date}'
+                GROUP BY
+                    TO_CHAR( a."from", 'YYYY-MM-DD' ),
+                    b."nama_asset"
+                ) b ON a."date" = b."date"
+            ORDER BY
+                a."date",
+                b."tipe_asset"
+        `;
 
-        result(null, output);
+        console.log(query);
+        var output1 = await f.query(query_get_kapal);
+        var output2 = await f.query(query);
+        var output_kapal = output1.rows;
+        var output_pandu = output2.rows;
+        var date1 = "";
+
+        for (var a in output_kapal) {
+            if (date1 != output_kapal[a].date) {
+                date1 = output_kapal[a].date;
+            } else {
+                output_kapal[a].date = "";
+                output_kapal[a].day = "";
+            }
+        }
+
+        date1 = "";
+        for (var a in output_pandu) {
+            if (date1 != output_pandu[a].date) {
+                date1 = output_pandu[a].date;
+            } else {
+                output_pandu[a].date = "";
+                output_pandu[a].day = "";
+            }
+        }
+
+
+        arr['global'] = output_kapal;
+        arr['pandu'] = output_pandu;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Report-Pilot & Ship Availability.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            template.substitute(2, arr);
+            var out = template.generate();
+            const fileName = './files/reports/PilotShip' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+
+        result(null, output1.rows);
     } else {
         result(null, { "status": "error no data" });
     }
@@ -543,7 +617,7 @@ Report.personelpeformance = async (req, result, cabang_id) => {
                 a.NM_PERS_PANDU AS "nm_pers_pandu",
                 a.TOTAL_GERAKAN AS "gerakan",
                 a.TOTAL_GT AS "total_gt",
-                a.TOTAL_LAMA_PANDU AS "waiting_time"
+                a.TOTAL_LAMA_PANDU AS "waiting_time"view
                 FROM (${query}) a`;
 
         var output1 = await f.querySimop(query);
