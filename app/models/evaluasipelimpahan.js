@@ -76,7 +76,21 @@ EvaluasiPelimpahan.findById = async (id, result) => {
 
 EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "evaluasi_pelimpahan");
+    
+    if (param.sertifikat != undefined) {
+		if (param.sertifikat == "min5Bulan") {
+			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
+		}else if (param.sertifikat == '511Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
+		}
+	}
+	// console.log(wheres);
+ 	// return false
+
     var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"evaluasi_pelimpahan\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\"  LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\" ";
+
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"bup\" LIKE '%" + param.q + "%' OR a.\"izin_bup\" LIKE '%" + param.q + "%' OR a.\"penetapan_perairan_pandu\" LIKE '%" + param.q + "%' OR a.\"izin_pelimpahan\" LIKE '%" + param.q + "%' OR a.\"pengawas_pemanduan\" LIKE '%" + param.q + "%' OR a.\"laporan_bulanan\" LIKE '%" + param.q + "%' OR a.\"bukti_pembayaran_pnpb\" LIKE '%" + param.q + "%' OR a.\"sispro\" LIKE '%" + param.q + "%' OR a.\"tarif_jasa_pandu_tunda\" LIKE '%" + param.q + "%' OR a.\"data_dukung\" LIKE '%" + param.q + "%' OR a.\"file_pendukung\" LIKE '%" + param.q + "%' OR a.\"tanggal_sk\" LIKE '%" + param.q + "%' OR a.\"file_sk_pelimpahan\" LIKE '%" + param.q + "%' OR a.\"check_laporan_bulanan\" LIKE '%" + param.q + "%' OR a.\"check_bukti_pembayaran_pnpb\" LIKE '%" + param.q + "%' OR a.\"check_sispro\" LIKE '%" + param.q + "%' OR a.\"check_tarif_jasa_pandu_tunda\" LIKE '%" + param.q + "%' OR a.\"check_data_dukung\" LIKE '%" + param.q + "%'";	
@@ -84,6 +98,18 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 	}
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
+	
+	if (param.sertifikat != undefined) {
+		wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > SYSDATE '
+		if (param.sertifikat == "min5Bulan") {
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) < ADD_MONTHS(SYSDATE, 5)'
+		}else if (param.sertifikat == '511Bulan') {
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 5) AND ADD_MONTHS(\"tanggal_sk\", 24) < ADD_MONTHS(SYSDATE, 11)'
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 11)'
+		}
+	}
+
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
 	const exec = f.query(query);

@@ -113,8 +113,32 @@ AssetKapal.findById = async (id, result) => {
 
 AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
+	
+	if (param.sertifikat != undefined) {
+		if (param.sertifikat == "min5Bulan") {
+			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
+		}else if (param.sertifikat == '511Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
+		}
+	}
+
 	wheres = wheres.replace(`a."flag"`, `a2."flag"`);
 	var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"kepemilikan_kapal\", a3.\"flag\" as \"tipe_asset\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"approval_status\" , a3.\"nama\" as \"jenis_asset\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"kepemilikan_kapal\" a2 ON a.\"kepemilikan_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"approval_status\" a5 ON a.\"approval_status_id\" = a5.\"id\" ";
+
+	if (param.sertifikat != undefined) {
+		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"';
+		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
+		if (param.sertifikat == "min5Bulan") {
+			wheres += 'AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
+		}else if (param.sertifikat == '511Bulan') {
+			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
+		}else if (param.sertifikat == 'max11Bulan') {
+			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		}
+	}
+
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += "a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"simop_kd_fas\" LIKE '%" + param.q + "%' OR a.\"kepemilikan_kapal_id\" LIKE '%" + param.q + "%' OR a.\"simop_status_milik\" LIKE '%" + param.q + "%' OR a.\"simop_kd_agen\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"nama_asset\" LIKE '%" + param.q + "%' OR a.\"horse_power\" LIKE '%" + param.q + "%' OR a.\"tahun_perolehan\" LIKE '%" + param.q + "%' OR a.\"nilai_perolehan\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_number\" LIKE '%" + param.q + "%' OR a.\"simop_kd_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_puspel_jai\" LIKE '%" + param.q + "%' OR a.\"simop_new_asset_jai\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"loa\" LIKE '%" + param.q + "%' OR a.\"tahun_pembuatan\" LIKE '%" + param.q + "%' OR a.\"breadth\" LIKE '%" + param.q + "%' OR a.\"kontruksi\" LIKE '%" + param.q + "%' OR a.\"depth\" LIKE '%" + param.q + "%' OR a.\"negara_pembuat\" LIKE '%" + param.q + "%' OR a.\"draft_max\" LIKE '%" + param.q + "%' OR a.\"daya\" LIKE '%" + param.q + "%' OR a.\"putaran\" LIKE '%" + param.q + "%' OR a.\"merk\" LIKE '%" + param.q + "%' OR a.\"tipe\" LIKE '%" + param.q + "%' OR a.\"daya_motor\" LIKE '%" + param.q + "%' OR a.\"daya_generator\" LIKE '%" + param.q + "%' OR a.\"putaran_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"merk_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"tipe_spesifikasi\" LIKE '%" + param.q + "%' OR a.\"klas\" LIKE '%" + param.q + "%' OR a.\"notasi_permesinan\" LIKE '%" + param.q + "%' OR a.\"no_registrasi\" LIKE '%" + param.q + "%' OR a.\"notasi_perlengkapan\" LIKE '%" + param.q + "%' OR a.\"port_of_registration\" LIKE '%" + param.q + "%' OR a.\"notasi_perairan\" LIKE '%" + param.q + "%' OR a.\"notasi_lambung\" LIKE '%" + param.q + "%' OR a.\"gross_tonnage\" LIKE '%" + param.q + "%' OR a.\"bolard_pull\" LIKE '%" + param.q + "%' OR a.\"kecepatan\" LIKE '%" + param.q + "%' OR a.\"ship_particular\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%'";
@@ -149,6 +173,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		var str = f.getValueUpdate(assetkapal, id, arr);
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
 		if (assetkapal.is_from_simop) {
+			console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 		} else {
 			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
