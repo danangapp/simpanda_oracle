@@ -58,7 +58,7 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
-		"nipp": rows.nip || "0",
+		"nipp": rows.nipp || "0",
 		"kelas": rows.kelas || "0",
 		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
 		"enable": "1",
