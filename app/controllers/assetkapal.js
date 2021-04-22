@@ -61,6 +61,7 @@ exports.create = (req, res) => {
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
+        activity_keterangan: req.fields.activity_keterangan,
     };
 
 	var used = {};

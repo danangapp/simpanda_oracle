@@ -30,6 +30,7 @@ exports.create = (req, res) => {
         alamat: req.fields.alamat,
         keterangan: req.fields.keterangan,
         keterangan_rumah_dinas: req.fields.keterangan_rumah_dinas,
+        activity_keterangan: req.fields.activity_keterangan,
     };
 
     var used = {};

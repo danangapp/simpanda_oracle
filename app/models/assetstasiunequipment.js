@@ -22,6 +22,9 @@ const setActivity = (objects, koneksi = 1) => {
 	objek.remark = objects.remark;
 	objek.koneksi = koneksi;
 	objek.keterangan = objects.keterangan;
+	if (!objects.keterangan) {
+		objek.keterangan = objects.activity_keterangan;
+	}
 	delete objects.date;
 	delete objects.item;
 	delete objects.action;
@@ -35,7 +38,11 @@ const setActivity = (objects, koneksi = 1) => {
 AssetStasiunEquipment.create = async (newAssetStasiunEquipment, result, cabang_id, user_id) => {
 	newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
 	var id = await f.getid("asset_stasiun_equipment");
-	const hv = await f.headerValue(newAssetStasiunEquipment, id);
+	
+	delete newAssetStasiunEquipment.activity_keterangan;
+	let valid = newAssetStasiunEquipment
+
+	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"asset_stasiun_equipment\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newAssetStasiunEquipment.id;
@@ -95,6 +102,22 @@ AssetStasiunEquipment.updateById = async (id, assetstasiunequipment, result, use
 	}
 
 	await f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	objek.item = "assetstasiunequipment";
+	objek.remark = "Pengajuan dirubah oleh admin cabang";
+	objek.keterangan = assetstasiunequipment.keterangan
+	if (!assetstasiunequipment.keterangan) {
+		objek.keterangan = assetstasiunequipment.activity_keterangan;
+	}
+	// console.log('objek',objek)
+	// return false
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+
 	result(null, { id: id, ...assetstasiunequipment });
 };
 
