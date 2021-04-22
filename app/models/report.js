@@ -741,6 +741,7 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
             i."nama" as jeniscert,
             j."nama" as tipecert,
             k."nama_asset" as kapal,
+            l."nama" as manning,
             a.*,
             to_char(a."tanggal_lahir",'DD-MM-YYYY') as tanggal_lahir,
             to_char(a."tanggal_mulai",'DD-MM-YYYY') as tanggal_mulai,
@@ -761,6 +762,7 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "asset_kapal" k ON k."id" = a."asset_kapal_id"
+            LEFT JOIN "manning" l ON l."id" = a."manning"
             WHERE a."id" IN (${cabang})
             ORDER BY c."id" asc
             ) z
