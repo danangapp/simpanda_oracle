@@ -809,8 +809,6 @@ Report.kapal = async (req, result, cabang_id) => {
             a."draft_max" as draft,
             a."tahun_pembuatan" as tahun_buat,
             a."negara_pembuat" as negara,
-            a."kontruksi" as konstruksi,
-            a."klas" as klas,
             a."no_registrasi" as no_registrasi,
             a."port_of_registration" as port_of_registration,
             a."gross_tonnage" as gross_tonnage,
@@ -821,6 +819,8 @@ Report.kapal = async (req, result, cabang_id) => {
             i."nama" as jeniscert,
             j."nama" as tipecert,
             k."nama" as kepemilikan,
+            l."nama" as konstruksi,
+            m."nama" as klas,
             
             to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
             to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
@@ -832,6 +832,8 @@ Report.kapal = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
+            LEFT JOIN "konstruksi" l ON l."id" = a."kontruksi"
+            LEFT JOIN "klas" m ON m."id" = a."klas"
             WHERE a."id" IN (${cabang})
             ORDER BY c."id" asc
         ) z
