@@ -92,7 +92,7 @@ AssetRumahDinas.updateById = async (id, assetrumahdinas, result, user_id) => {
 		objek.keterangan = assetrumahdinas.keterangan;
 		objek.item = "assetrumahdinas";
 		objek.user_id = user_id;
-		await f.approvalStatus("asset_rumah_dinas", assetrumahdinas, objek, id, user_id)
+		await f.approvalStatus("assetrumahdinas", assetrumahdinas, objek, id, user_id)
 	}
 
 	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset"];
