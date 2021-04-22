@@ -29,6 +29,7 @@ exports.create = (req, res) => {
         no_asset: req.fields.no_asset,
         alamat: req.fields.alamat,
         keterangan: req.fields.keterangan,
+        keterangan_rumah_dinas: req.fields.keterangan_rumah_dinas,
     };
 
     var used = {};

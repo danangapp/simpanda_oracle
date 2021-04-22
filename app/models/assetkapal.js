@@ -155,7 +155,6 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	const sertifikat = assetkapal.sertifikat;
-	console.log(assetkapal);
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
