@@ -113,13 +113,13 @@ AssetKapal.findById = async (id, result) => {
 
 AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
-	
+
 	if (param.sertifikat != undefined) {
 		if (param.sertifikat == "min5Bulan") {
 			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
-		}else if (param.sertifikat == '511Bulan') {
+		} else if (param.sertifikat == '511Bulan') {
 			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
-		}else if (param.sertifikat == 'max11Bulan') {
+		} else if (param.sertifikat == 'max11Bulan') {
 			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
 		}
 	}
@@ -132,9 +132,9 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
 		if (param.sertifikat == "min5Bulan") {
 			wheres += 'AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		}else if (param.sertifikat == '511Bulan') {
+		} else if (param.sertifikat == '511Bulan') {
 			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		}else if (param.sertifikat == 'max11Bulan') {
+		} else if (param.sertifikat == 'max11Bulan') {
 			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
 		}
 	}
@@ -155,7 +155,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	const sertifikat = assetkapal.sertifikat;
-	assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
+	console.log(assetkapal);
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
@@ -173,7 +173,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		var str = f.getValueUpdate(assetkapal, id, arr);
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
 		if (assetkapal.is_from_simop) {
-			console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
+			assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
 			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 		} else {
 			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
