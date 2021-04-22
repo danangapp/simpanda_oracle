@@ -27,7 +27,7 @@ User.create = async (newUser, result) => {
 	const exec = f.query(queryText, 1);
 	delete newUser.id;
 	const res = await exec;
-	result(null, { id: res.outBinds.id[0], ...newUser });
+	result(null, { id: id, ...newUser });
 };
 
 User.findById = async (id, result) => {
