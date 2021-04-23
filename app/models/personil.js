@@ -54,7 +54,7 @@ const cekBody = (rows, cabang = "cabang") => {
 
 
 const cekBodyBandar = (rows, cabang = "cabang") => {
-	console.log(rows)
+	// console.log(rows)
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -83,14 +83,14 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		}
 	} else {
 		if (cabang == "cabang") {
-			console.log("lewat 1")
+			// console.log("lewat 1")
 			dt = {
 				"opInsertMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
-			console.log("lewat 2")
+			// console.log("lewat 2")
 			dt = {
 				"opInsertMstPersPanduProdRequest": {
 					"esbBody": esbBody
@@ -148,6 +148,9 @@ const setActivity = (objects, koneksi = 1) => {
 	objek.remark = objects.remark;
 	objek.koneksi = koneksi;
 	objek.keterangan = objects.keterangan;
+	if (!objects.keterangan) {
+		objek.keterangan = objects.activity_keterangan;
+	}
 	delete objects.date;
 	delete objects.item;
 	delete objects.action;
@@ -163,8 +166,12 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
 	var id = await f.getid("personil");
+
+	delete newPersonil.activity_keterangan;
+	let valid = newPersonil
+
 	newPersonil['cabang_id'] = parseInt(newPersonil.cabang_id);
-	const hv = await f.headerValue(newPersonil, id);
+	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newPersonil.id;
@@ -185,7 +192,7 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 
 Personil.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT a.*, c.\"nama\" as \"tipe_cert\", d.\"nama\" as \"jenis_cert\" FROM \"sertifikat\" a INNER JOIN \"personil\" b ON a.\"personil_id\" = b.\"id\" INNER JOIN \"tipe_cert\" c ON a.\"tipe_cert_id\" = c.\"id\" INNER JOIN \"jenis_cert\" d ON c.\"jenis_cert_id\" = d.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"personil\" b ON a.\"item\" = 'personil' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"personil\" b ON a.\"item\" = 'personil' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "' AND a.\"keterangan\" IS NOT NULL ORDER BY b.\"id\" DESC");
 	var queryText = "SELECT a.* , a1.\"flag\" as \"flag\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_kepegawaian\", a6.\"nama\" as \"cabang\", a7.\"nama\" as \"pandu_bandar_laut\" , a1.\"nama\" as \"tipe_personil\" FROM \"personil\" a  LEFT JOIN \"tipe_personil\" a1 ON a.\"tipe_personil_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_kepegawaian\" a5 ON a.\"status_kepegawaian_id\" = a5.\"id\"  LEFT JOIN \"cabang\" a6 ON a.\"cabang_id\" = a6.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a7 ON a.\"pandu_bandar_laut_id\" = a7.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -205,24 +212,24 @@ Personil.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		if (param.sertifikat == "min5Bulan") {
 			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
-		}else if (param.sertifikat == '511Bulan') {
+		} else if (param.sertifikat == '511Bulan') {
 			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
-		}else if (param.sertifikat == 'max11Bulan') {
+		} else if (param.sertifikat == 'max11Bulan') {
 			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
 		}
 	}
 
 	wheres = wheres.replace(`a."flag"`, `a1."flag"`);
 	var query = "SELECT a.* , a1.\"flag\" as \"flag\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_kepegawaian\", a6.\"nama\" as \"cabang\", a7.\"nama\" as \"pandu_bandar_laut\" , a1.\"nama\" as \"tipe_personil\" FROM \"personil\" a  LEFT JOIN \"tipe_personil\" a1 ON a.\"tipe_personil_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_kepegawaian\" a5 ON a.\"status_kepegawaian_id\" = a5.\"id\"  LEFT JOIN \"cabang\" a6 ON a.\"cabang_id\" = a6.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a7 ON a.\"pandu_bandar_laut_id\" = a7.\"id\" ";
-	
+
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
 		// wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
 		if (param.sertifikat == "min5Bulan") {
 			wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)'
-		}else if (param.sertifikat == '511Bulan') {
+		} else if (param.sertifikat == '511Bulan') {
 			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		}else if (param.sertifikat == 'max11Bulan') {
+		} else if (param.sertifikat == 'max11Bulan') {
 			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
 		}
 		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
@@ -248,8 +255,11 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	}
+	const remarkPersonil = personil.remark;
+	// console.log(personil);
+	delete personil.remark;
 	delete personil.sertifikat;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark"];
 	// console.log("yoi");
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
@@ -272,7 +282,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				if (rows.cabang_id > 1) {
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
 				} else {
-					console.log(4);
+					// console.log(4);
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
 				}
 			}
@@ -280,6 +290,8 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	}
 
 	var str = f.getValueUpdate(personil, id, arr);
+	var objek = new Object();
+	objek.keterangan = remarkPersonil;
 	await f.approvalStatus("personil", personil, objek, id, user_id)
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
@@ -287,6 +299,21 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	} else {
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
+
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	objek.item = "personil";
+	objek.remark = "Pengajuan dirubah oleh admin cabang";
+	objek.keterangan = personil.keterangan
+	if (!personil.keterangan) {
+		objek.keterangan = personil.activity_keterangan;
+	}
+	// console.log('objek',objek)
+	// return false
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...personil });
 };

@@ -432,13 +432,18 @@ module.exports = {
             }
         }
     },
-    approvalStatus: async function (table, data, objek, id, user_id) {
+    approvalStatus: async function (table, data, objek2, id, user_id) {
         const id_activity_log = await this.getid("activity_log");
+        var objek = new Object();
         objek.koneksi = id;
         objek.action = data.approval_status_id;
-        objek.keterangan = data.keterangan;
         objek.item = table;
         objek.user_id = user_id;
+        objek.keterangan = data.keterangan;
+        if (table == "personil") {
+            objek.keterangan = objek2.keterangan;
+        }
+        // console.log(objek);
         if (data.approval_status_id == 1) {
             objek.remark = "Pengajuan disetujui oleh pusat";
         } else if (data.approval_status_id == 2) {

@@ -65,6 +65,9 @@ const setActivity = (objects, koneksi = 1) => {
 	objek.remark = objects.remark;
 	objek.koneksi = koneksi;
 	objek.keterangan = objects.keterangan;
+	if (!objects.keterangan) {
+		objek.keterangan = objects.activity_keterangan;
+	}
 	delete objects.date;
 	delete objects.item;
 	delete objects.action;
@@ -81,7 +84,11 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	newAssetKapal['cabang_id'] = parseInt(newAssetKapal.cabang_id);
 	newAssetKapal = setActivity(newAssetKapal);
 	var id = await f.getid("asset_kapal");
-	const hv = await f.headerValue(newAssetKapal, id);
+
+	delete newAssetKapal.activity_keterangan;
+	let valid = newAssetKapal
+
+	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
 	delete newAssetKapal.id;
@@ -101,7 +108,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 
 AssetKapal.findById = async (id, result) => {
 	const resQuery = await f.query("SELECT a.*, c.\"nama\" as \"tipe_cert\", d.\"nama\" as \"jenis_cert\" FROM \"sertifikat\" a INNER JOIN \"asset_kapal\" b ON a.\"asset_kapal_id\" = b.\"id\" INNER JOIN \"tipe_cert\" c ON a.\"tipe_cert_id\" = c.\"id\" INNER JOIN \"jenis_cert\" d ON c.\"jenis_cert_id\" = d.\"id\" WHERE b.\"id\" =  '" + id + "'");
-	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_kapal\" b ON a.\"item\" = 'asset_kapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
+	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"asset_kapal\" b ON a.\"item\" = 'assetkapal' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"kepemilikan_kapal\", a3.\"flag\" as \"tipe_asset\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"approval_status\" , a3.\"nama\" as \"jenis_asset\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"kepemilikan_kapal\" a2 ON a.\"kepemilikan_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"approval_status\" a5 ON a.\"approval_status_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -179,6 +186,21 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		}
 
 	}
+
+	objek.koneksi = id;
+	objek.action = "0";
+	objek.user_id = user_id;
+	objek.item = "assetkapal";
+	objek.remark = "Pengajuan dirubah oleh admin cabang";
+	objek.keterangan = assetkapal.keterangan
+	if (!assetkapal.keterangan) {
+		objek.keterangan = assetkapal.activity_keterangan;
+	}
+	// console.log('objek',objek)
+	// return false
+	var id_activity_log = await f.getid("activity_log");
+	const hval = await f.headerValue(objek, id_activity_log);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...assetkapal });
 };

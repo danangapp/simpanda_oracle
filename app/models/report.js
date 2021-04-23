@@ -54,6 +54,7 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
 
     query = `SELECT a.*, b."tipe_asset_id" FROM "sbp_data" a INNER JOIN "sarana_bantu_pemandu" b ON 
         a."sarana_bantu_pemandu_id" = b."id" WHERE a."sarana_bantu_pemandu_id" = '${id}' ORDER BY a."question_id"`;
+    console.log(query);
     output1 = await f.query(query);
     output = output1.rows;
     for (var a in output) {
