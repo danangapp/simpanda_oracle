@@ -78,12 +78,12 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
     var wheres = f.getParam(param, "evaluasi_pelimpahan");
     
     if (param.sertifikat != undefined) {
-		if (param.sertifikat == "min5Bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
-		}else if (param.sertifikat == '511Bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
-		}else if (param.sertifikat == 'max11Bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
+		if (param.sertifikat == "kurang-dari-5-bulan") {
+			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
+		}else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
+		}else if (param.sertifikat == 'lebih-dari-11-bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = 'lebih-dari-11-bulan'`, '');
 		}
 	}
 	// console.log(wheres);
@@ -101,11 +101,11 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 	
 	if (param.sertifikat != undefined) {
 		wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > SYSDATE '
-		if (param.sertifikat == "min5Bulan") {
+		if (param.sertifikat == "kurang-dari-5-bulan") {
 			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) < ADD_MONTHS(SYSDATE, 5)'
-		}else if (param.sertifikat == '511Bulan') {
+		}else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
 			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 5) AND ADD_MONTHS(\"tanggal_sk\", 24) < ADD_MONTHS(SYSDATE, 11)'
-		}else if (param.sertifikat == 'max11Bulan') {
+		}else if (param.sertifikat == 'lebih-dari-11-bulan') {
 			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 11)'
 		}
 	}
