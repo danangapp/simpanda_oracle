@@ -117,7 +117,7 @@ exports.crewlist = async (req, res) => {
                 });
             }
         } else {
-            var filePath = './files/reports/Crewlist' + data;
+            var filePath = './files/reports/crewlist' + data;
             res.download(filePath, function (err) {
                 if (err) console.log(err);
                 fs.unlink(filePath, function () {
