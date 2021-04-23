@@ -171,8 +171,6 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id"];
 	if (assetkapal.approval_status_id == "1") {
 		const rows = await f.checkDataId("asset_kapal", id, assetkapal);
-		// console.log(dt);
-		// console.log(rows.simop_kd_fas ? 2 : 1);
 		var dt = await simop.cekBody("SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 		var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		assetkapal['simop_kd_fas'] = "SM" + id;
@@ -187,8 +185,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	if (!assetkapal.keterangan) {
 		objek.keterangan = assetkapal.activity_keterangan;
 	}
-	// console.log('objek',objek)
-	// return false
+
 
 	var str = f.getValueUpdate(assetkapal, id, arr);
 	await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
