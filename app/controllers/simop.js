@@ -64,7 +64,7 @@ module.exports = {
             "newPuspelJai": rows.simop_new_puspel_jai || "1",
             "newAssetJai": rows.simop_new_asset_jai || "1"
         }
-        // console.log(esbBody);
+        console.log(esbBody);
         if (cabang == "cabang") {
             if (rows.simop_kd_fas) {
                 dt = { "opUpdateMstFasilitasCabangRequest": { "esbBody": esbBody } }
