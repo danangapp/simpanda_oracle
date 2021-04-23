@@ -636,10 +636,11 @@ Report.personelpeformance = async (req, result, cabang_id) => {
                 a.NM_PERS_PANDU AS "nm_pers_pandu",
                 a.TOTAL_GERAKAN AS "gerakan",
                 a.TOTAL_GT AS "total_gt",
-                a.TOTAL_LAMA_PANDU AS "waiting_time"view
+                a.TOTAL_LAMA_PANDU AS "waiting_time"
                 FROM (${query}) a`;
 
         var output1 = await f.querySimop(query);
+        console.log(req.fields);
         var output = output1.rows;
 
         result(null, output);

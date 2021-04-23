@@ -43,7 +43,7 @@ User.getAll = async (param, result) => {
 	var query = "SELECT a.\"id\", a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"username\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"password\" LIKE '%" + param.q + "%' OR a.\"user_group_id\" LIKE '%" + param.q + "%' OR a.\"role_id\" LIKE '%" + param.q + "%' OR a.\"accessToken\" LIKE '%" + param.q + "%' OR a.\"refreshToken\" LIKE '%" + param.q + "%'";
+		wheres += "a.\"username\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%'";
 		wheres += ")";
 	}
 
