@@ -134,6 +134,7 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     var arr = {};
     var y = "x";
     var out = [];
+    var tim = [];
     for (var x in output) {
         var jenis = output[x].jenis;
         var kode = output[x].kode;
@@ -148,7 +149,12 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     }
     arr['k'] = out;
 
-    query = `SELECT * FROM "investigasi_insiden" WHERE "id"='${id}'`;
+    query = `SELECT ii.*, 
+    TO_CHAR(ii."prepard_tanggal", 'DD fmMonth YYYY') AS "prepard_tanggal_nice",
+    TO_CHAR(ii."reviewed_tanggal" , 'DD fmMonth YYYY') AS "reviewed_tanggal_nice",
+    TO_CHAR(ii."approved_tanggal" , 'DD fmMonth YYYY') AS "approved_tanggal_nice"
+    FROM "investigasi_insiden" ii
+    WHERE ii."id"='${id}'`;
     output1 = await f.query(query);
     output = output1.rows;
     output = output[0];
@@ -156,8 +162,20 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         arr[a] = output[a] || "";
     }
 
+    query = `SELECT iii.*, 
+    TO_CHAR(iii."tgl", 'DD fmMonth YYYY') AS "tgl_nice"
+    FROM "investigasi_insiden_tim" iii WHERE iii."investigasi_insiden_id"='${id}'`;
+    output_tim = await f.query(query);
+    output_tim = output_tim.rows;
+    // output_tim = output_tim[0];
+    for(var x in output_tim) {
+        tim[x] = output_tim[x];
+    }
+    arr['tim'] = tim;
+
     const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
 
+    console.log(JSON.stringify(arr));
     const buffer = await createReport({
         template,
         data: arr,
