@@ -122,12 +122,12 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
 
 	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "min5Bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'min5Bulan'`, '');
-		} else if (param.sertifikat == '511Bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '511Bulan'`, '');
-		} else if (param.sertifikat == 'max11Bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'max11Bulan'`, '');
+		if (param.sertifikat == "kurang-dari-5-bulan") {
+			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
+		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
+		} else if (param.sertifikat == 'lebih-dari-11-bulan') {
+			wheres = wheres.replace(` and a."sertifikat" = 'lebih-dari-11-bulan'`, '');
 		}
 	}
 
@@ -137,11 +137,11 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"';
 		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		if (param.sertifikat == "min5Bulan") {
+		if (param.sertifikat == "kurang-dari-5-bulan") {
 			wheres += 'AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		} else if (param.sertifikat == '511Bulan') {
+		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
 			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		} else if (param.sertifikat == 'max11Bulan') {
+		} else if (param.sertifikat == 'lebih-dari-11-bulan') {
 			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
 		}
 	}
