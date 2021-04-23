@@ -260,8 +260,8 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 Report.crewlist = async (req, result, cabang_id) => {
     if (req.fields.cabang_id) {
-        const date = req.fields.date;
-        const date1 = date.split("-");
+        // const date = req.fields.date;
+        // const date1 = date.split("-");
         var arr = {};
 
         var query = `
