@@ -39,6 +39,7 @@ Dashboard.cetivicatevalidity = async (param, result) => {
     const res2 = await exec2;
     const exec3 = f.query(evaluasi);
     const res3 = await exec3;
+    // console.log(res1);
     result(null, [res1.rows, res2.rows, res3.rows]);
 };
 

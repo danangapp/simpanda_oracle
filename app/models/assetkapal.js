@@ -176,15 +176,6 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		var dt = await simop.cekBody("SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 		var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		assetkapal['simop_kd_fas'] = "SM" + id;
-		var str = f.getValueUpdate(assetkapal, id, arr);
-		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
-		if (assetkapal.is_from_simop) {
-			assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
-			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
-		} else {
-			await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-		}
-
 	}
 
 	objek.koneksi = id;
@@ -198,6 +189,16 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	}
 	// console.log('objek',objek)
 	// return false
+
+	var str = f.getValueUpdate(assetkapal, id, arr);
+	await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
+	if (assetkapal.is_from_simop) {
+		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
+		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
+	} else {
+		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	}
+
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
 	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
