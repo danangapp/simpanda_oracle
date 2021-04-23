@@ -43,7 +43,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updateFasilitas/" + cabang;
         }
-        console.log(url, data);
+        // console.log(url, data);
         const options = this.options(url, data);
         return axios(options)
     },
@@ -53,10 +53,10 @@ module.exports = {
         var esbBody = {
             "kdFas": kode,
             "nmFas": rows.nama_asset || "-",
-            "daya": rows.daya || "0",
-            "kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+            "daya": `${rows.daya}` || "0",
+            "kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
             "enable": "1",
-            "daya2": rows.daya || "0",
+            "daya2": `${rows.daya}` || "0",
             "statusMilik": rows.simop_status_milik || "1",
             "kdAgen": rows.simop_kd_agen || "1",
             "assetNumber": rows.assetNumber || "1",
