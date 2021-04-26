@@ -227,11 +227,11 @@ Personil.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
 		if (param.sertifikat == "filter-1") {
-			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 5)'
+			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 3)'
 		} else if (param.sertifikat == 'filter-2') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 11)'
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 3) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 7)'
 		} else if (param.sertifikat == 'filter-3') {
-			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 7) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
 		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
 	}

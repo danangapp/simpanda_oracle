@@ -102,12 +102,13 @@ EvaluasiPelimpahan.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > SYSDATE '
 		if (param.sertifikat == "filter-1") {
-			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 5)'
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 3)'
 		}else if (param.sertifikat == 'filter-2') {
-			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 5) AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 11)'
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 3) AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 7)'
 		}else if (param.sertifikat == 'filter-3') {
-			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 12)'
+			wheres += ' AND ADD_MONTHS(\"tanggal_sk\", 24) > ADD_MONTHS(SYSDATE, 7) AND ADD_MONTHS(\"tanggal_sk\", 24) <= ADD_MONTHS(SYSDATE, 12)'
 		}
+		wheres += ' ADD_MONTHS(\"tanggal_sk\", 24) > SYSDATE'
 	}
 
 	query += wheres;
