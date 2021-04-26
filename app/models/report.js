@@ -168,7 +168,7 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     output_tim = await f.query(query);
     output_tim = output_tim.rows;
     // output_tim = output_tim[0];
-    for(var x in output_tim) {
+    for (var x in output_tim) {
         tim[x] = output_tim[x];
     }
     arr['tim'] = tim;
@@ -876,6 +876,7 @@ Report.kapal = async (req, result, cabang_id) => {
         `;
 
         var output1 = await f.query(query);
+        console.log(query);
         var output = output1.rows;
         var arr = {};
         arr['pk'] = output;

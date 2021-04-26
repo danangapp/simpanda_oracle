@@ -319,14 +319,17 @@ module.exports = {
     },
     executeSertifikat: async function (sertifikat, id, db, dbId) {
         var header = "", value = "";
+        console.log("1")
         var arr = ["jenis_cert_id", "tipe_cert_id", "personil_id", "asset_kapal_id", "no_sertifikat", "issuer", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "sertifikat", "sertifikat_id", "id"]
         for (var i in sertifikat) {
             const x = sertifikat[i];
             x.id = await this.getid("sertifikat");
             x[dbId] = id;
 
+            console.log("2")
             var header = "", value = "";
             for (var a in x) {
+                console.log("3")
                 var val = x[a];
                 var adadiTable = 0
                 var adaTgl = 0;
@@ -338,21 +341,25 @@ module.exports = {
                 }
 
                 if (adadiTable == 1) {
+                    console.log("4")
                     if (a === "tanggal_keluar_sertifikat" || a === "tanggal_expire" || a === "reminder_date1" || a === "reminder_date3" || a === "reminder_date6") {
                         adaTgl = 1;
                         val = this.toDate(val);
                         val = "TO_DATE('" + val + "', 'yyyy-mm-dd')";
                     }
                     if (val) {
+                        console.log("5")
                         header += "\"" + a + "\"" + ", ";
                         if (a != "sertifikat") {
+                            console.log("6")
                             if (adaTgl == 0) {
                                 value += "'" + val + "', ";
                             } else {
                                 value += "" + val + ", ";
                             }
                         } else {
-                            var fileName = this.uploadFile64(db, val);
+                            console.log("7")
+                            var fileName = val.substring(0, 4) == "data" ? this.uploadFile64(db, val) : val;
                             value += "'" + fileName + "', ";
                         }
                     }

@@ -282,7 +282,6 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				if (rows.cabang_id > 1) {
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
 				} else {
-					// console.log(4);
 					personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
 				}
 			}
