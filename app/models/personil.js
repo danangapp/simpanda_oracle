@@ -212,12 +212,12 @@ Personil.getAll = async (param, result, cabang_id) => {
 	// console.log(param.sertifikat)
 	// console.log(wheres)
 	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-12-bulan'`, '');
+		if (param.sertifikat == "filter-1") {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
+		} else if (param.sertifikat == 'filter-2') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
+		} else if (param.sertifikat == 'filter-3') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
 		}
 	}
 
@@ -226,13 +226,12 @@ Personil.getAll = async (param, result, cabang_id) => {
 
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
-		// wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)'
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		if (param.sertifikat == "filter-1") {
+			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 5)'
+		} else if (param.sertifikat == 'filter-2') {
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 11)'
+		} else if (param.sertifikat == 'filter-3') {
+			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
 		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
 	}
