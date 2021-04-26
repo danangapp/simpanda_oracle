@@ -64,7 +64,7 @@ PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
 };
 
 PanduSchedule.findById = async (id, result) => {
-	const resPersonil = await f.query("SELECT a.\"id\", a.\"personil_id\", TO_CHAR(a.\"from\", 'HH24:MI') AS \"from\", TO_CHAR(a.\"to\", 'HH24:MI') AS \"to\", a.\"kehadiran\", a.\"keterangan\" FROM \"pandu_jaga\" a WHERE a.\"pandu_schedule_id\" = '" + id + "'");
+	const resPersonil = await f.query(`SELECT a."id", a."personil_id", TO_CHAR(a."from", 'HH24:MI') AS "from", TO_CHAR(a."to", 'HH24:MI') AS "to", a."kehadiran", a."keterangan", b."nama" AS "personil" FROM "pandu_jaga" a INNER JOIN "personil" b ON a."personil_id" = b."id" WHERE a."pandu_schedule_id" = '${id}'`);
 	const resActivityLog = await f.query("SELECT a.\"date\", a.\"item\", a.\"action\", a.\"user_id\", a.\"remark\", a.\"keterangan\", a.\"koneksi\" FROM \"activity_log\" a INNER JOIN \"pandu_schedule\" b ON a.\"item\" = 'pandu_schedule' AND a.\"koneksi\" = b.\"id\" WHERE b.\"id\" =  '" + id + "'");
 	var queryText = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"status_absen\", a3.\"nama\" as \"approval_status\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"pandu_bandar_laut\" FROM \"pandu_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"status_absen\" a2 ON a.\"status_absen_id\" = a2.\"id\"  LEFT JOIN \"approval_status\" a3 ON a.\"approval_status_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a5 ON a.\"pandu_bandar_laut_id\" = a5.\"id\"   WHERE a.\"id\" = '" + id + "'";
 	const exec = f.query(queryText);
@@ -72,7 +72,6 @@ PanduSchedule.findById = async (id, result) => {
 	const personil = { "personil": resPersonil.rows }
 	const activityLog = { "activityLog": resActivityLog.rows }
 	let merge = { ...res.rows[0], ...personil, ...activityLog }
-	console.log(merge);
 	result(null, merge);
 }
 
