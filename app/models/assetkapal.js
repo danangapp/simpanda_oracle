@@ -79,7 +79,7 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
-	console.log("assetkapalnya", assetkapal);
+	console.log("assetkapalnya", newAssetKapal);
 	const sertifikat = newAssetKapal.sertifikat;
 	delete newAssetKapal.sertifikat;
 	newAssetKapal['cabang_id'] = parseInt(newAssetKapal.cabang_id);
