@@ -90,19 +90,22 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 
 	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
-	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newAssetKapal.id;
 	const res = await exec;
 
-	await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
-	// objek.koneksi = id;
-	// objek.action = "0";
-	// objek.user_id = user_id;
-	// objek.remark = "Pengajuan dibuat oleh admin cabang";
-	// var id_activity_log = await f.getid("activity_log");
-	// const hval = await f.headerValue(objek, id_activity_log);
-	// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	if (newAssetKapal.is_from_simop) {
+
+	} else {
+		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
+		objek.koneksi = id;
+		objek.action = "0";
+		objek.user_id = user_id;
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	}
 
 	result(null, { id: id, ...newAssetKapal });
 };

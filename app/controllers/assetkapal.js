@@ -61,19 +61,20 @@ exports.create = (req, res) => {
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
+        is_from_simop: req.fields.is_from_simop,
         activity_keterangan: req.fields.activity_keterangan,
     };
 
-	var used = {};
-	for (var i in assetkapal) {
-	    if (assetkapal[i] == undefined) {
-	        delete assetkapal[i];
-	    }
-	}
+    var used = {};
+    for (var i in assetkapal) {
+        if (assetkapal[i] == undefined) {
+            delete assetkapal[i];
+        }
+    }
 
-	if (req.fields.ship_particular) {
-	    assetkapal.ship_particular = f.uploadFile64('asset_kapal', req.fields.ship_particular);
-	}
+    if (req.fields.ship_particular) {
+        assetkapal.ship_particular = f.uploadFile64('asset_kapal', req.fields.ship_particular);
+    }
 
     AssetKapal.create(assetkapal, (err, data) => {
         if (err)
@@ -120,14 +121,14 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.date = f.toDate(req.fields.date);
-	if (req.fields.ship_particular) {
-		if (req.fields.ship_particular.substring(0, 4) == "data") {
-		    req.fields.ship_particular = f.uploadFile64('personil', req.fields.ship_particular);
-		} else {
-		    delete req.fields.ship_particular
-		}
-	}
+    req.fields.date = f.toDate(req.fields.date);
+    if (req.fields.ship_particular) {
+        if (req.fields.ship_particular.substring(0, 4) == "data") {
+            req.fields.ship_particular = f.uploadFile64('personil', req.fields.ship_particular);
+        } else {
+            delete req.fields.ship_particular
+        }
+    }
 
 
     AssetKapal.updateById(
