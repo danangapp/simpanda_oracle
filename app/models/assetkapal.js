@@ -182,6 +182,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	}
 
 
+	console.log(assetkapal);
 	if (assetkapal.isFromSimop) {
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
 		console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
