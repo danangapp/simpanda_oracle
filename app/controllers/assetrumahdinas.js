@@ -84,8 +84,10 @@ exports.update = (req, res) => {
             message: "Content can not be empty!"
         });
     }
+    console.log("danangnya", req.fields);
 
-    req.fields.tanggal = f.toDate(req.fields.tanggal);
+    if (req.fields.tanggal)
+        req.fields.tanggal = f.toDate(req.fields.tanggal);
 
     AssetRumahDinas.updateById(
         req.params.id,
