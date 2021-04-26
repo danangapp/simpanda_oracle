@@ -361,6 +361,7 @@ module.exports = {
             value = value.substring(0, value.length - 2);
             header = header.substring(0, header.length - 2);
             const headervalue = "(" + header + ") values(" + value + ")";
+            console.log("INSERT INTO \"sertifikat\" " + headervalue);
             await this.query("INSERT INTO \"sertifikat\" " + headervalue);
         }
     },
