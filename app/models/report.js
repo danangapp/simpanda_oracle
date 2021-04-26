@@ -3,6 +3,7 @@ const fs = require('fs');
 var moment = require('moment');
 var XlsxTemplate = require('xlsx-template');
 const createReport = require('docx-templates').default;
+const { version } = require('moment');
 var query_asli = `SELECT a.*, round( 0.05 * pendapatan_pandu, 0 ) pnbp_pandu, round( 0.05 * pendapatan_tunda, 0 ) pnbp_tunda, round( 0.05 * pendapatan_pandu, 0 ) + round( 0.05 * pendapatan_tunda, 0 ) jumlah_pnbp FROM (SELECT c.kd_cabang, c.nm_cabang, bkt_pandu.kd_ppkb, to_char( bkt_pandu.jam_pandu_naik, 'mm-yyyy' ) periode, bkt_pandu.no_ukk, bkt_pandu.no_bkt_pandu, pkk.tgl_jam_tiba, bkt_pandu.ppkb_ke, bkt_pandu.draft_depan, bkt_pandu.draft_belakang, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat1, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat1, (SELECT mst_kapal.kp_loa FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat1, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat1, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat1, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat1, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat2, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat2, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat2, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat2, mst_kapal.nm_kapal, mst_kapal.jn_kapal, mst_kapal.kp_grt, mst_kapal.kp_loa, mst_kapal.kd_bendera, mst_agen.kd_agen, mst_pers_pandu.nm_pers_pandu, to_char( pkk.tgl_jam_tiba, 'dd-mm-yyyy' ) tgl_tiba, to_char( pkk.tgl_jam_tiba, 'hh24:mi' ) jam_tiba, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'dd-mm-yyyy' ) tgl_pmt, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'hh24:mi' ) jam_pmt, to_char( bkt_pandu.jam_pandu_naik, 'hh24:mi' ) pnk, to_char( bkt_pandu.jam_kapal_gerak, 'hh24:mi' ) kb, bkt_pandu.jam_pandu_naik,  to_char( bkt_pandu.jam_pandu_naik, 'dd-mm-yyyy hh24:mi' ) mulai_pelaksanaan, to_char( bkt_pandu.jam_pandu_turun, 'dd-mm-yyyy hh24:mi' ) selesai_pelaksanaan, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) pnd, round((bkt_pandu.jam_pandu_turun - bkt_pandu.jam_pandu_naik) * 24*60) pnd_minute, ( CASE WHEN bkt_pandu.jam_pandu_naik > ppkb_pandu.tgl_jam_pmt_pandu_d THEN f_selisih_jam ( ppkb_pandu.tgl_jam_pmt_pandu_d, bkt_pandu.jam_pandu_naik ) ELSE '00:00' END ) wt, round( ( bkt_pandu.jam_pandu_naik - ppkb_pandu.tgl_jam_pmt_pandu_d ) * 24 * 60 ) wt_minute,(CASE WHEN bkt_pandu.kd_gerakan = 1 AND ppkb_pandu.tgl_jam_pmt_pandu_d > pkk.tgl_jam_tiba THEN trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 - trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) pt, (CASE WHEN bkt_pandu.kd_gerakan = 3 AND bkt_pandu.jam_pandu_turun > pkk.tgl_jam_tiba THEN trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 - trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) trt, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) at_jam, (CASE bkt_pandu.pandu_dari WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_sebelum ) ELSE bkt_pandu.pandu_dari END ) pandu_dari, (CASE bkt_pandu.pandu_ke WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_berikut ) ELSE bkt_pandu.pandu_ke END ) pandu_ke, bkt_pandu.kd_gerakan, mst_gerakan.gerakan, bkt_pandu.tgl_mpandu, mst_agen.nm_agen, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) nm_kapal_1, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) hp_kapal_1, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) nm_kapal_2, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) hp_kapal_2, to_char( bkt_tunda.tgl_jam_tiba_kpl1, 'hh24:mi' ) mulai_tunda, to_char( bkt_tunda.tgl_jam_brngkt_kpl1, 'hh24:mi' ) selesai_tunda, f_selisih_jam ( bkt_tunda.tgl_jam_tiba_kpl1, bkt_tunda.tgl_jam_brngkt_kpl1 ) lama_tunda, bkt_pandu.ket_pandu, mst_keterangan_pandu.keterangan || ', ' || ( SELECT keterangan FROM kapal_prod.mst_ket_pandu_khusus WHERE kd_keterangan_pandu = bkt_pandu.ket_pandu ) AS keterangan_pandu, decode( pkk.kd_pelayaran, '1', 'ln', '2', 'dn', '3', 'rkyt', '4', 'prnts' ) AS pelayaran, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'pandu'), 0 ) pendapatan_pandu, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'tunda'), 0 ) pendapatan_tunda, mst_dermaga.dermaga FROM bkt_pandu, bkt_tunda, ppkb_detail, ppkb_pandu, ppkb, pkk, mst_kapal_agen, mst_kapal, mst_pers_pandu, mst_gerakan, mst_agen, mst_keterangan_pandu, mst_cabang c, mst_kade, mst_dermaga WHERE bkt_pandu.no_bkt_pandu = bkt_tunda.no_bkt_tunda ( + ) AND mst_kapal_agen.kd_cabang = c.kd_cabang AND bkt_pandu.kd_ppkb = ppkb_detail.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_detail.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb_pandu.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_pandu.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb.kd_ppkb AND ppkb.no_ukk = pkk.no_ukk AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal AND ( bkt_pandu.kd_pers_pandu = mst_pers_pandu.kd_pers_pandu AND SUBSTR( bkt_pandu.kd_ppkb, 5, 2 ) = mst_pers_pandu.KD_CABANG ) AND bkt_pandu.kd_gerakan = mst_gerakan.kd_gerakan AND mst_kapal_agen.kd_agen = mst_agen.kd_agen AND bkt_pandu.ket_pandu = mst_keterangan_pandu.kd_keterangan_pandu AND ppkb_detail.kade_tujuan = mst_kade.kd_kade AND mst_kade.kd_dermaga = mst_dermaga.kd_dermaga ) a`;
 const Report = function (report) {
     this.nama = report.nama;
@@ -127,40 +128,499 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
 };
 
 Report.investigasiinsiden = async (id, result, cabang_id) => {
-    var query = `SELECT * FROM "investigasi_insiden_check"`;
-
-    var output1 = await f.query(query);
-    var output = output1.rows;
     var arr = {};
     var y = "x";
     var out = [];
     var tim = [];
+    var wujud_cedera_array = [];
+    var bagian_tubuh_cedera_array = [];
+    var luka_sakit_array = [];
+    var mekanisme_cedera_array = [];
+    var peralatan_kelengkapan_array = [];
+    var alat_pelindung_diri_array = [];
+    var perilaku_array = [];
+    var kebersihan_kerapihan_array = [];
+    var peralatan_perlengkapan_array = [];
+    var kemampuan_kondisi_fisik_array = [];
+    var pemeliharaan_perbaikan_array = [];
+    var design_array = [];
+    var tingkat_kemampuan_array = [];
+    var penjagaan_array = [];
+    var tindakan_terkait_array = [];
+
+    
+    var checkin = 0;
+    var query = "";
+
+   
+    var query = `SELECT ii.*, 
+    TO_CHAR(ii."prepard_tanggal", 'DD fmMonth YYYY') AS "prepard_tanggal_nice",
+    TO_CHAR(ii."reviewed_tanggal" , 'DD fmMonth YYYY') AS "reviewed_tanggal_nice",
+    TO_CHAR(ii."approved_tanggal" , 'DD fmMonth YYYY') AS "approved_tanggal_nice",
+    UPPER(ii."unit_terkait") AS "unit_terkait_nice",
+    UPPER(ii."judul_report") AS "judul_report_nice"
+    FROM "investigasi_insiden" ii
+    WHERE ii."id"='${id}'`;
+    var output1 = await f.query(query);
+    var output = output1.rows;
+    output = output[0];
+    for (var a in output) {
+
+        if(a=="wujud_cedera"){
+            if(output[a]){
+                output['wujud_cedera_array']=output[a].split(",");            
+                output['wujud_cedera_array'] = output['wujud_cedera_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['wujud_cedera_array'] = output['wujud_cedera_array'].filter(Number);
+                wujud_cedera_array = output['wujud_cedera_array'];
+
+
+                for(x in wujud_cedera_array){
+                    wujud_cedera_array[x] = "l"+wujud_cedera_array[x];
+                }
+                output['wujud_cedera_array'] = wujud_cedera_array;
+                arr['wujud_cedera_array'] = wujud_cedera_array;
+            }else{
+                arr['wujud_cedera']="";
+            }
+        }
+
+        if(a=="bagian_tubuh_cedera"){
+            if(output[a]){
+                output['bagian_tubuh_cedera_array']=output[a].split(",");            
+                output['bagian_tubuh_cedera_array'] = output['bagian_tubuh_cedera_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['bagian_tubuh_cedera_array'] = output['bagian_tubuh_cedera_array'].filter(Number);
+                bagian_tubuh_cedera_array = output['bagian_tubuh_cedera_array'];
+
+
+                for(x in bagian_tubuh_cedera_array){
+                    bagian_tubuh_cedera_array[x] = "m"+bagian_tubuh_cedera_array[x];
+                }
+                output['bagian_tubuh_cedera_array'] = bagian_tubuh_cedera_array;
+                arr['bagian_tubuh_cedera_array'] = bagian_tubuh_cedera_array;
+            }else{
+                arr['bagian_tubuh_cedera']="";
+            }
+        }
+
+        if(a=="luka_sakit"){
+            if(output[a]){
+                output['luka_sakit_array']=output[a].split(",");            
+                output['luka_sakit_array'] = output['luka_sakit_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['luka_sakit_array'] = output['luka_sakit_array'].filter(Number);
+                luka_sakit_array = output['luka_sakit_array'];
+
+
+                for(x in luka_sakit_array){
+                    luka_sakit_array[x] = "o"+luka_sakit_array[x];
+                }
+                output['luka_sakit_array'] = luka_sakit_array;
+                arr['luka_sakit_array'] = luka_sakit_array;
+            }else{
+                arr['luka_sakit']="";
+            }
+        }
+
+        if(a=="mekanisme_cedera"){
+            if(output[a]){
+                output['mekanisme_cedera_array']=output[a].split(",");            
+                output['mekanisme_cedera_array'] = output['mekanisme_cedera_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['mekanisme_cedera_array'] = output['mekanisme_cedera_array'].filter(Number);
+                mekanisme_cedera_array = output['mekanisme_cedera_array'];
+
+
+                for(x in mekanisme_cedera_array){
+                    mekanisme_cedera_array[x] = "n"+mekanisme_cedera_array[x];
+                }
+                output['mekanisme_cedera_array'] = mekanisme_cedera_array;
+                arr['mekanisme_cedera_array'] = mekanisme_cedera_array;
+            }else{
+                arr['mekanisme_cedera']="";
+            }
+        }
+
+        if(a=="peralatan_kelengkapan"){
+            if(output[a]){
+                output['peralatan_kelengkapan_array']=output[a].split(",");            
+                output['peralatan_kelengkapan_array'] = output['peralatan_kelengkapan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['peralatan_kelengkapan_array'] = output['peralatan_kelengkapan_array'].filter(String);
+                peralatan_kelengkapan_array = output['peralatan_kelengkapan_array'];
+
+
+                for(x in peralatan_kelengkapan_array){
+                    peralatan_kelengkapan_array[x] = peralatan_kelengkapan_array[x];
+                }
+                output['peralatan_kelengkapan_array'] = peralatan_kelengkapan_array;
+                arr['peralatan_kelengkapan_array'] = peralatan_kelengkapan_array;
+            }else{
+                arr['peralatan_kelengkapan']="";
+            }
+        }
+
+        if(a=="alat_pelindung_diri"){
+            if(output[a]){
+                output['alat_pelindung_diri_array']=output[a].split(",");            
+                output['alat_pelindung_diri_array'] = output['alat_pelindung_diri_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['alat_pelindung_diri_array'] = output['alat_pelindung_diri_array'].filter(String);
+                alat_pelindung_diri_array = output['alat_pelindung_diri_array'];
+
+
+                for(x in alat_pelindung_diri_array){
+                    alat_pelindung_diri_array[x] = alat_pelindung_diri_array[x];
+                }
+                output['alat_pelindung_diri_array'] = alat_pelindung_diri_array;
+                arr['alat_pelindung_diri_array'] = alat_pelindung_diri_array;
+            }else{
+                arr['alat_pelindung_diri']="";
+            }
+        }
+
+        if(a=="perilaku"){
+            if(output[a]){
+                output['perilaku_array']=output[a].split(",");            
+                output['perilaku_array'] = output['perilaku_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['perilaku_array'] = output['perilaku_array'].filter(String);
+                perilaku_array = output['perilaku_array'];
+
+
+                for(x in perilaku_array){
+                    perilaku_array[x] = perilaku_array[x];
+                }
+                output['perilaku_array'] = perilaku_array;
+                arr['perilaku_array'] = perilaku_array;
+            }else{
+                arr['perilaku']="";
+            }
+        }
+
+        if(a=="kebersihan_kerapihan"){
+            if(output[a]){
+                output['kebersihan_kerapihan_array']=output[a].split(",");            
+                output['kebersihan_kerapihan_array'] = output['kebersihan_kerapihan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['kebersihan_kerapihan_array'] = output['kebersihan_kerapihan_array'].filter(String);
+                kebersihan_kerapihan_array = output['kebersihan_kerapihan_array'];
+
+
+                for(x in kebersihan_kerapihan_array){
+                    kebersihan_kerapihan_array[x] = kebersihan_kerapihan_array[x];
+                }
+                output['kebersihan_kerapihan_array'] = kebersihan_kerapihan_array;
+                arr['kebersihan_kerapihan_array'] = kebersihan_kerapihan_array;
+            }else{
+                arr['kebersihan_kerapihan']="";
+            }
+        }
+
+        if(a=="peralatan_perlengkapan"){
+            if(output[a]){
+                output['peralatan_perlengkapan_array']=output[a].split(",");            
+                output['peralatan_perlengkapan_array'] = output['peralatan_perlengkapan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['peralatan_perlengkapan_array'] = output['peralatan_perlengkapan_array'].filter(String);
+                peralatan_perlengkapan_array = output['peralatan_perlengkapan_array'];
+
+
+                for(x in peralatan_perlengkapan_array){
+                    peralatan_perlengkapan_array[x] = peralatan_perlengkapan_array[x];
+                }
+                output['peralatan_perlengkapan_array'] = peralatan_perlengkapan_array;
+                arr['peralatan_perlengkapan_array'] = peralatan_perlengkapan_array;
+            }else{
+                arr['peralatan_perlengkapan']="";
+            }
+        }
+
+        if(a=="kemampuan_kondisi_fisik"){
+            if(output[a]){
+                output['kemampuan_kondisi_fisik_array']=output[a].split(",");            
+                output['kemampuan_kondisi_fisik_array'] = output['kemampuan_kondisi_fisik_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['kemampuan_kondisi_fisik_array'] = output['kemampuan_kondisi_fisik_array'].filter(String);
+                kemampuan_kondisi_fisik_array = output['kemampuan_kondisi_fisik_array'];
+
+
+                for(x in kemampuan_kondisi_fisik_array){
+                    kemampuan_kondisi_fisik_array[x] = kemampuan_kondisi_fisik_array[x];
+                }
+                output['kemampuan_kondisi_fisik_array'] = kemampuan_kondisi_fisik_array;
+                arr['kemampuan_kondisi_fisik_array'] = kemampuan_kondisi_fisik_array;
+            }else{
+                arr['kemampuan_kondisi_fisik']="";
+            }
+        }
+
+        if(a=="pemeliharaan_perbaikan"){
+            if(output[a]){
+                output['pemeliharaan_perbaikan_array']=output[a].split(",");            
+                output['pemeliharaan_perbaikan_array'] = output['pemeliharaan_perbaikan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['pemeliharaan_perbaikan_array'] = output['pemeliharaan_perbaikan_array'].filter(String);
+                pemeliharaan_perbaikan_array = output['pemeliharaan_perbaikan_array'];
+
+
+                for(x in pemeliharaan_perbaikan_array){
+                    pemeliharaan_perbaikan_array[x] = pemeliharaan_perbaikan_array[x];
+                }
+                output['pemeliharaan_perbaikan_array'] = pemeliharaan_perbaikan_array;
+                arr['pemeliharaan_perbaikan_array'] = pemeliharaan_perbaikan_array;
+            }else{
+                arr['pemeliharaan_perbaikan']="";
+            }
+        }
+
+        if(a=="design"){
+            if(output[a]){
+                output['design_array']=output[a].split(",");            
+                output['design_array'] = output['design_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['design_array'] = output['design_array'].filter(String);
+                design_array = output['design_array'];
+
+
+                for(x in design_array){
+                    design_array[x] = design_array[x];
+                }
+                output['design_array'] = design_array;
+                arr['design_array'] = design_array;
+            }else{
+                arr['design']="";
+            }
+        }
+
+        if(a=="tingkat_kemampuan"){
+            if(output[a]){
+                output['tingkat_kemampuan_array']=output[a].split(",");            
+                output['tingkat_kemampuan_array'] = output['tingkat_kemampuan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['tingkat_kemampuan_array'] = output['tingkat_kemampuan_array'].filter(String);
+                tingkat_kemampuan_array = output['tingkat_kemampuan_array'];
+
+
+                for(x in tingkat_kemampuan_array){
+                    tingkat_kemampuan_array[x] = tingkat_kemampuan_array[x];
+                }
+                output['tingkat_kemampuan_array'] = tingkat_kemampuan_array;
+                arr['tingkat_kemampuan_array'] = tingkat_kemampuan_array;
+            }else{
+                arr['tingkat_kemampuan']="";
+            }
+        }
+
+        if(a=="penjagaan"){
+            if(output[a]){
+                output['penjagaan_array']=output[a].split(",");            
+                output['penjagaan_array'] = output['penjagaan_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['penjagaan_array'] = output['penjagaan_array'].filter(String);
+                penjagaan_array = output['penjagaan_array'];
+
+
+                for(x in penjagaan_array){
+                    penjagaan_array[x] = penjagaan_array[x];
+                }
+                output['penjagaan_array'] = penjagaan_array;
+                arr['penjagaan_array'] = penjagaan_array;
+            }else{
+                arr['penjagaan']="";
+            }
+        }
+
+        if(a=="tindakan_terkait"){
+            if(output[a]){
+                output['tindakan_terkait_array']=output[a].split(",");            
+                output['tindakan_terkait_array'] = output['tindakan_terkait_array'].filter(function (el) {
+                    return el != null && el != "";
+                });
+                output['tindakan_terkait_array'] = output['tindakan_terkait_array'].filter(String);
+                tindakan_terkait_array = output['tindakan_terkait_array'];
+
+
+                for(x in tindakan_terkait_array){
+                    tindakan_terkait_array[x] = tindakan_terkait_array[x];
+                }
+                output['tindakan_terkait_array'] = tindakan_terkait_array;
+                arr['tindakan_terkait_array'] = tindakan_terkait_array;
+            }else{
+                arr['tindakan_terkait']="";
+            }
+        }
+
+        arr[a] = output[a] || "";
+    }
+
+    query = `SELECT * FROM "investigasi_insiden_check"`;
+    output1 = await f.query(query);
+    output = output1.rows;
+    
+    
     for (var x in output) {
         var jenis = output[x].jenis;
         var kode = output[x].kode;
         var nama = output[x].nama;
+
+        if(jenis==="l"){
+            if(wujud_cedera_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+        
+        if(jenis==="m"){
+            if(bagian_tubuh_cedera_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="o"){
+            if(luka_sakit_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="n"){
+            if(mekanisme_cedera_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="a"){
+            if(peralatan_kelengkapan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="b"){
+            
+            if(alat_pelindung_diri_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="c"){
+            
+            if(perilaku_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="d"){
+            
+            if(kebersihan_kerapihan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="e"){
+            
+            if(peralatan_perlengkapan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="f"){
+            
+            if(kemampuan_kondisi_fisik_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="g"){
+            
+            if(pemeliharaan_perbaikan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="h"){
+            
+            if(design_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="i"){
+            
+            if(tingkat_kemampuan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="j"){
+            
+            if(penjagaan_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
+        if(jenis==="k"){
+            
+            if(tindakan_terkait_array.includes(output[x].kode)){
+                checkin = 1;
+            }else{
+                checkin = 0;
+            }
+        }
+
         if (jenis != y) {
             // console.log("lewat sini" + y)
             out = []
             y = jenis
             arr[jenis] = out;
         }
-        out.push({ jenis: jenis, kode: kode, nama: nama });
+        out.push({ jenis: jenis, kode: kode, nama: nama, checkin:checkin });
     }
+    
     arr['k'] = out;
 
-    query = `SELECT ii.*, 
-    TO_CHAR(ii."prepard_tanggal", 'DD fmMonth YYYY') AS "prepard_tanggal_nice",
-    TO_CHAR(ii."reviewed_tanggal" , 'DD fmMonth YYYY') AS "reviewed_tanggal_nice",
-    TO_CHAR(ii."approved_tanggal" , 'DD fmMonth YYYY') AS "approved_tanggal_nice"
-    FROM "investigasi_insiden" ii
-    WHERE ii."id"='${id}'`;
-    output1 = await f.query(query);
-    output = output1.rows;
-    output = output[0];
-    for (var a in output) {
-        arr[a] = output[a] || "";
-    }
+
 
     query = `SELECT iii.*, 
     TO_CHAR(iii."tgl", 'DD fmMonth YYYY') AS "tgl_nice"
@@ -173,11 +633,31 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     }
     arr['tim'] = tim;
 
+    
     const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
+    var dataUrl = false;
+    var extension = arr['bukti_temuan'].slice(-4);
+    
+    try{
+        dataUrl = fs.readFileSync('./files/'+arr['bukti_temuan']);
+    }catch(err){
+        dataUrl = false;
+    }
 
     console.log(JSON.stringify(arr));
     const buffer = await createReport({
         template,
+        additionalJsContext: {
+            gambar_temuan_investigasi: url => {
+                if(arr['bukti_temuan'] && dataUrl){
+                    if(extension === '.png' || extension === '.jpg' || extension === '.jpeg' || extension === '.gif'){
+                        return { width: 6, height: 6, data: dataUrl, extension: extension };                    
+                    }
+                    
+                }
+                
+              }
+        },
         data: arr,
     });
 
