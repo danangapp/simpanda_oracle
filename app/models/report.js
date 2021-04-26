@@ -658,7 +658,7 @@ Report.personelpeformance = async (req, result, cabang_id) => {
                 FROM (${query}) a`;
 
         var output1 = await f.querySimop(query);
-        console.log(req.fields);
+        // console.log(req.fields);
         var output = output1.rows;
 
         result(null, output);
