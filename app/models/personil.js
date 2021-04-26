@@ -300,7 +300,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
-		// console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
+		console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 
