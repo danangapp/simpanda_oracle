@@ -181,10 +181,10 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	}
 
 
+	delete assetkapal.is_from_simop;
 	var str = f.getValueUpdate(assetkapal, id, arr);
 	if (assetkapal.is_from_simop) {
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
-		delete assetkapal.is_from_simop;
 		console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
