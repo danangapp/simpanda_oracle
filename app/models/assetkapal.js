@@ -165,7 +165,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 }
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
-	console.log(0);
+	console.log("assetkapalnya ya", assetkapal);
 	const sertifikat = assetkapal.sertifikat;
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
@@ -182,7 +182,6 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	}
 
 
-	console.log(assetkapal);
 	var str = f.getValueUpdate(assetkapal, id, arr);
 	if (assetkapal.is_from_simop) {
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);

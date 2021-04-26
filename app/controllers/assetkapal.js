@@ -62,6 +62,7 @@ exports.create = (req, res) => {
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
         isFromSimop: req.fields.isFromSimop,
+        is_from_simop: req.fields.is_from_simop,
         activity_keterangan: req.fields.activity_keterangan,
     };
 
