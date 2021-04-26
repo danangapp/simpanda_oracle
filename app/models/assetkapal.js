@@ -96,13 +96,13 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	const res = await exec;
 
 	await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
-	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
-	objek.remark = "Pengajuan dibuat oleh admin cabang";
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	// objek.koneksi = id;
+	// objek.action = "0";
+	// objek.user_id = user_id;
+	// objek.remark = "Pengajuan dibuat oleh admin cabang";
+	// var id_activity_log = await f.getid("activity_log");
+	// const hval = await f.headerValue(objek, id_activity_log);
+	// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...newAssetKapal });
 };
