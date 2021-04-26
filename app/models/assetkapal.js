@@ -94,7 +94,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	delete newAssetKapal.id;
 	const res = await exec;
 
-	if (newAssetKapal.is_from_simop) {
+	if (newAssetKapal.isFromSimop) {
 
 	} else {
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
