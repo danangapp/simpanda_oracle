@@ -1,3 +1,4 @@
+const { delete } = require('../controllers/assetkapal');
 const f = require('../controllers/function');
 const simop = require('../controllers/simop');
 var objek = new Object();
@@ -88,15 +89,10 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	delete newAssetKapal.activity_keterangan;
 	let valid = newAssetKapal
 
-	const hv = await f.headerValue(valid, id);
-	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
-	console.log("queryText", queryText);
-	const exec = f.query(queryText, 1);
-	delete newAssetKapal.id;
-	const res = await exec;
 
-	if (newAssetKapal.isFromSimop) {
 
+	if (newAssetKapal.isFromSimop || newAssetKapal.is_from_simop) {
+		delete newAssetKapal.is_from_simop;
 	} else {
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
 		objek.koneksi = id;
@@ -107,6 +103,13 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 		const hval = await f.headerValue(objek, id_activity_log);
 		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	}
+
+	const hv = await f.headerValue(valid, id);
+	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	console.log("queryText", queryText);
+	const exec = f.query(queryText, 1);
+	delete newAssetKapal.id;
+	const res = await exec;
 
 	result(null, { id: id, ...newAssetKapal });
 };
