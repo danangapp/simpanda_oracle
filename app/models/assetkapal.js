@@ -122,12 +122,12 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
 
 	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-12-bulan'`, '');
+		if (param.sertifikat == "filter-1") {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
+		} else if (param.sertifikat == 'filter-2') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
+		} else if (param.sertifikat == 'filter-3') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
 		}
 	}
 
@@ -137,12 +137,12 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"';
 		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres += 'AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		if (param.sertifikat == "filter-1") {
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 5)';
+		} else if (param.sertifikat == 'filter-2') {
+			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 11)'
+		} else if (param.sertifikat == 'filter-3') {
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
 	}
 
