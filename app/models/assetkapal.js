@@ -90,6 +90,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 
 	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newAssetKapal.id;
 	const res = await exec;
@@ -135,15 +136,15 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	var query = "SELECT a.* , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"kepemilikan_kapal\", a3.\"flag\" as \"tipe_asset\", a4.\"nama\" as \"ena\", a5.\"nama\" as \"approval_status\" , a3.\"nama\" as \"jenis_asset\" FROM \"asset_kapal\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"kepemilikan_kapal\" a2 ON a.\"kepemilikan_kapal_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"enable\" a4 ON a.\"enable\" = a4.\"id\"  LEFT JOIN \"approval_status\" a5 ON a.\"approval_status_id\" = a5.\"id\" ";
 
 	if (param.sertifikat != undefined) {
-		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"'
+		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"';
+		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
 		if (param.sertifikat == "filter-1") {
-			wheres += ' AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 3)'
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 5)';
 		} else if (param.sertifikat == 'filter-2') {
-			wheres += ' AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 3) AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 7)'
+			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 11)'
 		} else if (param.sertifikat == 'filter-3') {
-			wheres += ' AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 7) AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
-		wheres += ' AND a6.\"tanggal_expire\" > SYSDATE '
 	}
 
 	if (param.q) {
@@ -155,7 +156,6 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
 	query += "ORDER BY a.\"id\" DESC";
-
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
