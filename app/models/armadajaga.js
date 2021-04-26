@@ -27,17 +27,32 @@ ArmadaJaga.findById = async (id, result) => {
 }
 
 ArmadaJaga.getAll = async (param, result, cabang_id) => {
-	var wheres = f.getParam(param, "armada_jaga");
-	var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\", a2.\"nama_asset\" as \"asset_kapal\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\" ";
-	if (param.q) {
-		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"from\" LIKE '%" + param.q + "%' OR a.\"to\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";
-		wheres += ")";
+	// var wheres = f.getParam(param, "armada_jaga");
+	// var query = "SELECT a.* , a1.\"keterangan\" as \"armada_schedule\", a2.\"nama_asset\" as \"asset_kapal\" FROM \"armada_jaga\" a  LEFT JOIN \"armada_schedule\" a1 ON a.\"armada_schedule_id\" = a1.\"id\" LEFT JOIN \"asset_kapal\" a2 ON a.\"asset_kapal_id\" = a2.\"id\" ";
+	// if (param.q) {
+	// 	wheres += wheres.length == 7 ? "(" : "AND (";
+	// 	wheres += "a.\"from\" LIKE '%" + param.q + "%' OR a.\"to\" LIKE '%" + param.q + "%' OR a.\"armada_schedule_id\" LIKE '%" + param.q + "%'";
+	// 	wheres += ")";
+	// }
+
+	// query += wheres;
+	// console.log(query);
+	// query += "ORDER BY a.\"id\" DESC";
+
+	var query = `SELECT "armada_jaga".*, "asset_kapal"."nama_asset" FROM "armada_jaga"
+				LEFT JOIN "armada_schedule" ON "armada_jaga"."armada_schedule_id" = "armada_schedule"."id"
+				LEFT JOIN "asset_kapal" ON "armada_jaga"."asset_kapal_id" = "asset_kapal"."id" `;
+	
+	// console.log('param',param)
+
+	if (param !== undefined) {
+		query += `WHERE trunc("armada_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') `
 	}
 
-	query += wheres;
-	console.log(query);
-	query += "ORDER BY a.\"id\" DESC";
+	if (cabang_id > 0) {
+		query += `AND "armada_schedule"."cabang_id" = ${cabang_id}`
+	}
+
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
