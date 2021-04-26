@@ -121,8 +121,10 @@ exports.update = (req, res) => {
     req.fields.tanggal_selesai = f.toDate(req.fields.tanggal_selesai);
     req.fields.skpp_tanggal_mulai = f.toDate(req.fields.skpp_tanggal_mulai);
     req.fields.skpp_tanggal_selesai = f.toDate(req.fields.skpp_tanggal_selesai);
-    req.fields.skes_tanggal_mulai = f.toDate(req.fields.skes_tanggal_mulai);
-    req.fields.skes_tanggal_selesai = f.toDate(req.fields.skes_tanggal_selesai);
+    if (req.fields.skes_tanggal_mulai)
+        req.fields.skes_tanggal_mulai = f.toDate(req.fields.skes_tanggal_mulai);
+    if (req.fields.skes_tanggal_selesai)
+        req.fields.skes_tanggal_selesai = f.toDate(req.fields.skes_tanggal_selesai);
     req.fields.date = f.toDate(req.fields.date);
     if (req.fields.cv) {
         if (req.fields.cv.substring(0, 4) == "data") {
