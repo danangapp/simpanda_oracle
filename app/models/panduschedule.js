@@ -81,20 +81,33 @@ PanduSchedule.findById = async (id, result) => {
 
 PanduSchedule.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "pandu_schedule");
-	var query = `SELECT a."id", c."nama" AS "cabang", (CASE b."kehadiran" WHEN 1 THEN 'Hadir' ELSE 'Tidak Hadir' END) as "status_absen", d."nama" as "pandu_jaga_nama", a."date", b."to", b."from", b."keterangan"FROM "pandu_schedule" a INNER JOIN "pandu_jaga" b ON a."id" = b."pandu_schedule_id"INNER JOIN "cabang" c ON a."cabang_id" = c."id"INNER JOIN "personil" d ON b."personil_id" = d."id"`;
-	if (param.q) {
-		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"status_absen_id\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"pandu_jaga_id\" LIKE '%" + param.q + "%' OR a.\"pandu_bandar_laut_id\" LIKE '%" + param.q + "%'";
-		wheres += ")";
+	// var query = `SELECT a."id", c."nama" AS "cabang", (CASE b."kehadiran" WHEN 1 THEN 'Hadir' ELSE 'Tidak Hadir' END) as "status_absen", d."nama" as "pandu_jaga_nama", a."date", b."to", b."from", b."keterangan"FROM "pandu_schedule" a INNER JOIN "pandu_jaga" b ON a."id" = b."pandu_schedule_id"INNER JOIN "cabang" c ON a."cabang_id" = c."id"INNER JOIN "personil" d ON b."personil_id" = d."id"`;
+	// if (param.q) {
+	// 	wheres += wheres.length == 7 ? "(" : "AND (";
+	// 	wheres += "a.\"date\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"status_absen_id\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"pandu_jaga_id\" LIKE '%" + param.q + "%' OR a.\"pandu_bandar_laut_id\" LIKE '%" + param.q + "%'";
+	// 	wheres += ")";
+	// }
+
+	// wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
+	// query += wheres;
+	// query += "ORDER BY a.\"id\" DESC";
+	
+	// var query = `SELECT "date", "cabang"."nama" AS "cabang" FROM "pandu_schedule"
+	// 			INNER JOIN "cabang" ON "pandu_schedule"."cabang_id" = "cabang"."id"
+	// 			WHERE "pandu_schedule"."enable"=1 `
+	// if (cabang_id > 0) {
+	// 	query += ` "cabang_id" = ${cabang_id}`
+	// }
+
+	var query = `SELECT a."id", a."date", b."nama" AS "cabang" FROM "pandu_schedule" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" `;
+	if (cabang_id > 0) {
+		query += ` WHERE a."cabang_id" = '${cabang_id}' `;
 	}
 
-	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
-	query += wheres;
-	query += "ORDER BY a.\"id\" DESC";
 	// console.log(query);
-	const exec = f.query(query);
-	const res = await exec;
-	result(null, res.rows);
+	const exec = f.query(query)
+	const res = await exec
+	result(null, res.rows)
 }
 
 PanduSchedule.updateById = async (id, panduschedule, result, user_id) => {
