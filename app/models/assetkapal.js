@@ -1,4 +1,3 @@
-const { delete } = require('../controllers/assetkapal');
 const f = require('../controllers/function');
 const simop = require('../controllers/simop');
 var objek = new Object();
