@@ -195,6 +195,8 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	if (assetkapal.is_from_simop) {
 		console.log(2);
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
+		console.log("assetkapal", assetkapal);
+		console.log("ini datanya ya", "UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
