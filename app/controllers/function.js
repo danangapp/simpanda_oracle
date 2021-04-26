@@ -120,7 +120,8 @@ module.exports = {
                 return result;
             }
         } catch (err) {
-            console.error(err);
+            console.error('error catch function.js',err);
+            return err;
         } finally {
             if (connection) {
                 try {

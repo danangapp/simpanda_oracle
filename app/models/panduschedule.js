@@ -38,13 +38,25 @@ PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
 	newPanduSchedule = setActivity(newPanduSchedule)
 	newPanduSchedule.date = newPanduScheduleDate
 
+	var check = `SELECT "date" FROM "pandu_schedule" 
+				WHERE trunc("date") = TO_DATE('${newPanduSchedule.date}', 'YY/MM/DD') 
+				AND "cabang_id" = ${cabang_id}`
+	var dataCheck = await f.query(check)
+
+	if (dataCheck.rows.length > 0) {
+		result(null, {'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !'})
+		return false
+	}
+
+	// console.log('dataCheck',dataCheck.rows.length)	
+	// return false
+
 	var id = await f.getid("pandu_schedule")
 	const hv = await f.headerValue(newPanduSchedule, id)
 	var queryText = `INSERT INTO "pandu_schedule" ${hv} RETURN "id" INTO :id`
 	const res = await f.query(queryText, 1)
 
-	// console.log('queryText',queryText)
-	// console.log('res',res)
+	// console.log('res errorNum',res.errorNum)
 	// return false
 
 	for (var a in personil) {

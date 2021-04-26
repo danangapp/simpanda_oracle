@@ -19,6 +19,20 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 	var armada = newArmadaSchedule.armada;
 	delete newArmadaSchedule.armada;
 	newArmadaSchedule.date = newArmadaScheduleDate;
+
+	var check = `SELECT "date" FROM "armada_schedule" 
+				WHERE trunc("date") = TO_DATE('${newArmadaSchedule.date}', 'YY/MM/DD') 
+				AND "cabang_id" = ${cabang_id}`
+	var dataCheck = await f.query(check)
+
+	if (dataCheck.rows.length > 0) {
+		result(null, {'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !'})
+		return false
+	}
+
+	// console.log('dataCheck',dataCheck.rows.length)	
+	// return false
+
 	var id = await f.getid("armada_schedule");
 	const hv = await f.headerValue(newArmadaSchedule, id);
 	var queryText = "INSERT INTO \"armada_schedule\" " + hv + " RETURN \"id\" INTO :id";
