@@ -178,7 +178,6 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 		var dt = await simop.cekBody("SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 		var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
-		assetkapal['simop_kd_fas'] = "SM" + id;
 	}
 
 
@@ -188,6 +187,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
+		assetkapal['simop_kd_fas'] = "SM" + id;
 		objek.koneksi = id;
 		objek.action = "0";
 		objek.user_id = user_id;
