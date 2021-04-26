@@ -148,11 +148,11 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     var penjagaan_array = [];
     var tindakan_terkait_array = [];
 
-    
+
     var checkin = 0;
     var query = "";
 
-   
+
     var query = `SELECT ii.*, 
     TO_CHAR(ii."prepard_tanggal", 'DD fmMonth YYYY') AS "prepard_tanggal_nice",
     TO_CHAR(ii."reviewed_tanggal" , 'DD fmMonth YYYY') AS "reviewed_tanggal_nice",
@@ -166,9 +166,9 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     output = output[0];
     for (var a in output) {
 
-        if(a=="wujud_cedera"){
-            if(output[a]){
-                output['wujud_cedera_array']=output[a].split(",");            
+        if (a == "wujud_cedera") {
+            if (output[a]) {
+                output['wujud_cedera_array'] = output[a].split(",");
                 output['wujud_cedera_array'] = output['wujud_cedera_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -176,19 +176,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 wujud_cedera_array = output['wujud_cedera_array'];
 
 
-                for(x in wujud_cedera_array){
-                    wujud_cedera_array[x] = "l"+wujud_cedera_array[x];
+                for (x in wujud_cedera_array) {
+                    wujud_cedera_array[x] = "l" + wujud_cedera_array[x];
                 }
                 output['wujud_cedera_array'] = wujud_cedera_array;
                 arr['wujud_cedera_array'] = wujud_cedera_array;
-            }else{
-                arr['wujud_cedera']="";
+            } else {
+                arr['wujud_cedera'] = "";
             }
         }
 
-        if(a=="bagian_tubuh_cedera"){
-            if(output[a]){
-                output['bagian_tubuh_cedera_array']=output[a].split(",");            
+        if (a == "bagian_tubuh_cedera") {
+            if (output[a]) {
+                output['bagian_tubuh_cedera_array'] = output[a].split(",");
                 output['bagian_tubuh_cedera_array'] = output['bagian_tubuh_cedera_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -196,19 +196,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 bagian_tubuh_cedera_array = output['bagian_tubuh_cedera_array'];
 
 
-                for(x in bagian_tubuh_cedera_array){
-                    bagian_tubuh_cedera_array[x] = "m"+bagian_tubuh_cedera_array[x];
+                for (x in bagian_tubuh_cedera_array) {
+                    bagian_tubuh_cedera_array[x] = "m" + bagian_tubuh_cedera_array[x];
                 }
                 output['bagian_tubuh_cedera_array'] = bagian_tubuh_cedera_array;
                 arr['bagian_tubuh_cedera_array'] = bagian_tubuh_cedera_array;
-            }else{
-                arr['bagian_tubuh_cedera']="";
+            } else {
+                arr['bagian_tubuh_cedera'] = "";
             }
         }
 
-        if(a=="luka_sakit"){
-            if(output[a]){
-                output['luka_sakit_array']=output[a].split(",");            
+        if (a == "luka_sakit") {
+            if (output[a]) {
+                output['luka_sakit_array'] = output[a].split(",");
                 output['luka_sakit_array'] = output['luka_sakit_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -216,19 +216,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 luka_sakit_array = output['luka_sakit_array'];
 
 
-                for(x in luka_sakit_array){
-                    luka_sakit_array[x] = "o"+luka_sakit_array[x];
+                for (x in luka_sakit_array) {
+                    luka_sakit_array[x] = "o" + luka_sakit_array[x];
                 }
                 output['luka_sakit_array'] = luka_sakit_array;
                 arr['luka_sakit_array'] = luka_sakit_array;
-            }else{
-                arr['luka_sakit']="";
+            } else {
+                arr['luka_sakit'] = "";
             }
         }
 
-        if(a=="mekanisme_cedera"){
-            if(output[a]){
-                output['mekanisme_cedera_array']=output[a].split(",");            
+        if (a == "mekanisme_cedera") {
+            if (output[a]) {
+                output['mekanisme_cedera_array'] = output[a].split(",");
                 output['mekanisme_cedera_array'] = output['mekanisme_cedera_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -236,19 +236,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 mekanisme_cedera_array = output['mekanisme_cedera_array'];
 
 
-                for(x in mekanisme_cedera_array){
-                    mekanisme_cedera_array[x] = "n"+mekanisme_cedera_array[x];
+                for (x in mekanisme_cedera_array) {
+                    mekanisme_cedera_array[x] = "n" + mekanisme_cedera_array[x];
                 }
                 output['mekanisme_cedera_array'] = mekanisme_cedera_array;
                 arr['mekanisme_cedera_array'] = mekanisme_cedera_array;
-            }else{
-                arr['mekanisme_cedera']="";
+            } else {
+                arr['mekanisme_cedera'] = "";
             }
         }
 
-        if(a=="peralatan_kelengkapan"){
-            if(output[a]){
-                output['peralatan_kelengkapan_array']=output[a].split(",");            
+        if (a == "peralatan_kelengkapan") {
+            if (output[a]) {
+                output['peralatan_kelengkapan_array'] = output[a].split(",");
                 output['peralatan_kelengkapan_array'] = output['peralatan_kelengkapan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -256,19 +256,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 peralatan_kelengkapan_array = output['peralatan_kelengkapan_array'];
 
 
-                for(x in peralatan_kelengkapan_array){
+                for (x in peralatan_kelengkapan_array) {
                     peralatan_kelengkapan_array[x] = peralatan_kelengkapan_array[x];
                 }
                 output['peralatan_kelengkapan_array'] = peralatan_kelengkapan_array;
                 arr['peralatan_kelengkapan_array'] = peralatan_kelengkapan_array;
-            }else{
-                arr['peralatan_kelengkapan']="";
+            } else {
+                arr['peralatan_kelengkapan'] = "";
             }
         }
 
-        if(a=="alat_pelindung_diri"){
-            if(output[a]){
-                output['alat_pelindung_diri_array']=output[a].split(",");            
+        if (a == "alat_pelindung_diri") {
+            if (output[a]) {
+                output['alat_pelindung_diri_array'] = output[a].split(",");
                 output['alat_pelindung_diri_array'] = output['alat_pelindung_diri_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -276,19 +276,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 alat_pelindung_diri_array = output['alat_pelindung_diri_array'];
 
 
-                for(x in alat_pelindung_diri_array){
+                for (x in alat_pelindung_diri_array) {
                     alat_pelindung_diri_array[x] = alat_pelindung_diri_array[x];
                 }
                 output['alat_pelindung_diri_array'] = alat_pelindung_diri_array;
                 arr['alat_pelindung_diri_array'] = alat_pelindung_diri_array;
-            }else{
-                arr['alat_pelindung_diri']="";
+            } else {
+                arr['alat_pelindung_diri'] = "";
             }
         }
 
-        if(a=="perilaku"){
-            if(output[a]){
-                output['perilaku_array']=output[a].split(",");            
+        if (a == "perilaku") {
+            if (output[a]) {
+                output['perilaku_array'] = output[a].split(",");
                 output['perilaku_array'] = output['perilaku_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -296,19 +296,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 perilaku_array = output['perilaku_array'];
 
 
-                for(x in perilaku_array){
+                for (x in perilaku_array) {
                     perilaku_array[x] = perilaku_array[x];
                 }
                 output['perilaku_array'] = perilaku_array;
                 arr['perilaku_array'] = perilaku_array;
-            }else{
-                arr['perilaku']="";
+            } else {
+                arr['perilaku'] = "";
             }
         }
 
-        if(a=="kebersihan_kerapihan"){
-            if(output[a]){
-                output['kebersihan_kerapihan_array']=output[a].split(",");            
+        if (a == "kebersihan_kerapihan") {
+            if (output[a]) {
+                output['kebersihan_kerapihan_array'] = output[a].split(",");
                 output['kebersihan_kerapihan_array'] = output['kebersihan_kerapihan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -316,19 +316,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 kebersihan_kerapihan_array = output['kebersihan_kerapihan_array'];
 
 
-                for(x in kebersihan_kerapihan_array){
+                for (x in kebersihan_kerapihan_array) {
                     kebersihan_kerapihan_array[x] = kebersihan_kerapihan_array[x];
                 }
                 output['kebersihan_kerapihan_array'] = kebersihan_kerapihan_array;
                 arr['kebersihan_kerapihan_array'] = kebersihan_kerapihan_array;
-            }else{
-                arr['kebersihan_kerapihan']="";
+            } else {
+                arr['kebersihan_kerapihan'] = "";
             }
         }
 
-        if(a=="peralatan_perlengkapan"){
-            if(output[a]){
-                output['peralatan_perlengkapan_array']=output[a].split(",");            
+        if (a == "peralatan_perlengkapan") {
+            if (output[a]) {
+                output['peralatan_perlengkapan_array'] = output[a].split(",");
                 output['peralatan_perlengkapan_array'] = output['peralatan_perlengkapan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -336,19 +336,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 peralatan_perlengkapan_array = output['peralatan_perlengkapan_array'];
 
 
-                for(x in peralatan_perlengkapan_array){
+                for (x in peralatan_perlengkapan_array) {
                     peralatan_perlengkapan_array[x] = peralatan_perlengkapan_array[x];
                 }
                 output['peralatan_perlengkapan_array'] = peralatan_perlengkapan_array;
                 arr['peralatan_perlengkapan_array'] = peralatan_perlengkapan_array;
-            }else{
-                arr['peralatan_perlengkapan']="";
+            } else {
+                arr['peralatan_perlengkapan'] = "";
             }
         }
 
-        if(a=="kemampuan_kondisi_fisik"){
-            if(output[a]){
-                output['kemampuan_kondisi_fisik_array']=output[a].split(",");            
+        if (a == "kemampuan_kondisi_fisik") {
+            if (output[a]) {
+                output['kemampuan_kondisi_fisik_array'] = output[a].split(",");
                 output['kemampuan_kondisi_fisik_array'] = output['kemampuan_kondisi_fisik_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -356,19 +356,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 kemampuan_kondisi_fisik_array = output['kemampuan_kondisi_fisik_array'];
 
 
-                for(x in kemampuan_kondisi_fisik_array){
+                for (x in kemampuan_kondisi_fisik_array) {
                     kemampuan_kondisi_fisik_array[x] = kemampuan_kondisi_fisik_array[x];
                 }
                 output['kemampuan_kondisi_fisik_array'] = kemampuan_kondisi_fisik_array;
                 arr['kemampuan_kondisi_fisik_array'] = kemampuan_kondisi_fisik_array;
-            }else{
-                arr['kemampuan_kondisi_fisik']="";
+            } else {
+                arr['kemampuan_kondisi_fisik'] = "";
             }
         }
 
-        if(a=="pemeliharaan_perbaikan"){
-            if(output[a]){
-                output['pemeliharaan_perbaikan_array']=output[a].split(",");            
+        if (a == "pemeliharaan_perbaikan") {
+            if (output[a]) {
+                output['pemeliharaan_perbaikan_array'] = output[a].split(",");
                 output['pemeliharaan_perbaikan_array'] = output['pemeliharaan_perbaikan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -376,19 +376,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 pemeliharaan_perbaikan_array = output['pemeliharaan_perbaikan_array'];
 
 
-                for(x in pemeliharaan_perbaikan_array){
+                for (x in pemeliharaan_perbaikan_array) {
                     pemeliharaan_perbaikan_array[x] = pemeliharaan_perbaikan_array[x];
                 }
                 output['pemeliharaan_perbaikan_array'] = pemeliharaan_perbaikan_array;
                 arr['pemeliharaan_perbaikan_array'] = pemeliharaan_perbaikan_array;
-            }else{
-                arr['pemeliharaan_perbaikan']="";
+            } else {
+                arr['pemeliharaan_perbaikan'] = "";
             }
         }
 
-        if(a=="design"){
-            if(output[a]){
-                output['design_array']=output[a].split(",");            
+        if (a == "design") {
+            if (output[a]) {
+                output['design_array'] = output[a].split(",");
                 output['design_array'] = output['design_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -396,19 +396,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 design_array = output['design_array'];
 
 
-                for(x in design_array){
+                for (x in design_array) {
                     design_array[x] = design_array[x];
                 }
                 output['design_array'] = design_array;
                 arr['design_array'] = design_array;
-            }else{
-                arr['design']="";
+            } else {
+                arr['design'] = "";
             }
         }
 
-        if(a=="tingkat_kemampuan"){
-            if(output[a]){
-                output['tingkat_kemampuan_array']=output[a].split(",");            
+        if (a == "tingkat_kemampuan") {
+            if (output[a]) {
+                output['tingkat_kemampuan_array'] = output[a].split(",");
                 output['tingkat_kemampuan_array'] = output['tingkat_kemampuan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -416,19 +416,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 tingkat_kemampuan_array = output['tingkat_kemampuan_array'];
 
 
-                for(x in tingkat_kemampuan_array){
+                for (x in tingkat_kemampuan_array) {
                     tingkat_kemampuan_array[x] = tingkat_kemampuan_array[x];
                 }
                 output['tingkat_kemampuan_array'] = tingkat_kemampuan_array;
                 arr['tingkat_kemampuan_array'] = tingkat_kemampuan_array;
-            }else{
-                arr['tingkat_kemampuan']="";
+            } else {
+                arr['tingkat_kemampuan'] = "";
             }
         }
 
-        if(a=="penjagaan"){
-            if(output[a]){
-                output['penjagaan_array']=output[a].split(",");            
+        if (a == "penjagaan") {
+            if (output[a]) {
+                output['penjagaan_array'] = output[a].split(",");
                 output['penjagaan_array'] = output['penjagaan_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -436,19 +436,19 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 penjagaan_array = output['penjagaan_array'];
 
 
-                for(x in penjagaan_array){
+                for (x in penjagaan_array) {
                     penjagaan_array[x] = penjagaan_array[x];
                 }
                 output['penjagaan_array'] = penjagaan_array;
                 arr['penjagaan_array'] = penjagaan_array;
-            }else{
-                arr['penjagaan']="";
+            } else {
+                arr['penjagaan'] = "";
             }
         }
 
-        if(a=="tindakan_terkait"){
-            if(output[a]){
-                output['tindakan_terkait_array']=output[a].split(",");            
+        if (a == "tindakan_terkait") {
+            if (output[a]) {
+                output['tindakan_terkait_array'] = output[a].split(",");
                 output['tindakan_terkait_array'] = output['tindakan_terkait_array'].filter(function (el) {
                     return el != null && el != "";
                 });
@@ -456,13 +456,13 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                 tindakan_terkait_array = output['tindakan_terkait_array'];
 
 
-                for(x in tindakan_terkait_array){
+                for (x in tindakan_terkait_array) {
                     tindakan_terkait_array[x] = tindakan_terkait_array[x];
                 }
                 output['tindakan_terkait_array'] = tindakan_terkait_array;
                 arr['tindakan_terkait_array'] = tindakan_terkait_array;
-            }else{
-                arr['tindakan_terkait']="";
+            } else {
+                arr['tindakan_terkait'] = "";
             }
         }
 
@@ -472,139 +472,139 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     query = `SELECT * FROM "investigasi_insiden_check"`;
     output1 = await f.query(query);
     output = output1.rows;
-    
-    
+
+
     for (var x in output) {
         var jenis = output[x].jenis;
         var kode = output[x].kode;
         var nama = output[x].nama;
 
-        if(jenis==="l"){
-            if(wujud_cedera_array.includes(output[x].kode)){
+        if (jenis === "l") {
+            if (wujud_cedera_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
-                checkin = 0;
-            }
-        }
-        
-        if(jenis==="m"){
-            if(bagian_tubuh_cedera_array.includes(output[x].kode)){
-                checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="o"){
-            if(luka_sakit_array.includes(output[x].kode)){
+        if (jenis === "m") {
+            if (bagian_tubuh_cedera_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="n"){
-            if(mekanisme_cedera_array.includes(output[x].kode)){
+        if (jenis === "o") {
+            if (luka_sakit_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="a"){
-            if(peralatan_kelengkapan_array.includes(output[x].kode)){
+        if (jenis === "n") {
+            if (mekanisme_cedera_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="b"){
-            
-            if(alat_pelindung_diri_array.includes(output[x].kode)){
+        if (jenis === "a") {
+            if (peralatan_kelengkapan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="c"){
-            
-            if(perilaku_array.includes(output[x].kode)){
+        if (jenis === "b") {
+
+            if (alat_pelindung_diri_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="d"){
-            
-            if(kebersihan_kerapihan_array.includes(output[x].kode)){
+        if (jenis === "c") {
+
+            if (perilaku_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="e"){
-            
-            if(peralatan_perlengkapan_array.includes(output[x].kode)){
+        if (jenis === "d") {
+
+            if (kebersihan_kerapihan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="f"){
-            
-            if(kemampuan_kondisi_fisik_array.includes(output[x].kode)){
+        if (jenis === "e") {
+
+            if (peralatan_perlengkapan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="g"){
-            
-            if(pemeliharaan_perbaikan_array.includes(output[x].kode)){
+        if (jenis === "f") {
+
+            if (kemampuan_kondisi_fisik_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="h"){
-            
-            if(design_array.includes(output[x].kode)){
+        if (jenis === "g") {
+
+            if (pemeliharaan_perbaikan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="i"){
-            
-            if(tingkat_kemampuan_array.includes(output[x].kode)){
+        if (jenis === "h") {
+
+            if (design_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="j"){
-            
-            if(penjagaan_array.includes(output[x].kode)){
+        if (jenis === "i") {
+
+            if (tingkat_kemampuan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
                 checkin = 0;
             }
         }
 
-        if(jenis==="k"){
-            
-            if(tindakan_terkait_array.includes(output[x].kode)){
+        if (jenis === "j") {
+
+            if (penjagaan_array.includes(output[x].kode)) {
                 checkin = 1;
-            }else{
+            } else {
+                checkin = 0;
+            }
+        }
+
+        if (jenis === "k") {
+
+            if (tindakan_terkait_array.includes(output[x].kode)) {
+                checkin = 1;
+            } else {
                 checkin = 0;
             }
         }
@@ -615,9 +615,9 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
             y = jenis
             arr[jenis] = out;
         }
-        out.push({ jenis: jenis, kode: kode, nama: nama, checkin:checkin });
+        out.push({ jenis: jenis, kode: kode, nama: nama, checkin: checkin });
     }
-    
+
     arr['k'] = out;
 
 
@@ -633,14 +633,14 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
     }
     arr['tim'] = tim;
 
-    
+
     const template = fs.readFileSync('./report/Report-Inspection-Investigasi Insiden.docx');
     var dataUrl = false;
     var extension = arr['bukti_temuan'].slice(-4);
-    
-    try{
-        dataUrl = fs.readFileSync('./files/'+arr['bukti_temuan']);
-    }catch(err){
+
+    try {
+        dataUrl = fs.readFileSync('./files/' + arr['bukti_temuan']);
+    } catch (err) {
         dataUrl = false;
     }
 
@@ -649,14 +649,14 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         template,
         additionalJsContext: {
             gambar_temuan_investigasi: url => {
-                if(arr['bukti_temuan'] && dataUrl){
-                    if(extension === '.png' || extension === '.jpg' || extension === '.jpeg' || extension === '.gif'){
-                        return { width: 6, height: 6, data: dataUrl, extension: extension };                    
+                if (arr['bukti_temuan'] && dataUrl) {
+                    if (extension === '.png' || extension === '.jpg' || extension === '.jpeg' || extension === '.gif') {
+                        return { width: 6, height: 6, data: dataUrl, extension: extension };
                     }
-                    
+
                 }
-                
-              }
+
+            }
         },
         data: arr,
     });
@@ -1336,7 +1336,7 @@ Report.kapal = async (req, result, cabang_id) => {
             i."nama" as jeniscert,
             j."nama" as tipecert,
             k."nama" as kepemilikan,
-            m."nama" as klas,
+            a."klas",
             
             to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
             to_char(h."tanggal_expire",'DD-MM-YYYY') as expired
@@ -1348,14 +1348,12 @@ Report.kapal = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
-            LEFT JOIN "klas" m ON m."id" = a."klas"
             WHERE a."id" IN (${cabang})
             ORDER BY c."id" asc
         ) z
         `;
 
         var output1 = await f.query(query);
-        // console.log(query);
         var output = output1.rows;
         var arr = {};
         arr['pk'] = output;
