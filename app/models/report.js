@@ -1306,6 +1306,8 @@ Report.pendukungpandu = async (req, result, cabang_id) => {
 
 Report.kapal = async (req, result, cabang_id) => {
 
+    // -- NVL(a."gross_tonnage", 0) as gross_tonnage || ton,
+    // -- a."gross_tonnage" as gross_tonnage || ton,
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
@@ -1320,17 +1322,18 @@ Report.kapal = async (req, result, cabang_id) => {
             a."tahun_perolehan" as tahun_peroleh,
             b."nama" as jenis_asset,
             a."nilai_perolehan" as nilai,
-            NVL(a."loa", 0) as loa,
-            NVL(a."breadth", 0) as breadth,
+            NVL(CONCAT(to_char(a."loa"),' m'), 0) as loa,
+            NVL(CONCAT(to_char(a."breadth"),' m'), 0) as breadth,
             a."depth" as depth,
             a."draft_max" as draft,
             a."tahun_pembuatan" as tahun_buat,
             a."negara_pembuat" as negara,
             a."no_registrasi" as no_registrasi,
             a."port_of_registration" as port_of_registration,
-            NVL(a."gross_tonnage", 0) as gross_tonnage,
-            NVL(a."kecepatan", 0) as kecepatan,
-            NVL(a."bolard_pull", 0) as bolard_pull,
+            NVL(CONCAT(to_char(a."gross_tonnage"),' ton'), 0) as gross_tonnage,
+             
+            NVL(CONCAT(to_char(a."kecepatan"),' knot'), 0) as kecepatan,
+            NVL(CONCAT(to_char(a."bolard_pull"),' ton'), 0) as bolard_pull,
             h."no_sertifikat" as no_sertifikat,
             h."issuer" as lembaga,
             i."nama" as jeniscert,
