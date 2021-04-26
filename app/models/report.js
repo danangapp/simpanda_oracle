@@ -835,6 +835,7 @@ Report.kapal = async (req, result, cabang_id) => {
             SELECT
             c."nama" as cabang,
             a."nama_asset" as nama_asset,
+            a."kontruksi" as konstruksi,
             a."horse_power" as hp,
             a."tahun_perolehan" as tahun_peroleh,
             b."nama" as jenis_asset,
@@ -855,7 +856,6 @@ Report.kapal = async (req, result, cabang_id) => {
             i."nama" as jeniscert,
             j."nama" as tipecert,
             k."nama" as kepemilikan,
-            l."nama" as konstruksi,
             m."nama" as klas,
             
             to_char(h."tanggal_keluar_sertifikat",'DD-MM-YYYY') as tanggalterbit,
@@ -868,7 +868,6 @@ Report.kapal = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
-            LEFT JOIN "konstruksi" l ON l."id" = a."kontruksi"
             LEFT JOIN "klas" m ON m."id" = a."klas"
             WHERE a."id" IN (${cabang})
             ORDER BY c."id" asc
