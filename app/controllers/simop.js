@@ -21,7 +21,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updatePanduLaut/" + cabang;
         }
-        console.log(url, data);
+        // console.log(url, data);
         const options = this.options(url, data);
         return axios(options)
     },
@@ -32,7 +32,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updatePandu/" + cabang;
         }
-        console.log("danang", url, data);
+        // console.log("danang", url, data);
         const options = this.options(url, data);
         return axios(options)
     },
@@ -64,7 +64,7 @@ module.exports = {
             "newPuspelJai": rows.simop_new_puspel_jai || "1",
             "newAssetJai": rows.simop_new_asset_jai || "1"
         }
-        console.log(esbBody);
+        // console.log(esbBody);
         if (cabang == "cabang") {
             if (rows.simop_kd_fas) {
                 dt = { "opUpdateMstFasilitasCabangRequest": { "esbBody": esbBody } }

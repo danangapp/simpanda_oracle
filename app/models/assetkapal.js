@@ -94,14 +94,18 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	delete newAssetKapal.id;
 	const res = await exec;
 
-	await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
-	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
-	objek.remark = "Pengajuan dibuat oleh admin cabang";
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	if (newAssetKapal.isFromSimop) {
+
+	} else {
+		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
+		objek.koneksi = id;
+		objek.action = "0";
+		objek.user_id = user_id;
+		objek.remark = "Pengajuan dibuat oleh admin cabang";
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	}
 
 	result(null, { id: id, ...newAssetKapal });
 };
@@ -122,12 +126,12 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
 
 	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-12-bulan'`, '');
+		if (param.sertifikat == "filter-1") {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
+		} else if (param.sertifikat == 'filter-2') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
+		} else if (param.sertifikat == 'filter-3') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
 		}
 	}
 
@@ -137,12 +141,12 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a6 ON a6.\"asset_kapal_id\" = a.\"id\"';
 		// wheres += ' AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres += 'AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		if (param.sertifikat == "filter-1") {
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 5)';
+		} else if (param.sertifikat == 'filter-2') {
+			wheres += 'AND a6.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 11)'
+		} else if (param.sertifikat == 'filter-3') {
+			wheres += 'AND a6.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
 	}
 
@@ -169,7 +173,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	}
 	delete assetkapal.sertifikat;
 
-	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id"];
+	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id", "is_from_simop"];
 	if (assetkapal.approval_status_id == "1") {
 		const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 		var dt = await simop.cekBody("SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
@@ -177,31 +181,31 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		assetkapal['simop_kd_fas'] = "SM" + id;
 	}
 
-	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
-	objek.item = "assetkapal";
-	objek.remark = "Pengajuan dirubah oleh admin cabang";
-	objek.keterangan = assetkapal.keterangan
-	if (!assetkapal.keterangan) {
-		objek.keterangan = assetkapal.activity_keterangan;
-	}
 
-
+	console.log(assetkapal);
 	var str = f.getValueUpdate(assetkapal, id, arr);
-	await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
-	console.log(1);
 	if (assetkapal.is_from_simop) {
-		console.log(2);
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
+		console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
-		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-	}
+		objek.koneksi = id;
+		objek.action = "0";
+		objek.user_id = user_id;
+		objek.item = "assetkapal";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
+		objek.keterangan = assetkapal.keterangan
+		if (!assetkapal.keterangan) {
+			objek.keterangan = assetkapal.activity_keterangan;
+		}
 
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
+		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	}
 
 	result(null, { id: id, ...assetkapal });
 };

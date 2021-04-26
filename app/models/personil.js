@@ -137,6 +137,8 @@ const Personil = function (personil) {
 	this.user_id = personil.user_id;
 	this.remark = personil.remark;
 	this.koneksi = personil.koneksi;
+	this.skes_tanggal_mulai = personil.skes_tanggal_mulai;
+	this.skes_tanggal_selesai = personil.skes_tanggal_selesai;
 	this.keterangan = personil.keterangan;
 };
 
@@ -210,12 +212,12 @@ Personil.getAll = async (param, result, cabang_id) => {
 	// console.log(param.sertifikat)
 	// console.log(wheres)
 	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-5-bulan'`, '');
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = '5-sampai-dengan-11-bulan'`, '');
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres = wheres.replace(` and a."sertifikat" = 'kurang-dari-12-bulan'`, '');
+		if (param.sertifikat == "filter-1") {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
+		} else if (param.sertifikat == 'filter-2') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
+		} else if (param.sertifikat == 'filter-3') {
+			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
 		}
 	}
 
@@ -224,13 +226,12 @@ Personil.getAll = async (param, result, cabang_id) => {
 
 	if (param.sertifikat != undefined) {
 		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
-		// wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)';
-		if (param.sertifikat == "kurang-dari-5-bulan") {
-			wheres += ' AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 5)'
-		} else if (param.sertifikat == '5-sampai-dengan-11-bulan') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 5) AND a8.\"tanggal_expire\" < ADD_MONTHS(SYSDATE, 11)'
-		} else if (param.sertifikat == 'kurang-dari-12-bulan') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 11)'
+		if (param.sertifikat == "filter-1") {
+			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 3)'
+		} else if (param.sertifikat == 'filter-2') {
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 3) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 7)'
+		} else if (param.sertifikat == 'filter-3') {
+			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 7) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
 		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
 	}
@@ -259,8 +260,11 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	// console.log(personil);
 	delete personil.remark;
 	delete personil.sertifikat;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 	// console.log("yoi");
+	if (personil.enable == 0) {
+		personil.enable = 1;
+	}
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
 		var dt, smp;
@@ -296,6 +300,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
+		// console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 
