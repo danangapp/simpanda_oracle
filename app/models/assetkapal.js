@@ -79,6 +79,7 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
+	console.log("assetkapalnya", assetkapal);
 	const sertifikat = newAssetKapal.sertifikat;
 	delete newAssetKapal.sertifikat;
 	newAssetKapal['cabang_id'] = parseInt(newAssetKapal.cabang_id);
@@ -90,6 +91,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 
 	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv + " RETURN \"id\" INTO :id";
+	console.log(queryText);
 	const exec = f.query(queryText, 1);
 	delete newAssetKapal.id;
 	const res = await exec;
@@ -162,7 +164,8 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 }
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
-	console.log(0);
+	// console.log(0);
+	console.log("assetkapalnya", assetkapal);
 	const sertifikat = assetkapal.sertifikat;
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
@@ -191,11 +194,9 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 
 	var str = f.getValueUpdate(assetkapal, id, arr);
 	await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
-	console.log(1);
 	if (assetkapal.is_from_simop) {
 		console.log(2);
 		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
-		console.log("assetkapal", assetkapal);
 		console.log("ini datanya ya", "UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
