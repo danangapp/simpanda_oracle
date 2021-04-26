@@ -137,6 +137,8 @@ const Personil = function (personil) {
 	this.user_id = personil.user_id;
 	this.remark = personil.remark;
 	this.koneksi = personil.koneksi;
+	this.skes_tanggal_mulai = personil.skes_tanggal_mulai;
+	this.skes_tanggal_selesai = personil.skes_tanggal_selesai;
 	this.keterangan = personil.keterangan;
 };
 
@@ -259,7 +261,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	// console.log(personil);
 	delete personil.remark;
 	delete personil.sertifikat;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 	// console.log("yoi");
 	if (personil.approval_status_id == "1") {
 		const rows = await f.checkDataId("personil", id, personil);
@@ -296,6 +298,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
+		// console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 
