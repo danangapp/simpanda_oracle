@@ -258,7 +258,8 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	}
 	const remarkPersonil = personil.remark;
 
-	if (id) {
+	if (personil.is_from_simop) {
+	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
 		if (getApprove.rows) {
 			const getApproveId = getApprove.rows[0][0];
