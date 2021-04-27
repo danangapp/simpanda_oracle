@@ -53,7 +53,7 @@ UserGroup.getAll = async (param, result, cabang_id) => {
 	var query = "SELECT a.* , a1.\"nama\" as \"cabang\" FROM \"user_group\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%'";
+		wheres += `LOWER(a."nama") LIKE LOWER('%${param.q}%') OR LOWER(a."keterangan") LIKE LOWER('%${param.q}%') OR LOWER(a."cabang_id") LIKE LOWER('%${param.q}%')`;
 		wheres += ")";
 	}
 
