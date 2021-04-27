@@ -294,11 +294,11 @@ module.exports = {
                     }
                 }
 
-                for (var c in arrTime) {
-                    if (i == arrTime[c]) {
-                        adaTime = 1;
-                    }
-                }
+                // for (var c in arrTime) {
+                //     if (i == arrTime[c]) {
+                //         adaTime = 1;
+                //     }
+                // }
 
                 if (ada_tgl == 1) {
                     value = this.toDate(value);
