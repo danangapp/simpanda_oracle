@@ -22,7 +22,9 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 
 	var check = `SELECT "date" FROM "armada_schedule" 
 				WHERE trunc("date") = TO_DATE('${newArmadaSchedule.date}', 'YY/MM/DD') 
+				AND "tipe_asset_id" = ${newArmadaSchedule.tipe_asset_id} 
 				AND "cabang_id" = ${cabang_id}`
+				
 	var dataCheck = await f.query(check)
 
 	if (dataCheck.rows.length > 0) {
@@ -48,7 +50,7 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 		if (armada[a].to == "") armada[a].to = "00:00";
 		armada[a].from = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
 		armada[a].to = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
-		console.log(armada);
+		// console.log(armada);
 
 		var id_pj = await f.getid("armada_jaga");
 		var hv_pj = await f.headerValue(armada[a], id_pj);
