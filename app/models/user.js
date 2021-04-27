@@ -48,7 +48,7 @@ User.getAll = async (param, result) => {
 	}
 
 	query += wheres;
-	query += ' ORDER BY a.\"id\" DESC ';
+	query += "ORDER BY a.\"upd_date\" DESC";
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);

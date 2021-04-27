@@ -38,7 +38,7 @@ const setActivity = (objects, koneksi = 1) => {
 AssetStasiunEquipment.create = async (newAssetStasiunEquipment, result, cabang_id, user_id) => {
 	newAssetStasiunEquipment = setActivity(newAssetStasiunEquipment);
 	var id = await f.getid("asset_stasiun_equipment");
-	
+
 	delete newAssetStasiunEquipment.activity_keterangan;
 	let valid = newAssetStasiunEquipment
 
@@ -81,7 +81,7 @@ AssetStasiunEquipment.getAll = async (param, result, cabang_id) => {
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
-	query += "ORDER BY a.\"id\" DESC";
+	query += "ORDER BY a.\"upd_date\" DESC";
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
