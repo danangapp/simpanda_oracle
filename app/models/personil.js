@@ -259,9 +259,11 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	const remarkPersonil = personil.remark;
 
 	const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
-	const getApproveId = getApprove.rows[0][0];
-	if (getApproveId > 0) {
-		delete personil.enable;
+	if (getApprove.rows[0][0]) {
+		const getApproveId = getApprove.rows[0][0];
+		if (getApproveId > 0) {
+			delete personil.enable;
+		}
 	}
 
 	delete personil.remark;

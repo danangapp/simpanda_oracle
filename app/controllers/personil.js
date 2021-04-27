@@ -46,6 +46,7 @@ exports.create = (req, res) => {
         skes_tanggal_mulai: req.fields.skes_tanggal_mulai,
         skes_tanggal_selesai: req.fields.skes_tanggal_selesai,
         activity_keterangan: req.fields.activity_keterangan,
+        is_from_simop: req.fields.is_from_simop,
     };
 
     var used = {};
