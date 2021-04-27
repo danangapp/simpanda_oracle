@@ -48,6 +48,7 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 		if (armada[a].to == "") armada[a].to = "00:00";
 		armada[a].from = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
 		armada[a].to = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
+		console.log(armada);
 
 		var id_pj = await f.getid("armada_jaga");
 		var hv_pj = await f.headerValue(armada[a], id_pj);
