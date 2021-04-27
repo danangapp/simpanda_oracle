@@ -268,7 +268,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 	delete personil.remark;
 	delete personil.sertifikat;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai", "is_from_simop"];
 
 	if (personil.enable == 0) {
 		personil.enable = 1;
