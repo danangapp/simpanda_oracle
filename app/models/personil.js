@@ -258,19 +258,19 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	}
 	const remarkPersonil = personil.remark;
 
-	if (personil.is_from_simop) {
+	var str;
+	if (personil.simop_kd_pers_pandu) {
+
 	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
-		if (getApprove.rows) {
-			const getApproveId = getApprove.rows[0][0];
-			if (getApproveId > 0) {
-				delete personil.enable;
-			}
+		const getApproveId = getApprove.rows[0][0];
+		if (getApproveId > 0) {
+			delete personil.enable;
 		}
 
 		delete personil.remark;
 		delete personil.sertifikat;
-		var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai", "is_from_simop"];
+		var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 
 		if (personil.enable == 0) {
 			personil.enable = 1;
@@ -301,13 +301,14 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				}
 			}
 		}
-	}
 
-	var str = f.getValueUpdate(personil, id, arr);
-	var objek = new Object();
-	objek.keterangan = remarkPersonil;
-	await f.approvalStatus("personil", personil, objek, id, user_id)
-	console.log("personil", personil);
+		var objek = new Object();
+		objek.keterangan = remarkPersonil;
+		await f.approvalStatus("personil", personil, objek, id, user_id)
+	}
+	str = f.getValueUpdate(personil, id, arr);
+
+	// console.log("personil", personil);
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		console.log("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'");
