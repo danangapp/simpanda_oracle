@@ -24,7 +24,7 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 				WHERE trunc("date") = TO_DATE('${newArmadaSchedule.date}', 'YY/MM/DD') 
 				AND "tipe_asset_id" = ${newArmadaSchedule.tipe_asset_id} 
 				AND "cabang_id" = ${cabang_id}`
-				
+
 	var dataCheck = await f.query(check)
 
 	if (dataCheck.rows.length > 0) {
@@ -89,12 +89,19 @@ ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 
 ArmadaSchedule.updateById = async (id, armadaschedule, result, user_id) => {
 	var armada = armadaschedule.armada;
+	var armadaDate = armadaschedule.date;
 	delete armadaschedule.armada;
 
 	await f.query(`DELETE FROM "armada_jaga" WHERE "armada_schedule_id" = '${id}'`, 2);
 	for (var a in armada) {
 		armada[a].armada_schedule_id = id;
 		delete armada[a].nama_asset
+
+		if (armada[a].from == "") armada[a].from = "00:00";
+		if (armada[a].to == "") armada[a].to = "00:00";
+		armada[a].from = f.toDate(armadaDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
+		armada[a].to = f.toDate(armadaDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
+
 		var id_pj = await f.getid("armada_jaga");
 		var hv_pj = await f.headerValue(armada[a], id_pj);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
