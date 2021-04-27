@@ -44,7 +44,7 @@ PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
 	var dataCheck = await f.query(check)
 
 	if (dataCheck.rows.length > 0) {
-		result(null, {'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !'})
+		result(null, { 'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !' })
 		return false
 	}
 
@@ -62,6 +62,12 @@ PanduSchedule.create = async (newPanduSchedule, result, cabang_id, user_id) => {
 	for (var a in personil) {
 		personil[a].pandu_schedule_id = id
 		delete personil[a].nama
+
+		if (personil[a].from == "") personil[a].from = "00:00";
+		if (personil[a].to == "") personil[a].to = "00:00";
+		personil[a].from = f.toDate(newPanduScheduleDate, "YYYY-MM-DD") + " " + personil[a].from + ":00";
+		personil[a].to = f.toDate(newPanduScheduleDate, "YYYY-MM-DD") + " " + personil[a].to + ":00";
+
 		var id_pj = await f.getid("pandu_jaga")
 		var hv_pj = await f.headerValue(personil[a], id_pj)
 		var queryText = `INSERT INTO "pandu_jaga" ${hv_pj}`
@@ -103,7 +109,7 @@ PanduSchedule.getAll = async (param, result, cabang_id) => {
 	// wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	// query += wheres;
 	// query += "ORDER BY a.\"id\" DESC";
-	
+
 	// var query = `SELECT "date", "cabang"."nama" AS "cabang" FROM "pandu_schedule"
 	// 			INNER JOIN "cabang" ON "pandu_schedule"."cabang_id" = "cabang"."id"
 	// 			WHERE "pandu_schedule"."enable"=1 `

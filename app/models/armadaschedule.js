@@ -26,7 +26,7 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 	var dataCheck = await f.query(check)
 
 	if (dataCheck.rows.length > 0) {
-		result(null, {'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !'})
+		result(null, { 'status': false, 'message': 'Maaf, Tanggal yang anda pilih sudah tersedia !' })
 		return false
 	}
 
@@ -43,6 +43,12 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 	for (var a in armada) {
 		armada[a].armada_schedule_id = id;
 		delete armada[a].nama_asset
+
+		if (armada[a].from == "") armada[a].from = "00:00";
+		if (armada[a].to == "") armada[a].to = "00:00";
+		armada[a].from = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
+		armada[a].to = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
+
 		var id_pj = await f.getid("armada_jaga");
 		var hv_pj = await f.headerValue(armada[a], id_pj);
 		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;

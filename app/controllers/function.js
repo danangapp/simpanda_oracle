@@ -14,9 +14,9 @@ oracledb.initOracleClient(objOracle);
 oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
-const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai", "from", "to"];
 const arrDateTime = ["expired"];
-const arrTime = ["from", "to"];
+// const arrTime = ["from", "to"];
 module.exports = {
     // toDate: function (str, formatdate = 'YYYY-MM-DD') {
     //     var dateString = str;
@@ -25,8 +25,8 @@ module.exports = {
     //     var momentString = momentObj.format(formatdate);
     //     return momentString;
     // },
-    toDate: function (str) {
-        return moment(str).format('YYYY-MM-DD');
+    toDate: function (str, formatDate = "YYYY-MM-DD") {
+        return moment(str).format(formatDate);
     },
     uploadFile: function (folders, files, updateTo) {
         var str = files.path;
@@ -120,7 +120,7 @@ module.exports = {
                 return result;
             }
         } catch (err) {
-            console.error('error catch function.js',err);
+            console.error('error catch function.js', err);
             return err;
         } finally {
             if (connection) {
@@ -162,11 +162,11 @@ module.exports = {
                         }
                     }
 
-                    for (var c in arrTime) {
-                        if (a == arrTime[c]) {
-                            adaTime = 1;
-                        }
-                    }
+                    // for (var c in arrTime) {
+                    //     if (a == arrTime[c]) {
+                    //         adaTime = 1;
+                    //     }
+                    // }
 
                     if (a != "id") {
                         if (ada_tgl == 1) {
