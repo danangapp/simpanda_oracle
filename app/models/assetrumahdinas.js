@@ -88,7 +88,7 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 	}
 
 	query += wheres;
-	query += `ORDER BY a."upd_date", a."id" DESC`;
+	query += `ORDER BY a."upd_date" DESC, a."id" DESC`;
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
