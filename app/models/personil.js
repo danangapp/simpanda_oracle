@@ -33,7 +33,7 @@ const cekBody = (rows, cabang = "cabang") => {
 			}
 		}
 	} else {
-		// console.log('lewat kemari aja');
+
 		if (cabang == "cabang") {
 			dt = {
 				"opInsertMstPanduLautCabangRequest": {
@@ -54,7 +54,7 @@ const cekBody = (rows, cabang = "cabang") => {
 
 
 const cekBodyBandar = (rows, cabang = "cabang") => {
-	// console.log(rows)
+
 	var dt;
 	var esbBody = {
 		"nmPersPandu": rows.nama,
@@ -83,14 +83,14 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		}
 	} else {
 		if (cabang == "cabang") {
-			// console.log("lewat 1")
+
 			dt = {
 				"opInsertMstPersPanduCabangRequest": {
 					"esbBody": esbBody
 				}
 			}
 		} else {
-			// console.log("lewat 2")
+
 			dt = {
 				"opInsertMstPersPanduProdRequest": {
 					"esbBody": esbBody
@@ -209,8 +209,8 @@ Personil.findById = async (id, result) => {
 
 Personil.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "personil");
-	// console.log(param.sertifikat)
-	// console.log(wheres)
+
+
 	if (param.sertifikat != undefined) {
 		if (param.sertifikat == "filter-1") {
 			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
@@ -257,11 +257,17 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	}
 	const remarkPersonil = personil.remark;
-	// console.log(personil);
+
+	const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
+	const getApproveId = getApprove.rows[0][0];
+	if (getApproveId > 0) {
+		delete personil.enable;
+	}
+
 	delete personil.remark;
 	delete personil.sertifikat;
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
-	// console.log("yoi");
+
 	if (personil.enable == 0) {
 		personil.enable = 1;
 	}
@@ -300,7 +306,6 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
-		console.log("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'");
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
 
@@ -313,7 +318,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	if (!personil.keterangan) {
 		objek.keterangan = personil.activity_keterangan;
 	}
-	// console.log('objek',objek)
+
 	// return false
 	var id_activity_log = await f.getid("activity_log");
 	const hval = await f.headerValue(objek, id_activity_log);
