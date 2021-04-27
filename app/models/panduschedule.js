@@ -130,19 +130,25 @@ PanduSchedule.getAll = async (param, result, cabang_id) => {
 
 PanduSchedule.updateById = async (id, panduschedule, result, user_id) => {
 	var personil = panduschedule.personil
-	delete panduschedule.personil
+	var panduscheduleDate = panduschedule.date
+	console.log("panduschedulenya", panduschedule);
 	await f.query(`DELETE FROM "pandu_jaga" WHERE "pandu_schedule_id" = '${id}'`, 2)
 
 	for (var a in personil) {
 		personil[a].pandu_schedule_id = id
 		delete personil[a].nama
-		// console.log('SCHEDULE PERSONIL',personil)
-		// return false
+
+		if (personil[a].from == "") personil[a].from = "00:00";
+		if (personil[a].to == "") personil[a].to = "00:00";
+		personil[a].from = f.toDate(panduscheduleDate, "YYYY-MM-DD") + " " + personil[a].from + ":00";
+		personil[a].to = f.toDate(panduscheduleDate, "YYYY-MM-DD") + " " + personil[a].to + ":00";
+
 		var id_pj = await f.getid("pandu_jaga")
 		var hv_pj = await f.headerValue(personil[a], id_pj)
 		var queryText = `INSERT INTO "pandu_jaga" ${hv_pj}`
 		await f.query(queryText, 2)
 	}
+	delete panduschedule.personil
 
 
 	var arr = ["date", "cabang_id", "status_absen_id", "keterangan", "approval_status_id", "enable", "pandu_jaga_id", "pandu_bandar_laut_id"];
