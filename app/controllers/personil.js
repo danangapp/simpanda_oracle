@@ -166,7 +166,7 @@ exports.update = (req, res) => {
     }
 
 
-    console.log("fields", req.fields);
+    // console.log("fields", req.fields);
     Personil.updateById(
         req.params.id,
         req.fields,

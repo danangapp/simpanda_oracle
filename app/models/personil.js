@@ -259,8 +259,13 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	const remarkPersonil = personil.remark;
 
 	var str;
-	if (personil.simop_kd_pers_pandu) {
-
+	// console.log("personilnya", personil)
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+	str = f.getValueUpdate(personil, id, arr);
+	if (personil.is_from_simop) {
+		personil['cabang_id'] = parseInt(personil.cabang_id);
+		// console.log("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'");
+		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
 		const getApproveId = getApprove.rows[0][0];
@@ -269,8 +274,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		}
 
 		delete personil.remark;
-		delete personil.sertifikat;
-		var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+		delete personil.sertifikat;		
 
 		if (personil.enable == 0) {
 			personil.enable = 1;
@@ -304,34 +308,24 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 		var objek = new Object();
 		objek.keterangan = remarkPersonil;
-		await f.approvalStatus("personil", personil, objek, id, user_id)
-	}
-	str = f.getValueUpdate(personil, id, arr);
+		objek.koneksi = id;
+		objek.action = "0";
+		objek.user_id = user_id;
+		objek.item = "personil";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
+		// objek.keterangan = personil.keterangan
+		if (!personil.keterangan) {
+			objek.keterangan = personil.activity_keterangan;
+		}
 
-	// console.log("personil", personil);
-	if (personil.is_from_simop) {
-		personil['cabang_id'] = parseInt(personil.cabang_id);
-		console.log("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'");
-		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
-	} else {
+		// return false
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+		await f.approvalStatus("personil", personil, objek, id, user_id)
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
-
-	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
-	objek.item = "personil";
-	objek.remark = "Pengajuan dirubah oleh admin cabang";
-	objek.keterangan = personil.keterangan
-	if (!personil.keterangan) {
-		objek.keterangan = personil.activity_keterangan;
-	}
-
-	// return false
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-
+	
 	result(null, { id: id, ...personil });
 };
 
