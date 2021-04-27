@@ -302,6 +302,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	var objek = new Object();
 	objek.keterangan = remarkPersonil;
 	await f.approvalStatus("personil", personil, objek, id, user_id)
+	console.log("personil", personil);
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
