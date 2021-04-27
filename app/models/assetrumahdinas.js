@@ -83,7 +83,7 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 	var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\" FROM \"asset_rumah_dinas\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"nama_asset\" LIKE '%" + param.q + "%' OR a.\"satuan\" LIKE '%" + param.q + "%' OR a.\"tahun_perolehan\" LIKE '%" + param.q + "%' OR a.\"nilai_perolehan\" LIKE '%" + param.q + "%' OR a.\"wilayah\" LIKE '%" + param.q + "%' OR a.\"nilai_buku\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"tanggal\" LIKE '%" + param.q + "%' OR a.\"nilai\" LIKE '%" + param.q + "%' OR a.\"catatan\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%'";
+		wheres += `LOWER(a."nama_asset") LIKE LOWER('%${param.q}%') OR LOWER(a."satuan") LIKE LOWER('%${param.q}%') OR LOWER(a."tahun_perolehan") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai_perolehan") LIKE LOWER('%${param.q}%') OR LOWER(a."wilayah") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai_buku") LIKE LOWER('%${param.q}%') OR LOWER(a."approval_status_id") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai") LIKE LOWER('%${param.q}%') OR LOWER(a."catatan") LIKE LOWER('%${param.q}%') OR LOWER(a."enable") LIKE LOWER('%${param.q}%')`;
 		wheres += ")";
 	}
 
