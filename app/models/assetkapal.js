@@ -205,8 +205,8 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		objek.item = "assetkapal";
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 		objek.keterangan = assetkapal.keterangan
-		if (!assetkapal.keterangan) {
-			objek.keterangan = assetkapal.activity_keterangan;
+		if (assetkapal.keterangan) {
+			objek.keterangan = assetkapal.keterangan;
 		}
 
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
