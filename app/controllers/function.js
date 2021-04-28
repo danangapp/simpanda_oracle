@@ -441,10 +441,10 @@ module.exports = {
         objek.action = data.approval_status_id;
         objek.item = table;
         objek.user_id = user_id;
-        objek.keterangan = data.keterangan;
-        if (table == "personil") {
-            objek.keterangan = objek2.keterangan;
-        }
+        objek.keterangan = objek2.keterangan;
+        // if (table == "personil") {
+        //     objek.keterangan = objek2.keterangan;
+        // }
         // console.log(objek);
         if (data.approval_status_id == 1) {
             objek.remark = "Pengajuan disetujui oleh pusat";

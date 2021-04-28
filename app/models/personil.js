@@ -317,13 +317,10 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		objek.user_id = user_id;
 		objek.item = "personil";
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
+		objek.keterangan = personil.activity_keterangan;
 		if (personil.keterangan) {
 			objek.keterangan = personil.keterangan;
 		}
-
-		// var id_activity_log = await f.getid("activity_log");
-		// const hval = await f.headerValue(objek, id_activity_log);
-		// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 		await f.approvalStatus("personil", personil, objek, id, user_id)
 
 		str = f.getValueUpdate(personil, id, arr);

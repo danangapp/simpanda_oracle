@@ -91,16 +91,6 @@ AssetStasiunEquipment.updateById = async (id, assetstasiunequipment, result, use
 
 	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable", "cabang_id"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
-
-	if (assetstasiunequipment.approval_status_id > 0) {
-		objek.koneksi = id;
-		objek.action = assetstasiunequipment.approval_status_id;
-		objek.keterangan = assetstasiunequipment.keterangan;
-		objek.item = "assetstasiunequipment";
-		objek.user_id = user_id;
-		await f.approvalStatus("assetstasiunequipment", assetstasiunequipment, objek, id, user_id)
-	}
-
 	await f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 
 	objek.koneksi = id;
@@ -108,15 +98,11 @@ AssetStasiunEquipment.updateById = async (id, assetstasiunequipment, result, use
 	objek.user_id = user_id;
 	objek.item = "assetstasiunequipment";
 	objek.remark = "Pengajuan dirubah oleh admin cabang";
-	objek.keterangan = assetstasiunequipment.keterangan
-	if (!assetstasiunequipment.keterangan) {
-		objek.keterangan = assetstasiunequipment.activity_keterangan;
+	objek.keterangan = assetstasiunequipment.activity_keterangan;
+	if (assetstasiunequipment.keterangan) {
+		objek.keterangan = assetstasiunequipment.keterangan;
 	}
-	// console.log('objek',objek)
-	// return false
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.approvalStatus("asset_stasiun_equipment", assetstasiunequipment, objek, id, user_id)
 
 	result(null, { id: id, ...assetstasiunequipment });
 };

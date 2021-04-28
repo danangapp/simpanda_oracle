@@ -96,33 +96,24 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 
 AssetRumahDinas.updateById = async (id, assetrumahdinas, result, user_id) => {
 
-	if (assetrumahdinas.approval_status_id > 0) {
-		objek.koneksi = id;
-		objek.action = assetrumahdinas.approval_status_id;
-		objek.keterangan = assetrumahdinas.keterangan;
-		objek.item = "assetrumahdinas";
-		objek.user_id = user_id;
-		await f.approvalStatus("assetrumahdinas", assetrumahdinas, objek, id, user_id)
-	}
-
 	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
 	await f.query("UPDATE \"asset_rumah_dinas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 
 	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
+	objek.action = assetrumahdinas.approval_status_id;
 	objek.item = "assetrumahdinas";
-	objek.remark = "Pengajuan dirubah oleh admin cabang";
-	objek.keterangan = assetrumahdinas.keterangan
-	if (!assetrumahdinas.keterangan) {
-		objek.keterangan = assetrumahdinas.activity_keterangan;
+	objek.user_id = user_id;
+	objek.keterangan = assetrumahdinas.activity_keterangan;
+	if (assetrumahdinas.keterangan) {
+		objek.keterangan = assetrumahdinas.keterangan;
 	}
+	await f.approvalStatus("asset_rumah_dinas", assetrumahdinas, objek, id, user_id)
 	// console.log('objek',objek)
 	// return false
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	// var id_activity_log = await f.getid("activity_log");
+	// const hval = await f.headerValue(objek, id_activity_log);
+	// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...assetrumahdinas });
 };

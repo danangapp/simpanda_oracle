@@ -204,7 +204,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 		objek.user_id = user_id;
 		objek.item = "assetkapal";
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
-		objek.keterangan = assetkapal.keterangan
+		objek.keterangan = assetkapal.activity_keterangan;
 		if (assetkapal.keterangan) {
 			objek.keterangan = assetkapal.keterangan;
 		}
@@ -212,10 +212,6 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
 		str = f.getValueUpdate(assetkapal, id, arr);
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
-
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	}
 
 	result(null, { id: id, ...assetkapal });
