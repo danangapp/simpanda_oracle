@@ -10,10 +10,10 @@ const cekBody = (rows, cabang = "cabang") => {
 	var esbBody = {
 		"nmPersPandu": rows.nama,
 		"nipp": rows.nipp,
-		"kelas": rows.kelas,
-		"kdCabang": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id,
+		"kelas": rows.kelas ? rows.kelas.toString() : "",
+		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id.toString()}` : `${rows.cabang_id.toString()}`,
 		"enable": "1",
-		"kdPersPanduCbg": rows.cabang_id < 10 ? "0" + rows.cabang_id : rows.cabang_id
+		"kdPersPanduCbg": rows.cabang_id < 10 ? `0${rows.cabang_id.toString()}` : `${rows.cabang_id.toString()}`
 	}
 	if (rows.simop_kd_pers_pandu != undefined) {
 		esbBody['kdPersPanduCbg'] = "";
@@ -176,7 +176,7 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	if (newPersonil.cabang_id) {
 		newPersonil['cabang_id'] = newPersonil.cabang_id;
 	}
-	if (newPersonil.is_from_simop){
+	if (newPersonil.is_from_simop) {
 		delete newPersonil.is_from_simop;
 	}
 	const hv = await f.headerValue(valid, id);
@@ -321,9 +321,9 @@ Personil.updateById = async (id, personil, result, user_id) => {
 			objek.keterangan = personil.keterangan;
 		}
 
-		var id_activity_log = await f.getid("activity_log");
-		const hval = await f.headerValue(objek, id_activity_log);
-		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+		// var id_activity_log = await f.getid("activity_log");
+		// const hval = await f.headerValue(objek, id_activity_log);
+		// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 		await f.approvalStatus("personil", personil, objek, id, user_id)
 
 		str = f.getValueUpdate(personil, id, arr);
