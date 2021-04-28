@@ -76,16 +76,16 @@ exports.create = (req, res) => {
         investigasi_insiden_tim: req.fields.investigasi_insiden_tim,
     };
 
-	var used = {};
-	for (var i in investigasiinsiden) {
-	    if (investigasiinsiden[i] == undefined) {
-	        delete investigasiinsiden[i];
-	    }
-	}
+    var used = {};
+    for (var i in investigasiinsiden) {
+        if (investigasiinsiden[i] == undefined) {
+            delete investigasiinsiden[i];
+        }
+    }
 
-	if (req.fields.bukti_temuan) {
-	    investigasiinsiden.bukti_temuan = f.uploadFile64('investigasi_insiden', req.fields.bukti_temuan);
-	}
+    if (req.fields.bukti_temuan) {
+        investigasiinsiden.bukti_temuan = f.uploadFile64('investigasi_insiden', req.fields.bukti_temuan);
+    }
 
     InvestigasiInsiden.create(investigasiinsiden, (err, data) => {
         if (err)
@@ -132,13 +132,13 @@ exports.update = (req, res) => {
         });
     }
 
-	if (req.fields.bukti_temuan) {
-		if (req.fields.bukti_temuan.substring(0, 4) == "data") {
-		    req.fields.bukti_temuan = f.uploadFile64('personil', req.fields.bukti_temuan);
-		} else {
-		    delete req.fields.bukti_temuan
-		}
-	}
+    if (req.fields.bukti_temuan) {
+        if (req.fields.bukti_temuan.substring(0, 4) == "data") {
+            req.fields.bukti_temuan = f.uploadFile64('personil', req.fields.bukti_temuan);
+        } else {
+            delete req.fields.bukti_temuan
+        }
+    }
 
 
     InvestigasiInsiden.updateById(
