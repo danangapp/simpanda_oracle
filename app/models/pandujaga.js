@@ -45,12 +45,12 @@ PanduJaga.getAll = async (param, result, cabang_id) => {
 
 	if (param !== undefined) {
 		query += `WHERE "personil"."pandu_bandar_laut_id" = ${param.pandu_bandar_laut_id}
-					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') `
+					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "pandu_jaga"."kehadiran = ${param.kehadiran}" AND "pandu_schedule"."cabang_id" = ${param.cabang_id} `
 	}
 
-	if (cabang_id > 0) {
-		query += `AND "pandu_schedule"."cabang_id" = ${cabang_id}`
-	}
+	// if (cabang_id > 0) {
+	// 	query += `AND "pandu_schedule"."cabang_id" = ${cabang_id}`
+	// }
 
 	// console.log(query);
 	const exec = f.query(query);
