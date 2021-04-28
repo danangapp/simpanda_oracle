@@ -21,7 +21,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updatePanduLaut/" + cabang;
         }
-        // console.log(url, data);
+        console.log("pandu lautnya", url, data);
         const options = this.options(url, data);
         return axios(options)
     },
@@ -32,7 +32,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updatePandu/" + cabang;
         }
-        // console.log("danang", url, data);
+        // console.log("danang pandu lewat sini", url, data);
         const options = this.options(url, data);
         return axios(options)
     },
