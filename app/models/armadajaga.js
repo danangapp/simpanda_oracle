@@ -46,12 +46,12 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	// console.log('param',param)
 
 	if (param !== undefined) {
-		query += `WHERE trunc("armada_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') `
+		query += `WHERE trunc("armada_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} `
 	}
 
-	if (cabang_id > 0) {
-		query += `AND "armada_schedule"."cabang_id" = ${cabang_id}`
-	}
+	// if (cabang_id > 0) {
+	// 	query += `AND "armada_schedule"."cabang_id" = ${cabang_id}`
+	// }
 
 	const exec = f.query(query);
 	const res = await exec;

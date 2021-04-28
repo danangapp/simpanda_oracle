@@ -620,8 +620,6 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
 
     arr['k'] = out;
 
-
-
     query = `SELECT iii.*, 
     TO_CHAR(iii."tgl", 'DD fmMonth YYYY') AS "tgl_nice"
     FROM "investigasi_insiden_tim" iii WHERE iii."investigasi_insiden_id"='${id}'`;
@@ -644,7 +642,7 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         dataUrl = false;
     }
 
-    console.log(JSON.stringify(arr));
+    // console.log(JSON.stringify(arr));
     const buffer = await createReport({
         template,
         additionalJsContext: {
@@ -653,9 +651,7 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
                     if (extension === '.png' || extension === '.jpg' || extension === '.jpeg' || extension === '.gif') {
                         return { width: 6, height: 6, data: dataUrl, extension: extension };
                     }
-
                 }
-
             }
         },
         data: arr,
