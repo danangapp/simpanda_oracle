@@ -43,7 +43,7 @@ module.exports = {
         } else {
             url = "http://10.88.48.57:5555/restv2/simpanda/updateFasilitas/" + cabang;
         }
-        // console.log(url, data);
+        console.log("danang assetkapal", url, data);
         const options = this.options(url, data);
         return axios(options)
     },
