@@ -172,7 +172,9 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	delete newPersonil.activity_keterangan;
 	let valid = newPersonil
 
-	newPersonil['cabang_id'] = parseInt(newPersonil.cabang_id);
+	if (newPersonil.cabang_id) {
+		newPersonil['cabang_id'] = newPersonil.cabang_id;
+	}
 	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
