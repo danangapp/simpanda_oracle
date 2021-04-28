@@ -91,13 +91,13 @@ SaranaBantuPemandu.getAll = async (param, result, cabang_id) => {
 	var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"cabang\", a3.\"nama\" as \"tipe_asset\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_ijazah\", a6.* , a3.\"sarana_config_question\" FROM \"sarana_bantu_pemandu\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"cabang\" a2 ON a.\"cabang_id\" = a2.\"id\"  LEFT JOIN \"tipe_asset\" a3 ON a.\"tipe_asset_id\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_ijazah\" a5 ON a.\"status_ijazah_id\" = a5.\"id\"  LEFT JOIN \"personil\" a6 ON a.\"personil_id\" = a6.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"tanggal_pemeriksaan\" LIKE '%" + param.q + "%' OR a.\"pelaksana\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"tipe_asset_id\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"status_ijazah_id\" LIKE '%" + param.q + "%' OR a.\"sarana_bantu_pemandu_personil\" LIKE '%" + param.q + "%' OR a.\"personil_id\" LIKE '%" + param.q + "%' OR a.\"keterangan\" LIKE '%" + param.q + "%'";
+		wheres += `LOWER(a."approval_status_id") LIKE ('%${param.q}%') OR LOWER(a."cabang_id") LIKE ('%${param.q}%') OR LOWER(a."tanggal_pemeriksaan") LIKE ('%${param.q}%') OR LOWER(a."pelaksana") LIKE ('%${param.q}%') OR LOWER(a."nama") LIKE ('%${param.q}%') OR LOWER(a."tipe_asset_id") LIKE ('%${param.q}%') OR LOWER(a."jabatan") LIKE ('%${param.q}%') OR LOWER(a."asset_kapal_id") LIKE ('%${param.q}%') OR LOWER(a."status_ijazah_id") LIKE ('%${param.q}%') OR LOWER(a."sarana_bantu_pemandu_personil") LIKE ('%${param.q}%') OR LOWER(a."personil_id") LIKE ('%${param.q}%') OR LOWER(a."keterangan") LIKE ('%${param.q}%')`;
 		wheres += ")";
 	}
 
 	wheres += f.whereCabang(cabang_id, `a."cabang_id"`, wheres.length);
 	query += wheres;
-	query += "ORDER BY a.\"id\" DESC";
+	query += `ORDER BY a."upd_date" DESC`;
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);

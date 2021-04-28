@@ -238,13 +238,13 @@ Personil.getAll = async (param, result, cabang_id) => {
 
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += "a.\"tipe_personil_id\" LIKE '%" + param.q + "%' OR a.\"approval_status_id\" LIKE '%" + param.q + "%' OR a.\"simop_kd_pers_pandu\" LIKE '%" + param.q + "%' OR a.\"simop_kd_pers_pandu_cbg\" LIKE '%" + param.q + "%' OR a.\"enable\" LIKE '%" + param.q + "%' OR a.\"asset_kapal_id\" LIKE '%" + param.q + "%' OR a.\"nama\" LIKE '%" + param.q + "%' OR a.\"kelas\" LIKE '%" + param.q + "%' OR a.\"tempat_lahir\" LIKE '%" + param.q + "%' OR a.\"tanggal_lahir\" LIKE '%" + param.q + "%' OR a.\"nipp\" LIKE '%" + param.q + "%' OR a.\"jabatan\" LIKE '%" + param.q + "%' OR a.\"status_kepegawaian_id\" LIKE '%" + param.q + "%' OR a.\"cv\" LIKE '%" + param.q + "%' OR a.\"cabang_id\" LIKE '%" + param.q + "%' OR a.\"nomor_sk\" LIKE '%" + param.q + "%' OR a.\"tanggal_mulai\" LIKE '%" + param.q + "%' OR a.\"tanggal_selesai\" LIKE '%" + param.q + "%' OR a.\"sk\" LIKE '%" + param.q + "%' OR a.\"skpp\" LIKE '%" + param.q + "%' OR a.\"surat_kesehatan\" LIKE '%" + param.q + "%' OR a.\"sertifikat_id\" LIKE '%" + param.q + "%' OR a.\"skpp_tanggal_mulai\" LIKE '%" + param.q + "%' OR a.\"skpp_tanggal_selesai\" LIKE '%" + param.q + "%' OR a.\"pandu_bandar_laut_id\" LIKE '%" + param.q + "%'";
+		wheres += `LOWER(a."tipe_personil_id") LIKE LOWER('%${param.q}%') OR LOWER(a."approval_status_id") LIKE LOWER('%${param.q}%') OR LOWER(a."simop_kd_pers_pandu") LIKE LOWER('%${param.q}%') OR LOWER(a."simop_kd_pers_pandu_cbg") LIKE LOWER('%${param.q}%') OR LOWER(a."enable") LIKE LOWER('%${param.q}%') OR LOWER(a."asset_kapal_id") LIKE LOWER('%${param.q}%') OR LOWER(a."nama") LIKE LOWER('%${param.q}%') OR LOWER(a."kelas") LIKE LOWER('%${param.q}%') OR LOWER(a."tempat_lahir") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_lahir") LIKE LOWER('%${param.q}%') OR LOWER(a."nipp") LIKE LOWER('%${param.q}%') OR LOWER(a."jabatan") LIKE LOWER('%${param.q}%') OR LOWER(a."status_kepegawaian_id") LIKE LOWER('%${param.q}%') OR LOWER(a."cv") LIKE LOWER('%${param.q}%') OR LOWER(a."cabang_id") LIKE LOWER('%${param.q}%') OR LOWER(a."nomor_sk") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_mulai") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_selesai") LIKE LOWER('%${param.q}%') OR LOWER(a."sk") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp") LIKE LOWER('%${param.q}%') OR LOWER(a."surat_kesehatan") LIKE LOWER('%${param.q}%') OR LOWER(a."sertifikat_id") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp_tanggal_mulai") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp_tanggal_selesai") LIKE LOWER('%${param.q}%') OR LOWER(a."pandu_bandar_laut_id") LIKE LOWER('%${param.q}%')`;
 		wheres += ")";
 	}
 
 	wheres += f.whereCabang(cabang_id, `a.\"cabang_id\"`, wheres.length);
 	query += wheres;
-	query += "ORDER BY a.\"id\" DESC";
+	query += `ORDER BY a."upd_date" DESC`;
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
@@ -259,8 +259,11 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	const remarkPersonil = personil.remark;
 
 	var str;
-	if (personil.simop_kd_pers_pandu) {
-
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+	str = f.getValueUpdate(personil, id, arr);
+	if (personil.is_from_simop) {
+		personil['cabang_id'] = parseInt(personil.cabang_id);
+		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
 		const getApproveId = getApprove.rows[0][0];
@@ -270,7 +273,6 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 		delete personil.remark;
 		delete personil.sertifikat;
-		var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 
 		if (personil.enable == 0) {
 			personil.enable = 1;
@@ -304,33 +306,23 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 		var objek = new Object();
 		objek.keterangan = remarkPersonil;
-		await f.approvalStatus("personil", personil, objek, id, user_id)
-	}
-	str = f.getValueUpdate(personil, id, arr);
+		objek.koneksi = id;
+		objek.action = "0";
+		objek.user_id = user_id;
+		objek.item = "personil";
+		objek.remark = "Pengajuan dirubah oleh admin cabang";
+		// objek.keterangan = personil.keterangan
+		if (!personil.keterangan) {
+			objek.keterangan = personil.activity_keterangan;
+		}
 
-	// console.log("personil", personil);
-	if (personil.is_from_simop) {
-		personil['cabang_id'] = parseInt(personil.cabang_id);
-		console.log("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'");
-		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
-	} else {
+		// return false
+		var id_activity_log = await f.getid("activity_log");
+		const hval = await f.headerValue(objek, id_activity_log);
+		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+		await f.approvalStatus("personil", personil, objek, id, user_id)
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	}
-
-	objek.koneksi = id;
-	objek.action = "0";
-	objek.user_id = user_id;
-	objek.item = "personil";
-	objek.remark = "Pengajuan dirubah oleh admin cabang";
-	objek.keterangan = personil.keterangan
-	if (!personil.keterangan) {
-		objek.keterangan = personil.activity_keterangan;
-	}
-
-	// return false
-	var id_activity_log = await f.getid("activity_log");
-	const hval = await f.headerValue(objek, id_activity_log);
-	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 
 	result(null, { id: id, ...personil });
 };
