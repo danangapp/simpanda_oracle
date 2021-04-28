@@ -148,7 +148,8 @@ exports.update = (req, res) => {
                 }
             } else res.send(data);
         },
-        req.user_id
+        req.user_id,
+        req.cabang_id
     );
 };
 

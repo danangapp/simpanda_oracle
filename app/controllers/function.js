@@ -101,6 +101,7 @@ module.exports = {
     },
     query: async function (query, insert = 0) {
         let connection;
+        // console.log(query);
         try {
             connection = await oracledb.getConnection(dbConfig);
 
@@ -274,7 +275,7 @@ module.exports = {
     },
     getValueUpdate: function (object, id, arr) {
         var str = "", obj = [], no = 1;
-        console.log(object);
+        // console.log(object);
         for (var i in object) {
             var adadiTable = 0
             for (var b in arr) {
@@ -315,7 +316,7 @@ module.exports = {
         }
         obj.push(id);
         str = str.substring(0, str.length - 2);
-        console.log(str);
+        // console.log(str);
         return str;
     },
     executeSertifikat: async function (sertifikat, id, db, dbId) {

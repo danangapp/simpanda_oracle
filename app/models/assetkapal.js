@@ -168,7 +168,7 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 	result(null, res.rows);
 }
 
-AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
+AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 	// console.log("assetkapalnya ya", assetkapal);
 	const sertifikat = assetkapal.sertifikat;
 	if (assetkapal.sertifikat) {
@@ -184,7 +184,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 	if (assetkapal.is_from_simop) {
 		delete assetkapal.is_from_simop;
 		str = f.getValueUpdate(assetkapal, id, arr);
-		assetkapal['cabang_id'] = parseInt(assetkapal.cabang_id);
+		assetkapal['cabang_id'] = assetkapal.cabang_id ? parseInt(assetkapal.cabang_id) : parseInt(cabang_id);
 		// console.log("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'");
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"simop_kd_fas\" = '" + assetkapal.simop_kd_fas + "'", 2);
 	} else {
@@ -193,11 +193,11 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 			const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 			const roww = await f.query(`SELECT "simop_kd_fas" FROM "asset_kapal" WHERE "id"='${id}'`);
 			assetkapal['simop_kd_fas'] = roww.rows[0].simop_kd_fas;
-			var dt = await simop.cekBody(assetkapal.simop_kd_fas != "" ? assetkapal.simop_kd_fas : "SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			// console.log("yayaa", assetkapal.simop_kd_fas != "" ? assetkapal.simop_kd_fas : "SM" + id);
+			var dt = await simop.cekBody(assetkapal.simop_kd_fas ? assetkapal.simop_kd_fas : "SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 			var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		}
 
-		str = f.getValueUpdate(assetkapal, id, arr);
 		assetkapal['simop_kd_fas'] = "SM" + id;
 		objek.koneksi = id;
 		objek.action = "0";
@@ -210,6 +210,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id) => {
 		}
 
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
+		str = f.getValueUpdate(assetkapal, id, arr);
 		await f.query("UPDATE \"asset_kapal\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 
 		var id_activity_log = await f.getid("activity_log");
