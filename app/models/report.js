@@ -1311,6 +1311,12 @@ Report.kapal = async (req, result, cabang_id) => {
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
+        // CONCAT(to_char(NVL(a."loa", 0)),' m') as loa,
+        // CONCAT(to_char(NVL(a."breadth", 0)),' m') as breadth,
+        // CONCAT(to_char(NVL(a."gross_tonnage", 0)),' ton') as gross_tonnage,
+        // CONCAT(to_char(NVL(a."kecepatan", 0)),' knot') as kecepatan,
+        // CONCAT(to_char(NVL(a."bolard_pull", 0)),' ton') as bolard_pull,
+
         var query = `
         SELECT ROWNUM as no, z.*
         FROM (
@@ -1322,18 +1328,21 @@ Report.kapal = async (req, result, cabang_id) => {
             a."tahun_perolehan" as tahun_peroleh,
             b."nama" as jenis_asset,
             a."nilai_perolehan" as nilai,
-            CONCAT(to_char(NVL(a."loa", 0)),' m') as loa,
-            CONCAT(to_char(NVL(a."breadth", 0)),' m') as breadth,
+            
+            a."loa" as loa,
+            a."breadth" as breadth,
             a."depth" as depth,
             a."draft_max" as draft,
+
             a."tahun_pembuatan" as tahun_buat,
             a."negara_pembuat" as negara,
             a."no_registrasi" as no_registrasi,
             a."port_of_registration" as port_of_registration,
-            CONCAT(to_char(NVL(a."gross_tonnage", 0)),' ton') as gross_tonnage,
-             
-            CONCAT(to_char(NVL(a."kecepatan", 0)),' knot') as kecepatan,
-            CONCAT(to_char(NVL(a."bolard_pull", 0)),' ton') as bolard_pull,
+            
+            a."gross_tonnage" as gross_tonnage,
+            a."kecepatan" as kecepatan,
+            a."bolard_pull" as bolard_pull,
+
             h."no_sertifikat" as no_sertifikat,
             h."issuer" as lembaga,
             i."nama" as jeniscert,
