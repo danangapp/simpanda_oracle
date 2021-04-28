@@ -101,7 +101,7 @@ module.exports = {
     },
     query: async function (query, insert = 0) {
         let connection;
-        // console.log(query);
+        console.log(query);
         try {
             connection = await oracledb.getConnection(dbConfig);
 

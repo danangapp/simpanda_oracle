@@ -164,6 +164,7 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
+	console.log("lewat sini mas")
 	const sertifikat = newPersonil.sertifikat;
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
@@ -174,6 +175,9 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 
 	if (newPersonil.cabang_id) {
 		newPersonil['cabang_id'] = newPersonil.cabang_id;
+	}
+	if (newPersonil.is_from_simop){
+		delete newPersonil.is_from_simop;
 	}
 	const hv = await f.headerValue(valid, id);
 	var queryText = "INSERT INTO \"personil\" " + hv + " RETURN \"id\" INTO :id";
@@ -264,6 +268,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
+		str = f.getValueUpdate(personil, id, arr);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
