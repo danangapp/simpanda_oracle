@@ -642,7 +642,6 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         dataUrl = false;
     }
 
-    // console.log(JSON.stringify(arr));
     const buffer = await createReport({
         template,
         additionalJsContext: {
@@ -656,6 +655,8 @@ Report.investigasiinsiden = async (id, result, cabang_id) => {
         },
         data: arr,
     });
+    // console.log(JSON.stringify(arr));
+    // console.log(buffer);
 
     var d = new Date();
     var t = d.getTime();
