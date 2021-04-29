@@ -55,7 +55,7 @@ module.exports = {
             "nmFas": rows.nama_asset || "-",
             "daya": `${rows.daya}` || "0",
             "kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
-            "enable": rows.enable || "1",
+            "enable": rows.enable.toString() || "1",
             "daya2": `${rows.daya}` || "0",
             "statusMilik": rows.simop_status_milik || "1",
             "kdAgen": rows.simop_kd_agen || "1",
