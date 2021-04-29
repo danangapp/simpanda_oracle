@@ -25,6 +25,7 @@ exports.create = (req, res) => {
         remark: req.fields.remark,
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
+        alamat: req.fields.alamat,
         activity_keterangan: req.fields.activity_keterangan,
     };
 
