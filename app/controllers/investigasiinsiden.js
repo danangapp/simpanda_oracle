@@ -40,6 +40,7 @@ exports.create = (req, res) => {
         penjagaan: req.fields.penjagaan,
         tindakan_terkait: req.fields.tindakan_terkait,
         faktor_utama_insiden: req.fields.faktor_utama_insiden,
+        route_couse: req.fields.route_couse,
         rekomendasi_tindakan: req.fields.rekomendasi_tindakan,
         pihak_yang_bertanggungjawab: req.fields.pihak_yang_bertanggungjawab,
         pelaksana: req.fields.pelaksana,
