@@ -80,13 +80,13 @@ AssetRumahDinas.findById = async (id, result) => {
 
 AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_rumah_dinas");
-	var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\" FROM \"asset_rumah_dinas\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\" ";
+	var query = "SELECT a.* , a1.\"nama\" as \"approval_status\", a2.\"nama\" as \"ena\", a3.\"nama\" as \"cabang\" FROM \"asset_rumah_dinas\" a  LEFT JOIN \"approval_status\" a1 ON a.\"approval_status_id\" = a1.\"id\"  LEFT JOIN \"enable\" a2 ON a.\"enable\" = a2.\"id\" LEFT JOIN \"cabang\" a3 ON a.\"cabang_id\" = a3.\"id\" ";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += `LOWER(a."nama_asset") LIKE LOWER('%${param.q}%') OR LOWER(a."satuan") LIKE LOWER('%${param.q}%') OR LOWER(a."tahun_perolehan") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai_perolehan") LIKE LOWER('%${param.q}%') OR LOWER(a."wilayah") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai_buku") LIKE LOWER('%${param.q}%') OR LOWER(a."approval_status_id") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal") LIKE LOWER('%${param.q}%') OR LOWER(a."nilai") LIKE LOWER('%${param.q}%') OR LOWER(a."catatan") LIKE LOWER('%${param.q}%') OR LOWER(a."enable") LIKE LOWER('%${param.q}%')`;
 		wheres += ")";
 	}
-
+	wheres += f.whereCabang(cabang_id, `a.\"cabang_id\"`, wheres.length);
 	query += wheres;
 	query += `ORDER BY a."upd_date" DESC`;
 	const exec = f.query(query);
@@ -96,7 +96,7 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 
 AssetRumahDinas.updateById = async (id, assetrumahdinas, result, user_id) => {
 
-	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset"];
+	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset","cabang_id"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
 	await f.query("UPDATE \"asset_rumah_dinas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 

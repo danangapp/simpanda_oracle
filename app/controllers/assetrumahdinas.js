@@ -14,6 +14,7 @@ exports.create = (req, res) => {
         tahun_perolehan: req.fields.tahun_perolehan,
         nilai_perolehan: req.fields.nilai_perolehan,
         wilayah: req.fields.wilayah,
+        cabang_id: req.fields.cabang_id,
         nilai_buku: req.fields.nilai_buku,
         approval_status_id: req.fields.approval_status_id,
         tanggal: f.toDate(req.fields.tanggal),
