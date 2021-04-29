@@ -1325,12 +1325,10 @@ Report.kapal = async (req, result, cabang_id) => {
             a."tahun_perolehan" as tahun_peroleh,
             b."nama" as jenis_asset,
             a."nilai_perolehan" as nilai,
-            
-            a."loa" as loa,
-            a."breadth" as breadth,
-            a."depth" as depth,
-            a."draft_max" as draft,
-
+            CONCAT(to_char(NVL(a."loa", 0)),' m') as loa,
+            CONCAT(to_char(NVL(a."breadth", 0)),' m') as breadth,
+            CONCAT(to_char(NVL(a."depth", 0)),' m') as depth,
+            CONCAT(to_char(NVL(a."draft_max", 0)),' m') as draft,
             a."tahun_pembuatan" as tahun_buat,
             a."negara_pembuat" as negara,
             a."no_registrasi" as no_registrasi,
