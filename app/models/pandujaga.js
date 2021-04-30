@@ -41,11 +41,11 @@ PanduJaga.getAll = async (param, result, cabang_id) => {
 				LEFT JOIN "pandu_schedule" ON "pandu_jaga"."pandu_schedule_id" = "pandu_schedule"."id"
 				LEFT JOIN "personil" ON "pandu_jaga"."personil_id" = "personil"."id" `;
 
-	// console.log('param',param)
+	console.log('param pandu_jaga',param)
 
 	if (param !== undefined) {
 		query += `WHERE "personil"."pandu_bandar_laut_id" = ${param.pandu_bandar_laut_id}
-					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "pandu_jaga"."kehadiran" = ${param.kehadiran} AND "pandu_schedule"."cabang_id" = ${param.cabang_id}  AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} AND "personil"."approval_status_id" = ${param.approval_status_id}`
+					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "pandu_jaga"."kehadiran" = ${param.kehadiran} AND "pandu_schedule"."cabang_id" = ${param.cabang_id} AND "personil"."approval_status_id" = ${param.approval_status_id}`
 	}
 
 	// if (cabang_id > 0) {
