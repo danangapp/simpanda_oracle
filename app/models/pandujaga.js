@@ -45,7 +45,7 @@ PanduJaga.getAll = async (param, result, cabang_id) => {
 
 	if (param !== undefined) {
 		query += `WHERE "personil"."pandu_bandar_laut_id" = ${param.pandu_bandar_laut_id}
-					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "pandu_jaga"."kehadiran" = ${param.kehadiran} AND "pandu_schedule"."cabang_id" = ${param.cabang_id}  AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} AND "pandu_schedule"."approval_status_id" = ${param.approval_status_id}`
+					AND trunc("pandu_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "pandu_jaga"."kehadiran" = ${param.kehadiran} AND "pandu_schedule"."cabang_id" = ${param.cabang_id}  AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} AND "personil"."approval_status_id" = ${param.approval_status_id}`
 	}
 
 	// if (cabang_id > 0) {
