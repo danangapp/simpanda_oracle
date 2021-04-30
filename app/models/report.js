@@ -1005,7 +1005,7 @@ Report.pilotship = async (req, result, cabang_id) => {
         var arr = {};
         query = `
             SELECT
-                a."day", a."date", b."personil", b."bandar"
+                a."day", a."date", b."personil", b."bandar", b."keterangan"
             FROM
                 (
                 SELECT
@@ -1016,7 +1016,7 @@ Report.pilotship = async (req, result, cabang_id) => {
                 ) a
                 LEFT JOIN (
                     SELECT
-                        TO_CHAR( a."from", 'YYYY-MM-DD' ) AS "date", c."nama" AS "personil", MAX(d."nama") as "bandar"
+                        TO_CHAR( a."from", 'YYYY-MM-DD' ) AS "date", c."nama" AS "personil", MAX(d."nama") as "bandar", MAX(a."keterangan") AS "keterangan"
                     FROM
                         "pandu_jaga" a
                     INNER JOIN "pandu_schedule" b ON a."pandu_schedule_id" = b."id"

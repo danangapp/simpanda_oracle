@@ -61,7 +61,7 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		"nipp": rows.nipp || "0",
 		"kelas": rows.kelas || "0",
 		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
-		"enable": rows.enable.toString() || "1",
+		"enable": rows.enable || "1",
 		"kdPersPanduCbg": ""
 	}
 
@@ -273,6 +273,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	} else {
 		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
 		const getApproveId = getApprove.rows[0][0];
+		console.log("getApproveId", getApproveId);
 		if (getApproveId > 0) {
 			delete personil.enable;
 		}
@@ -280,9 +281,9 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		delete personil.remark;
 		delete personil.sertifikat;
 
-		if (personil.enable == 0) {
-			personil.enable = 1;
-		}
+		// if (personil.enable == 0) {
+		// 	personil.enable = 1;
+		// }
 		if (personil.approval_status_id == "1") {
 			const rows = await f.checkDataId("personil", id, personil);
 			var dt, smp;
