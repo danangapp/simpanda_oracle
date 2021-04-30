@@ -12,7 +12,7 @@ const cekBody = (rows, cabang = "cabang") => {
 		"nipp": rows.nipp,
 		"kelas": rows.kelas ? rows.kelas.toString() : "",
 		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id.toString()}` : `${rows.cabang_id.toString()}`,
-		"enable": rows.enable.toString() || "1",
+		"enable": rows.enable ? rows.enable.toString() : "0",
 		"kdPersPanduCbg": rows.cabang_id < 10 ? `0${rows.cabang_id.toString()}` : `${rows.cabang_id.toString()}`
 	}
 	if (rows.simop_kd_pers_pandu != undefined) {
@@ -61,7 +61,7 @@ const cekBodyBandar = (rows, cabang = "cabang") => {
 		"nipp": rows.nipp || "0",
 		"kelas": rows.kelas || "0",
 		"kdCabang": rows.cabang_id < 10 ? `0${rows.cabang_id}` : `${rows.cabang_id}`,
-		"enable": rows.enable || "1",
+		"enable": rows.enable ? rows.enable.toString() : "0",
 		"kdPersPanduCbg": ""
 	}
 
