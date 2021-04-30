@@ -271,19 +271,9 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		str = f.getValueUpdate(personil, id, arr);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
-		const getApprove = await f.query(`SELECT "approval_status_id" FROM "personil" WHERE "id"='${id}'`, 2);
-		const getApproveId = getApprove.rows[0][0];
-		console.log("getApproveId", getApproveId);
-		if (getApproveId > 0) {
-			delete personil.enable;
-		}
-
 		delete personil.remark;
 		delete personil.sertifikat;
 
-		// if (personil.enable == 0) {
-		// 	personil.enable = 1;
-		// }
 		if (personil.approval_status_id == "1") {
 			const rows = await f.checkDataId("personil", id, personil);
 			var dt, smp;
