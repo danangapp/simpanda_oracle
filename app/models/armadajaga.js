@@ -42,11 +42,11 @@ ArmadaJaga.getAll = async (param, result, cabang_id) => {
 	var query = `SELECT "armada_jaga".*, "asset_kapal"."nama_asset" FROM "armada_jaga"
 				LEFT JOIN "armada_schedule" ON "armada_jaga"."armada_schedule_id" = "armada_schedule"."id"
 				LEFT JOIN "asset_kapal" ON "armada_jaga"."asset_kapal_id" = "asset_kapal"."id" `;
-	
+
 	// console.log('param',param)
 
 	if (param !== undefined) {
-		query += `WHERE trunc("armada_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} `
+		query += `WHERE trunc("armada_schedule"."date") = TO_DATE('${param.date}', 'YY/MM/DD') AND "armada_jaga"."available" = ${param.available} AND "armada_schedule"."cabang_id" = ${param.cabang_id} AND "armada_schedule"."approval_status_id" = ${param.approval_status_id} `
 	}
 
 	// if (cabang_id > 0) {
