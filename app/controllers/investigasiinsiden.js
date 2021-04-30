@@ -47,6 +47,7 @@ exports.create = (req, res) => {
         tanggal_pemeriksaan: req.fields.tanggal_pemeriksaan,
         nama: req.fields.nama,
         jabatan: req.fields.jabatan,
+        bukti_pendukung: req.fields.bukti_pendukung,
         status_investigasi_insiden_id: req.fields.status_investigasi_insiden_id,
         prepard_by: req.fields.prepard_by,
         prepard_tanggal: req.fields.prepard_tanggal,

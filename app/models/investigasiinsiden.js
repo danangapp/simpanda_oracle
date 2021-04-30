@@ -38,6 +38,7 @@ const InvestigasiInsiden = function (investigasiinsiden) {
 	this.rekomendasi_tindakan = investigasiinsiden.rekomendasi_tindakan;
 	this.pihak_yang_bertanggungjawab = investigasiinsiden.pihak_yang_bertanggungjawab;
 	this.pelaksana = investigasiinsiden.pelaksana;
+	this.bukti_pendukung = investigasiinsiden.bukti_pendukung;
 	this.tanggal_pemeriksaan = investigasiinsiden.tanggal_pemeriksaan;
 	this.nama = investigasiinsiden.nama;
 	this.jabatan = investigasiinsiden.jabatan;
