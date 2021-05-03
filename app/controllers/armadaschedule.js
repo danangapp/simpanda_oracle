@@ -21,12 +21,12 @@ exports.create = (req, res) => {
         armada: req.fields.armada,
     };
 
-	var used = {};
-	for (var i in armadaschedule) {
-	    if (armadaschedule[i] == undefined) {
-	        delete armadaschedule[i];
-	    }
-	}
+    var used = {};
+    for (var i in armadaschedule) {
+        if (armadaschedule[i] == undefined) {
+            delete armadaschedule[i];
+        }
+    }
 
     ArmadaSchedule.create(armadaschedule, (err, data) => {
         if (err)
@@ -73,7 +73,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.date = f.toDate(req.fields.date);
+    req.fields.date = f.toDate(req.fields.date);
 
     ArmadaSchedule.updateById(
         req.params.id,
