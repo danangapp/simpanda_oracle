@@ -50,6 +50,7 @@ const AssetKapal = function (assetkapal) {
 	this.sertifikat = assetkapal.sertifikat;
 	this.date = assetkapal.date;
 	this.item = assetkapal.item;
+	this.kd_fas = assetkapal.kd_fas;
 	this.action = assetkapal.action;
 	this.user_id = assetkapal.user_id;
 	this.remark = assetkapal.remark;
@@ -177,7 +178,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 	}
 	delete assetkapal.sertifikat;
 
-	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id", "is_from_simop"];
+	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id", "is_from_simop", "kd_fas"];
 
 
 	var str;
@@ -193,12 +194,11 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 			const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 			const roww = await f.query(`SELECT "simop_kd_fas" FROM "asset_kapal" WHERE "id"='${id}'`);
 			assetkapal['simop_kd_fas'] = roww.rows[0].simop_kd_fas;
-			// console.log("yayaa", assetkapal.simop_kd_fas != "" ? assetkapal.simop_kd_fas : "SM" + id);
-			var dt = await simop.cekBody(assetkapal.simop_kd_fas ? assetkapal.simop_kd_fas : "SM" + id, rows, rows.cabang_id != 1 ? "cabang" : "prod");
+			var dt = await simop.cekBody(assetkapal.simop_kd_fas ? assetkapal.simop_kd_fas : assetkapal.kd_fas, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 			var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		}
 
-		assetkapal['simop_kd_fas'] = "SM" + id;
+		assetkapal['simop_kd_fas'] = assetkapal.kd_fas;
 		objek.koneksi = id;
 		objek.action = "0";
 		objek.user_id = user_id;

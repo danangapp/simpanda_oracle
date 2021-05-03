@@ -689,6 +689,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 b."cabang_id" = '${cabang}'`;
     output1 = await f.query(query);
     personil = output1.rows;
+
+    query = `SELECT
+                a.*
+            FROM
+                "personil" a
+            WHERE
+                a."cabang_id" = '${cabang}'
+                AND a."tipe_personil_id" = '5'
+            `;
+    output1 = await f.query(query);
     radio = output1.rows;
 
 
@@ -974,7 +984,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}, query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
         query = `SELECT MAX(KD_PROSES) AS KD_PROSES, MAX(NM_PERS_PANDU) AS NM_PERS_PANDU, SUM(GERAKAN_DN) AS GERAKAN_DN, SUM(GERAKAN_LN) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(GT_DN) AS GT_DN, SUM(GT_LN) AS GT_LN, SUM(TOTAL_GT) AS TOTAL_GT, SUM(LAMA_PANDU_DN) AS LAMA_PANDU_DN, SUM(LAMA_PANDU_LN) AS LAMA_PANDU_LN, SUM(TOTAL_LAMA_PANDU) AS TOTAL_LAMA_PANDU, SUM(WT_DN) AS WT_DN, SUM(WT_LN) AS WT_LN, SUM(TOTAL_WT) AS TOTAL_WT, SUM(TOTAL_PENDAPATAN_PANDU) AS TOTAL_PENDAPATAN_PANDU, SUM(PNBP_TOTAL_PENDAPATAN_PANDU) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a GROUP BY NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
-        query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
+        query = `SELECT ROWNUM NO, a.KD_PROSES, a.NM_PERS_PANDU, a.GERAKAN_DN, a.GERAKAN_LN, a.TOTAL_GERAKAN, a.GT_DN, a.GT_LN, a.TOTAL_GT, a.LAMA_PANDU_DN, a.LAMA_PANDU_LN, a.TOTAL_LAMA_PANDU, a.WT_DN, a.WT_LN, a.TOTAL_WT, a.TOTAL_PENDAPATAN_PANDU, a.PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a`;
         console.log(query);
         var output1 = await f.querySimop(query);
 
