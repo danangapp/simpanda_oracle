@@ -48,6 +48,7 @@ exports.create = (req, res) => {
         nama: req.fields.nama,
         jabatan: req.fields.jabatan,
         bukti_pendukung: req.fields.bukti_pendukung,
+        bukti_pendukung_lainnya: req.fields.bukti_pendukung_lainnya,
         status_investigasi_insiden_id: req.fields.status_investigasi_insiden_id,
         prepard_by: req.fields.prepard_by,
         prepard_tanggal: req.fields.prepard_tanggal,

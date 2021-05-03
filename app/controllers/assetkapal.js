@@ -56,6 +56,7 @@ exports.create = (req, res) => {
         sertifikat: req.fields.sertifikat,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
+        kd_fas: req.fields.kd_fas,
         action: req.fields.action,
         user_id: req.fields.user_id,
         remark: req.fields.remark,

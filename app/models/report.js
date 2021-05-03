@@ -14,7 +14,7 @@ const queryPandu = function (cabang, date, dbCabang = "") {
 };
 
 const queryTunda = function (cabang, date, dbCabang = "") {
-    return `SELECT NM_KPL, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(LAMA_TUNDA_KPL) AS LAMA_TUNDA_KPL, SUM(PENDAPATAN_PER_HP) AS PENDAPATAN_PER_HP, SUM(PENDAPATAN_TOTAL_KPL) AS PENDAPATAN_TOTAL_KPL, SUM(PNBP_PER_HP) AS PNBP_PER_HP, SUM(PNBP_TOTAL_KPL) AS PNBP_TOTAL_KPL FROM (SELECT KD_PROSES, NM_KPL, HP_KPL, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, TRUNC( SUM( LAMA_TUNDA_KPL ) / 60 ) AS LAMA_TUNDA_KPL, NVL( SUM( PENDAPATAN_PER_HP ), 0 ) AS PENDAPATAN_PER_HP, NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) AS PENDAPATAN_TOTAL_KPL, ROUND( 0.05 * NVL( SUM( PENDAPATAN_PER_HP ), 0 ) ) AS PNBP_PER_HP, ROUND( 0.05 * NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) ) AS PNBP_TOTAL_KPL FROM ${dbCabang}V_PRODUKSI_KAPAL_TUNDA_CT WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' AND TO_NUMBER( KD_PROSES ) >= 3 AND TO_NUMBER( KD_PROSES ) <= 6 GROUP BY KD_PROSES, NM_KPL, HP_KPL) a GROUP BY NM_KPL ORDER BY NM_KPL`;
+    return `SELECT NM_KPL, MAX(HP_KPL) AS HP_KPL, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(LAMA_TUNDA_KPL) AS LAMA_TUNDA_KPL, SUM(PENDAPATAN_PER_HP) AS PENDAPATAN_PER_HP, SUM(PENDAPATAN_TOTAL_KPL) AS PENDAPATAN_TOTAL_KPL, SUM(PNBP_PER_HP) AS PNBP_PER_HP, SUM(PNBP_TOTAL_KPL) AS PNBP_TOTAL_KPL FROM (SELECT KD_PROSES, NM_KPL, HP_KPL, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, TRUNC( SUM( LAMA_TUNDA_KPL ) / 60 ) AS LAMA_TUNDA_KPL, NVL( SUM( PENDAPATAN_PER_HP ), 0 ) AS PENDAPATAN_PER_HP, NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) AS PENDAPATAN_TOTAL_KPL, ROUND( 0.05 * NVL( SUM( PENDAPATAN_PER_HP ), 0 ) ) AS PNBP_PER_HP, ROUND( 0.05 * NVL( SUM( PENDAPATAN_TOTAL_KPL ), 0 ) ) AS PNBP_TOTAL_KPL FROM ${dbCabang}V_PRODUKSI_KAPAL_TUNDA_CT WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' AND TO_NUMBER( KD_PROSES ) >= 3 AND TO_NUMBER( KD_PROSES ) <= 6 GROUP BY KD_PROSES, NM_KPL, HP_KPL) a GROUP BY NM_KPL ORDER BY NM_KPL`;
 };
 
 const getCabang = async function (cabang) {
@@ -689,6 +689,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 b."cabang_id" = '${cabang}'`;
     output1 = await f.query(query);
     personil = output1.rows;
+
+    query = `SELECT
+                a.*
+            FROM
+                "personil" a
+            WHERE
+                a."cabang_id" = '${cabang}'
+                AND a."tipe_personil_id" = '5'
+            `;
+    output1 = await f.query(query);
     radio = output1.rows;
 
 
@@ -944,6 +954,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         var arr = {}, query = queryTunda(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
         query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
         var output1 = await f.querySimop(query);
+        console.log(query);
 
         arr['global'] = output1.rows;
         arr['cabang'] = await getCabang(parseInt(cabang));
@@ -973,11 +984,11 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}, query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
         query = `SELECT MAX(KD_PROSES) AS KD_PROSES, MAX(NM_PERS_PANDU) AS NM_PERS_PANDU, SUM(GERAKAN_DN) AS GERAKAN_DN, SUM(GERAKAN_LN) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(GT_DN) AS GT_DN, SUM(GT_LN) AS GT_LN, SUM(TOTAL_GT) AS TOTAL_GT, SUM(LAMA_PANDU_DN) AS LAMA_PANDU_DN, SUM(LAMA_PANDU_LN) AS LAMA_PANDU_LN, SUM(TOTAL_LAMA_PANDU) AS TOTAL_LAMA_PANDU, SUM(WT_DN) AS WT_DN, SUM(WT_LN) AS WT_LN, SUM(TOTAL_WT) AS TOTAL_WT, SUM(TOTAL_PENDAPATAN_PANDU) AS TOTAL_PENDAPATAN_PANDU, SUM(PNBP_TOTAL_PENDAPATAN_PANDU) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a GROUP BY NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
-        query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
+        query = `SELECT ROWNUM NO, a.KD_PROSES, a.NM_PERS_PANDU, a.GERAKAN_DN, a.GERAKAN_LN, a.TOTAL_GERAKAN, a.GT_DN, a.GT_LN, a.TOTAL_GT, a.LAMA_PANDU_DN, a.LAMA_PANDU_LN, a.TOTAL_LAMA_PANDU, a.WT_DN, a.WT_LN, a.TOTAL_WT, a.TOTAL_PENDAPATAN_PANDU, a.PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a`;
         console.log(query);
         var output1 = await f.querySimop(query);
 
-        arr['global'] = output1.rows;
+        arr['global'] = output1.rows ? output1.rows : [];
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 

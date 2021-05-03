@@ -439,7 +439,7 @@ module.exports = {
         var objek = new Object();
         objek.koneksi = id;
         objek.action = data.approval_status_id;
-        objek.item = table;
+        objek.item = objek2.item;
         objek.user_id = user_id;
         objek.keterangan = objek2.keterangan;
         // if (table == "personil") {
