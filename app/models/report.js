@@ -977,7 +977,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         console.log(query);
         var output1 = await f.querySimop(query);
 
-        arr['global'] = output1.rows;
+        arr['global'] = output1.rows ? output1.rows : [];
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
