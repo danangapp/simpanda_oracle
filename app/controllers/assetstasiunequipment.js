@@ -32,6 +32,9 @@ exports.create = (req, res) => {
         nomor_sertifikat: req.fields.nomor_sertifikat,
         tempat_keluar: req.fields.tempat_keluar,
         sertifikat_equipment: req.fields.sertifikat_equipment,
+        details: req.fields.details,
+        lokasi_pemegang: req.fields.lokasi_pemegang,
+        total_aktif: req.fields.total_aktif,
     };
 
     var used = {};
