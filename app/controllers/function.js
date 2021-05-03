@@ -14,7 +14,7 @@ oracledb.initOracleClient(objOracle);
 oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
-const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai","tanggal_terbit","tanggal_kadaluarsa"];
 const arrDateTime = ["expired", "from", "to"];
 // const arrTime = ["from", "to"];
 module.exports = {

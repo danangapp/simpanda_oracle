@@ -27,6 +27,14 @@ exports.create = (req, res) => {
         keterangan: req.fields.keterangan,
         alamat: req.fields.alamat,
         activity_keterangan: req.fields.activity_keterangan,
+        tanggal_kadaluarsa: f.toDate(req.fields.tanggal_kadaluarsa),
+        tanggal_terbit: f.toDate(req.fields.tanggal_terbit),
+        nomor_sertifikat: req.fields.nomor_sertifikat,
+        tempat_keluar: req.fields.tempat_keluar,
+        sertifikat_equipment: req.fields.sertifikat_equipment,
+        details: req.fields.details,
+        lokasi_pemegang: req.fields.lokasi_pemegang,
+        total_aktif: req.fields.total_aktif,
     };
 
     var used = {};
@@ -34,6 +42,9 @@ exports.create = (req, res) => {
         if (assetstasiunequipment[i] == undefined) {
             delete assetstasiunequipment[i];
         }
+    }
+    if (req.fields.sertifikat_equipment) {
+        assetstasiunequipment.sertifikat_equipment = f.uploadFile64('assetstasiunequipment', req.fields.sertifikat_equipment);
     }
 
     AssetStasiunEquipment.create(assetstasiunequipment, (err, data) => {
@@ -79,6 +90,20 @@ exports.update = (req, res) => {
         res.status(400).send({
             message: "Content can not be empty!"
         });
+    }
+    
+    if (req.fields.tanggal_terbit)
+        req.fields.tanggal_terbit = f.toDate(req.fields.tanggal_terbit);
+    if (req.fields.tanggal_kadaluarsa)
+        req.fields.tanggal_kadaluarsa = f.toDate(req.fields.tanggal_kadaluarsa);
+    
+
+    if (req.fields.sertifikat_equipment) {
+        if (req.fields.sertifikat_equipment.substring(0, 4) == "data") {
+            req.fields.sertifikat_equipment = f.uploadFile64('assetstasiunequipment', req.fields.sertifikat_equipment);
+        } else {
+            delete req.fields.sertifikat_equipment
+        }
     }
 
 

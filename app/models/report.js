@@ -677,51 +677,122 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     output1 = await f.query(query);
     EP = output1.rows;
 
-    query = `SELECT
+    // query = `SELECT ROWNUM no,
+    //             a.*,
+    //             b."nama",
+    //             to_char(a."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
+    //             '' AS "tingkat",
+    //             '' AS "keterangan"
+    //         FROM
+    //             "sertifikat" a
+    //             LEFT JOIN "personil" b ON a."personil_id" = b."id"
+    //         WHERE
+    //             b."cabang_id" = '${cabang}'`;
+    query = ` SELECT ROWNUM no,
                 a.*,
-                b."nama",
-                '' AS "tingkat",
+                b.*,
+                a."nama",
+                to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
+                a."kelas" AS "tingkat",
                 '' AS "keterangan"
             FROM
-                "sertifikat" a
-                INNER JOIN "personil" b ON a."personil_id" = b."id"
+                "personil" a
+                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
             WHERE
-                b."cabang_id" = '${cabang}'`;
+                a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1'
+             `;
     output1 = await f.query(query);
     personil = output1.rows;
 
-    query = `SELECT
-                a.*
+    query = `SELECT ROWNUM nos,
+                a.*,
+                b.*,
+                to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
+                to_char(b."tanggal_keluar_sertifikat",'DD-MM-YYYY')  as "tanggal_keluar_sertifikats", 
+                c."nama" AS "sertifikats"
             FROM
                 "personil" a
+                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
+                LEFT JOIN "jenis_cert" c ON b."jenis_cert_id" = c."id"
             WHERE
                 a."cabang_id" = '${cabang}'
-                AND a."tipe_personil_id" = '5'
+                AND a."tipe_personil_id" = '5' AND a."enable" = '1'
+            ORDER BY a."id" DESC
             `;
-    output1 = await f.query(query);
-    radio = output1.rows;
+    output2 = await f.query(query);
+    radio = output2.rows;
 
+    // SELECT ROWNUM as no, z.*
+    //     FROM (
+    //     SELECT
+    //             *
+    //         FROM
+    //             "asset_kapal"
+    //         WHERE
+    //             "cabang_id" = '1' AND "tipe_asset_id" = '1' AND "enable" = '1'
+    //     ) z
 
-    query = `SELECT
-                *
-            FROM
-                "asset_kapal"
-            WHERE
-                "cabang_id" = '${cabang}'`;
-    output1 = await f.query(query);
-    const rows = output1.rows;
+    // query = `SELECT
+    //             *
+    //         FROM
+    //             "asset_kapal"
+    //         WHERE
+    //             "cabang_id" = '${cabang}' 
+    //         `;
+    // output1 = await f.query(query);
+    // const rows = output1.rows;
+    
     var kepil = [], pandu = [], tunda = [];
-    for (var a in rows) {
-        if (rows[a].tipe_asset_id == "1") {
-            tunda.push(rows[a]);
-        }
-        if (rows[a].tipe_asset_id == "2") {
-            pandu.push(rows[a]);
-        }
-        if (rows[a].tipe_asset_id == "3") {
-            kepil.push(rows[a]);
-        }
-    }
+    query = `SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
+                    *
+                FROM
+                    "asset_kapal"
+                WHERE
+                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '1' AND "enable" = '1'
+            ) z
+            `;
+    kapal1 = await f.query(query);
+    tunda = kapal1.rows;
+
+    query = `SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
+                    *
+                FROM
+                    "asset_kapal"
+                WHERE
+                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '2' AND "enable" = '1'
+            ) z
+            `;
+    kapal1 = await f.query(query);
+    pandu = kapal1.rows;
+
+    query = `SELECT ROWNUM as no, z.*
+        FROM (
+            SELECT
+                    *
+                FROM
+                    "asset_kapal"
+                WHERE
+                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '3' AND "enable" = '1'
+            ) z
+            `;
+    kapal1 = await f.query(query);
+    kepil = kapal1.rows;
+    
+    // for (var a in rows) {
+    //     if (rows[a].tipe_asset_id == "1") {
+    //         tunda.push(rows[a]);
+    //     }
+    //     if (rows[a].tipe_asset_id == "2") {
+    //         pandu.push(rows[a]);
+    //     }
+    //     if (rows[a].tipe_asset_id == "3") {
+    //         kepil.push(rows[a]);
+    //     }
+    // }
 
     var ep = EP[0];
     ep['cek1'] = ep.check_laporan_bulanan == 1 ? "V" : "";
@@ -740,7 +811,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     arr['tunda'] = tunda;
     arr['pandu'] = pandu;
     arr['kepil'] = kepil;
-    // console.log(arr.tunda);
+    console.log(arr.personil);
 
 
     var d = new Date();

@@ -269,6 +269,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		str = f.getValueUpdate(personil, id, arr);
+		
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		delete personil.remark;
@@ -300,7 +301,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				}
 			}
 		}
-
+		
 		var objek = new Object();
 		objek.keterangan = remarkPersonil;
 		objek.koneksi = id;
