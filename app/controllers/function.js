@@ -309,7 +309,9 @@ module.exports = {
                     value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
                     str += `"${i}" = TRUNC(SYSDATE) + INTERVAL '${value}' HOUR TO MINUTE, `;
                 } else {
-                    str += "\"" + i + "\" = '" + value.replace("'", "''") + "', ";
+                    // value = "" + value;
+                    // value.replace("'", "''");
+                    str += "\"" + i + "\" = '" + value + "', ";
                 }
                 obj.push(object[i]);
             }
