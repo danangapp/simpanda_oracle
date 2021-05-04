@@ -43,19 +43,22 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 	const res = await exec;
 
 	for (var a in armada) {
-		armada[a].armada_schedule_id = id;
-		delete armada[a].nama_asset
+		var c = armada[a]
+		for (var b in c) {
+			c[b].armada_schedule_id = id;
+			delete c[b].nama_asset
 
-		if (armada[a].from == "") armada[a].from = "00:00";
-		if (armada[a].to == "") armada[a].to = "00:00";
-		armada[a].from = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
-		armada[a].to = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
-		// console.log(armada);
+			if (c[b].from == "") c[b].from = "00:00";
+			if (c[b].to == "") c[b].to = "00:00";
+			c[b].from = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + c[b].from + ":00";
+			c[b].to = f.toDate(newArmadaScheduleDate, "YYYY-MM-DD") + " " + c[b].to + ":00";
+			// console.log(armada);
 
-		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(armada[a], id_pj);
-		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-		await f.query(queryText, 2);
+			var id_pj = await f.getid("armada_jaga");
+			var hv_pj = await f.headerValue(c[b], id_pj);
+			var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+			await f.query(queryText, 2);
+		}
 	}
 	result(null, { id: id, ...newArmadaSchedule });
 };
@@ -88,24 +91,28 @@ ArmadaSchedule.getAll = async (param, result, cabang_id) => {
 }
 
 ArmadaSchedule.updateById = async (id, armadaschedule, result, user_id) => {
-	var armada = armadaschedule.armada;
+	var armada = armadaschedule.notAvailable;
 	var armadaDate = armadaschedule.date;
 	delete armadaschedule.armada;
 
 	await f.query(`DELETE FROM "armada_jaga" WHERE "armada_schedule_id" = '${id}'`, 2);
 	for (var a in armada) {
-		armada[a].armada_schedule_id = id;
-		delete armada[a].nama_asset
+		var c = armada[a]
+		for (var b in c) {
+			c[b].armada_schedule_id = id;
+			delete c[b].nama_asset
 
-		if (armada[a].from == "") armada[a].from = "00:00";
-		if (armada[a].to == "") armada[a].to = "00:00";
-		armada[a].from = f.toDate(armadaDate, "YYYY-MM-DD") + " " + armada[a].from + ":00";
-		armada[a].to = f.toDate(armadaDate, "YYYY-MM-DD") + " " + armada[a].to + ":00";
+			if (c[b].from == "") c[b].from = "00:00";
+			if (c[b].to == "") c[b].to = "00:00";
+			c[b].from = f.toDate(armadaDate, "YYYY-MM-DD") + " " + c[b].from + ":00";
+			c[b].to = f.toDate(armadaDate, "YYYY-MM-DD") + " " + c[b].to + ":00";
+			// console.log(armada);
 
-		var id_pj = await f.getid("armada_jaga");
-		var hv_pj = await f.headerValue(armada[a], id_pj);
-		var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
-		await f.query(queryText, 2);
+			var id_pj = await f.getid("armada_jaga");
+			var hv_pj = await f.headerValue(c[b], id_pj);
+			var queryText = "INSERT INTO \"armada_jaga\" " + hv_pj;
+			await f.query(queryText, 2);
+		}
 	}
 
 	var arr = ["date", "cabang_id", "tipe_asset_id", "asset_kapal_id", "status", "jam_pengoperasian", "reliability", "keterangan", "armada_jaga_id"];
