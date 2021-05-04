@@ -90,7 +90,8 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	let valid = newAssetKapal
 
 
-
+	newAssetKapal.simop_kd_fas = newAssetKapal.kd_fas;
+	delete newAssetKapal.kd_fas;
 	if (newAssetKapal.isFromSimop || newAssetKapal.is_from_simop) {
 		delete newAssetKapal.is_from_simop;
 	} else {
@@ -171,11 +172,13 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 	// console.log("assetkapalnya ya", assetkapal);
+	assetkapal.simop_kd_fas = assetkapal.kd_fas;
 	const sertifikat = assetkapal.sertifikat;
 	if (assetkapal.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"asset_kapal_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "asset_kapal", "asset_kapal_id");
 	}
+	delete assetkapal.kd_fas;
 	delete assetkapal.sertifikat;
 
 	var arr = ["cabang_id", "simop_kd_fas", "kepemilikan_kapal_id", "simop_status_milik", "simop_kd_agen", "tipe_asset_id", "nama_asset", "horse_power", "tahun_perolehan", "nilai_perolehan", "enable", "asset_number", "simop_kd_puspel_jai", "simop_new_puspel_jai", "simop_new_asset_jai", "approval_status_id", "loa", "tahun_pembuatan", "breadth", "kontruksi", "depth", "negara_pembuat", "draft_max", "daya", "putaran", "merk", "tipe", "daya_motor", "daya_generator", "putaran_spesifikasi", "merk_spesifikasi", "tipe_spesifikasi", "klas", "notasi_permesinan", "no_registrasi", "notasi_perlengkapan", "port_of_registration", "notasi_perairan", "notasi_lambung", "gross_tonnage", "bolard_pull", "kecepatan", "ship_particular", "sertifikat_id", "is_from_simop", "kd_fas"];
@@ -193,12 +196,12 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 		if (assetkapal.approval_status_id == "1") {
 			const rows = await f.checkDataId("asset_kapal", id, assetkapal);
 			const roww = await f.query(`SELECT "simop_kd_fas" FROM "asset_kapal" WHERE "id"='${id}'`);
-			assetkapal['simop_kd_fas'] = roww.rows[0].simop_kd_fas;
+			// assetkapal['simop_kd_fas'] = roww.rows[0].simop_kd_fas;
 			var dt = await simop.cekBody(assetkapal.simop_kd_fas ? assetkapal.simop_kd_fas : assetkapal.kd_fas, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 			var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		}
 
-		assetkapal['simop_kd_fas'] = assetkapal.kd_fas;
+		// assetkapal['simop_kd_fas'] = assetkapal.kd_fas;
 		objek.koneksi = id;
 		objek.action = "0";
 		objek.user_id = user_id;
@@ -208,6 +211,7 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 		if (assetkapal.keterangan) {
 			objek.keterangan = assetkapal.keterangan;
 		}
+		// console.log(assetkapal);
 
 		await f.approvalStatus("asset_kapal", assetkapal, objek, id, user_id)
 		str = f.getValueUpdate(assetkapal, id, arr);

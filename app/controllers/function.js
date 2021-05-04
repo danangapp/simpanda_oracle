@@ -14,7 +14,7 @@ oracledb.initOracleClient(objOracle);
 oracledb.autoCommit = true
 
 moment.updateLocale(moment.locale(), { invalidDate: null })
-const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai","tanggal_terbit","tanggal_kadaluarsa"];
+const arrDate = ["tanggal", "tanggal_sk", "prepard_tanggal", "reviewed_tanggal", "approved_tanggal", "date", "tanggal_awal", "tanggal_akhir", "tanggal_lahir", "tanggal_mulai", "tanggal_selesai", "tanggal_pemeriksaan", "tempat_keluar_sertifikat", "tanggal_keluar_sertifikat", "tanggal_expire", "reminder_date1", "reminder_date3", "reminder_date6", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "tgl", "skes_tanggal_mulai", "skes_tanggal_selesai"];
 const arrDateTime = ["expired", "from", "to"];
 // const arrTime = ["from", "to"];
 module.exports = {
@@ -143,7 +143,8 @@ module.exports = {
         var header = "", value = "";
         object.id = id;
         for (var a in object) {
-            var val = object[a];
+            var valu = object[a];
+            var val = "" + valu;
             if (typeof val != 'object') {
                 if (val != undefined) {
                     header += "\"" + a + "\", ";
@@ -182,10 +183,10 @@ module.exports = {
                         } else if (adaTime == 1) {
                             value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
                         } else {
-                            value += "'" + val + "', ";
+                            value += "'" + val.replace("'", "''") + "', ";
                         }
                     } else {
-                        value += "" + val + ", ";
+                        value += "" + val.replace("'", "''") + ", ";
                     }
                 }
             }
@@ -308,7 +309,7 @@ module.exports = {
                     value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
                     str += `"${i}" = TRUNC(SYSDATE) + INTERVAL '${value}' HOUR TO MINUTE, `;
                 } else {
-                    str += "\"" + i + "\" = '" + value + "', ";
+                    str += "\"" + i + "\" = '" + value.replace("'", "''") + "', ";
                 }
                 obj.push(object[i]);
             }
