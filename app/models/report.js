@@ -694,10 +694,11 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 a."nama",
                 to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
                 a."kelas" AS "tingkat",
-                '' AS "keterangan"
+                c."nama" AS "keterangan"
             FROM
                 "personil" a
                 LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
+                LEFT JOIN "tipe_personil" c ON a."tipe_personil_id" = c."id"
             WHERE
                 a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1'
              `;
@@ -709,11 +710,13 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 b.*,
                 to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
                 to_char(b."tanggal_keluar_sertifikat",'DD-MM-YYYY')  as "tanggal_keluar_sertifikats", 
-                c."nama" AS "sertifikats"
+                c."nama" AS "sertifikats",
+                d."nama" AS "keterangan"
             FROM
                 "personil" a
                 LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
                 LEFT JOIN "jenis_cert" c ON b."jenis_cert_id" = c."id"
+                LEFT JOIN "tipe_personil" d ON a."tipe_personil_id" = d."id"
             WHERE
                 a."cabang_id" = '${cabang}'
                 AND a."tipe_personil_id" = '5' AND a."enable" = '1'
@@ -745,39 +748,39 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     var kepil = [], pandu = [], tunda = [];
     query = `SELECT ROWNUM as no, z.*
         FROM (
-            SELECT
-                    *
+            SELECT a.*,
+                    ( CASE WHEN to_char( a."kepemilikan_kapal_id" ) = 3 THEN 'Milik' ELSE 'Sewa' END ) AS "keterangan"
                 FROM
-                    "asset_kapal"
+                    "asset_kapal" a
                 WHERE
-                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '1' AND "enable" = '1'
+                    a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '1' AND a."enable" = '1'
             ) z
             `;
     kapal1 = await f.query(query);
     tunda = kapal1.rows;
 
     query = `SELECT ROWNUM as no, z.*
-        FROM (
-            SELECT
-                    *
-                FROM
-                    "asset_kapal"
-                WHERE
-                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '2' AND "enable" = '1'
-            ) z
+    FROM (
+        SELECT a.*,
+                ( CASE WHEN to_char( a."kepemilikan_kapal_id" ) = 3 THEN 'Milik' ELSE 'Sewa' END ) AS "keterangan"
+            FROM
+                "asset_kapal" a
+            WHERE
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '2' AND a."enable" = '1'
+        ) z
             `;
     kapal1 = await f.query(query);
     pandu = kapal1.rows;
 
     query = `SELECT ROWNUM as no, z.*
-        FROM (
-            SELECT
-                    *
-                FROM
-                    "asset_kapal"
-                WHERE
-                    "cabang_id" = '${cabang}' AND "tipe_asset_id" = '3' AND "enable" = '1'
-            ) z
+    FROM (
+        SELECT a.*,
+                ( CASE WHEN to_char( a."kepemilikan_kapal_id" ) = 3 THEN 'Milik' ELSE 'Sewa' END ) AS "keterangan"
+            FROM
+                "asset_kapal" a
+            WHERE
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '3' AND a."enable" = '1'
+        ) z
             `;
     kapal1 = await f.query(query);
     kepil = kapal1.rows;
