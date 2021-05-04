@@ -64,11 +64,31 @@ ArmadaSchedule.create = async (newArmadaSchedule, result, cabang_id, user_id) =>
 };
 
 ArmadaSchedule.findById = async (id, result) => {
-	const resQuery = await f.query("SELECT b.\"nama_asset\", \"armada_schedule_id\", \"available\", \"keterangan\", \"asset_kapal_id\",TO_CHAR(\"from\", 'HH24:mi') AS \"from\", TO_CHAR(\"to\", 'HH24:mi') AS \"to\" FROM \"armada_jaga\" a LEFT JOIN \"asset_kapal\" b ON a.\"asset_kapal_id\" = b.\"id\" WHERE \"armada_schedule_id\" = '" + id + "'");
+	const resQuery = await f.query("SELECT b.\"nama_asset\", \"armada_schedule_id\", \"available\", \"keterangan\", \"asset_kapal_id\",TO_CHAR(\"from\", 'HH24:mi') AS \"from\", TO_CHAR(\"to\", 'HH24:mi') AS \"to\" FROM \"armada_jaga\" a LEFT JOIN \"asset_kapal\" b ON a.\"asset_kapal_id\" = b.\"id\" WHERE \"armada_schedule_id\" = '" + id + "' ORDER BY b.\"nama_asset\"");
 	var queryText = "SELECT a.*  , a1.\"nama\" as \"cabang\", a2.\"nama\" as \"tipe_asset\", TO_CHAR(a4.\"from\", 'HH24:mi') AS \"from\", TO_CHAR(a4.\"to\", 'HH24:mi') AS \"to\"  FROM \"armada_schedule\" a  LEFT JOIN \"cabang\" a1 ON a.\"cabang_id\" = a1.\"id\"  LEFT JOIN \"tipe_asset\" a2 ON a.\"tipe_asset_id\" = a2.\"id\"  LEFT JOIN \"asset_kapal\" a3 ON a.\"asset_kapal_id\" = a3.\"id\" LEFT JOIN \"armada_jaga\" a4 ON a.\"id\" = a4.\"armada_schedule_id\" WHERE a.\"id\" = '" + id + "'";
+	const rows = resQuery.rows;
+	var arr = [], arrNum = [], no = 0;
+	var kapal = "";
+	if (rows.length > 0) {
+		for (var a in rows) {
+			if (kapal != rows[a].nama_asset) {
+				if (kapal != "") {
+					arr.push(arrNum);
+				}
+				arrNum = [];
+				kapal = rows[a].nama_asset;
+			}
+			arrNum.push(rows[a]);
+			no++;
+			if (no == rows.length) {
+				arr.push(arrNum);
+			}
+		}
+	}
+
 	const exec = f.query(queryText);
 	const res = await exec;
-	const armada = { "armada": resQuery.rows }
+	const armada = { "notAvailable": arr }
 	let merge = { ...res.rows[0], ...armada }
 	result(null, merge);
 }
