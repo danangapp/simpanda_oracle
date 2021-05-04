@@ -183,10 +183,10 @@ module.exports = {
                         } else if (adaTime == 1) {
                             value += `TRUNC(SYSDATE) + INTERVAL '${val}' HOUR TO MINUTE, `;
                         } else {
-                            value += "'" + val.replace("'", "''") + "', ";
+                            value += "'" + val + "', ";
                         }
                     } else {
-                        value += "" + val.replace("'", "''") + ", ";
+                        value += "" + val + ", ";
                     }
                 }
             }
