@@ -18,15 +18,15 @@ exports.create = (req, res) => {
         reliability: req.fields.reliability,
         keterangan: req.fields.keterangan,
         armada_jaga_id: req.fields.armada_jaga_id,
-        armada: req.fields.armada,
+        armada: req.fields.notAvailable,
     };
 
-	var used = {};
-	for (var i in armadaschedule) {
-	    if (armadaschedule[i] == undefined) {
-	        delete armadaschedule[i];
-	    }
-	}
+    var used = {};
+    for (var i in armadaschedule) {
+        if (armadaschedule[i] == undefined) {
+            delete armadaschedule[i];
+        }
+    }
 
     ArmadaSchedule.create(armadaschedule, (err, data) => {
         if (err)
@@ -73,7 +73,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.date = f.toDate(req.fields.date);
+    req.fields.date = f.toDate(req.fields.date);
 
     ArmadaSchedule.updateById(
         req.params.id,

@@ -10,7 +10,7 @@ const Report = function (report) {
 };
 
 const queryPandu = function (cabang, date, dbCabang = "") {
-    return `SELECT KD_PROSES, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' AND TO_NUMBER( KD_PROSES ) >= 3 AND TO_NUMBER( KD_PROSES ) <= 6 GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
+    return `SELECT KD_PROSES, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
 };
 
 const queryTunda = function (cabang, date, dbCabang = "") {
@@ -744,7 +744,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     //         `;
     // output1 = await f.query(query);
     // const rows = output1.rows;
-    
+
     var kepil = [], pandu = [], tunda = [];
     query = `SELECT ROWNUM as no, z.*
         FROM (
@@ -784,7 +784,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             `;
     kapal1 = await f.query(query);
     kepil = kapal1.rows;
-    
+
     // for (var a in rows) {
     //     if (rows[a].tipe_asset_id == "1") {
     //         tunda.push(rows[a]);
@@ -1058,11 +1058,11 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}, query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
         query = `SELECT MAX(KD_PROSES) AS KD_PROSES, MAX(NM_PERS_PANDU) AS NM_PERS_PANDU, SUM(GERAKAN_DN) AS GERAKAN_DN, SUM(GERAKAN_LN) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(GT_DN) AS GT_DN, SUM(GT_LN) AS GT_LN, SUM(TOTAL_GT) AS TOTAL_GT, SUM(LAMA_PANDU_DN) AS LAMA_PANDU_DN, SUM(LAMA_PANDU_LN) AS LAMA_PANDU_LN, SUM(TOTAL_LAMA_PANDU) AS TOTAL_LAMA_PANDU, SUM(WT_DN) AS WT_DN, SUM(WT_LN) AS WT_LN, SUM(TOTAL_WT) AS TOTAL_WT, SUM(TOTAL_PENDAPATAN_PANDU) AS TOTAL_PENDAPATAN_PANDU, SUM(PNBP_TOTAL_PENDAPATAN_PANDU) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a GROUP BY NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
-        query = `SELECT ROWNUM NO, a.KD_PROSES, a.NM_PERS_PANDU, a.GERAKAN_DN, a.GERAKAN_LN, a.TOTAL_GERAKAN, a.GT_DN, a.GT_LN, a.TOTAL_GT, a.LAMA_PANDU_DN, a.LAMA_PANDU_LN, a.TOTAL_LAMA_PANDU, a.WT_DN, a.WT_LN, a.TOTAL_WT, a.TOTAL_PENDAPATAN_PANDU, a.PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a`;
-        console.log(query);
+        query = `SELECT ROWNUM NO, a.KD_PROSES, a.NM_PERS_PANDU, a.GERAKAN_DN, a.GERAKAN_LN, a.TOTAL_GERAKAN, a.GT_DN, a.GT_LN, a.TOTAL_GT, a.LAMA_PANDU_DN, a.LAMA_PANDU_LN, a.TOTAL_LAMA_PANDU, a.WT_DN, a.WT_LN, a.TOTAL_WT, a.TOTAL_PENDAPATAN_PANDU, a.PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a WHERE KD_PROSES IN (3, 4, 5, 6)`;
+        console.log("output1", query);
         var output1 = await f.querySimop(query);
 
-        arr['global'] = output1.rows ? output1.rows : [];
+        arr['global'] = output1.rows || [];
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
@@ -1217,7 +1217,7 @@ Report.personelpeformance = async (req, result, cabang_id) => {
                 a.TOTAL_GERAKAN AS "gerakan",
                 a.TOTAL_GT AS "total_gt",
                 a.TOTAL_LAMA_PANDU AS "waiting_time"
-                FROM (${query}) a`;
+                FROM (${query}) a WHERE a.KD_PROSES IN (3, 4, 5, 6)`;
 
         var output1 = await f.querySimop(query);
         // console.log(req.fields);

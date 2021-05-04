@@ -107,9 +107,15 @@ User.login = async (req, result) => {
 User.updateById = async (id, user, result) => {
 
 	var arr = ["username", "nama", "password", "user_group_id", "role_id"];
-	user.password = f.hashCode(user.password)
+
+	if (user.password == "" || !user.password) {
+		console.log(user)
+		delete user.password;
+	} else {
+		user.password = f.hashCode(user.password)
+	}
+
 	var str = f.getValueUpdate(user, id, arr);
-	console.log(user);
 	f.query("UPDATE \"user\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	f.query("DELETE \"authorization\" WHERE \"user_id\" = '" + id + "'", 2);
 	result(null, { id: id, ...user });
