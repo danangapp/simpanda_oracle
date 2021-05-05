@@ -105,7 +105,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 		await f.query("INSERT INTO \"activity_log\" " + hval, 2);
 	}
 
-	const hv = await f.headerValue(valid, id);
+	const hv = await f.headerValue(newAssetKapal, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv;
 	// console.log("queryText", queryText);
 	const exec = f.query(queryText, 1);
