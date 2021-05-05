@@ -700,7 +700,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
                 LEFT JOIN "tipe_personil" c ON a."tipe_personil_id" = c."id"
             WHERE
-                a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1'
+                a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1' AND a."approval_status_id" = '1'
              `;
     output1 = await f.query(query);
     personil = output1.rows;
@@ -719,7 +719,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 LEFT JOIN "tipe_personil" d ON a."tipe_personil_id" = d."id"
             WHERE
                 a."cabang_id" = '${cabang}'
-                AND a."tipe_personil_id" = '5' AND a."enable" = '1'
+                AND a."tipe_personil_id" = '5' AND a."enable" = '1' AND a."approval_status_id" = '1'
             ORDER BY a."id" DESC
             `;
     output2 = await f.query(query);
@@ -753,7 +753,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 FROM
                     "asset_kapal" a
                 WHERE
-                    a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '1' AND a."enable" = '1'
+                    a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '1' AND a."enable" = '1' AND a."approval_status_id" = '1'
             ) z
             `;
     kapal1 = await f.query(query);
@@ -766,7 +766,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             FROM
                 "asset_kapal" a
             WHERE
-                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '2' AND a."enable" = '1'
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '2' AND a."enable" = '1' AND a."approval_status_id" = '1'
         ) z
             `;
     kapal1 = await f.query(query);
@@ -779,7 +779,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             FROM
                 "asset_kapal" a
             WHERE
-                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '3' AND a."enable" = '1'
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '3' AND a."enable" = '1' AND a."approval_status_id" = '1'
         ) z
             `;
     kapal1 = await f.query(query);
