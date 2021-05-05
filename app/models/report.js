@@ -704,10 +704,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 a."nama",
                 to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
                 a."kelas" AS "tingkat",
-                c."nama" AS "keterangan"
+                c."nama" AS "keterangan",
+                CASE WHEN b."jenis_cert_id" = '1' THEN b."no_sertifikat"
+                ELSE ''
+                END AS "coc",
+                CASE WHEN b."jenis_cert_id" = '2' THEN b."no_sertifikat"
+                ELSE ''
+                END AS "coe"
             FROM
                 "personil" a
-                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
+                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id" AND (b."jenis_cert_id" = '1' OR b."jenis_cert_id" = '2')
                 LEFT JOIN "tipe_personil" c ON a."tipe_personil_id" = c."id"
             WHERE
                 a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1' AND a."approval_status_id" = '1'
