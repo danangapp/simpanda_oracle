@@ -108,7 +108,7 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	const hv = await f.headerValue(newAssetKapal, id);
 	var queryText = "INSERT INTO \"asset_kapal\" " + hv;
 	// console.log("queryText", queryText);
-	const exec = f.query(queryText, 1);
+	const exec = f.query(queryText, 2);
 	delete newAssetKapal.id;
 	const res = await exec;
 

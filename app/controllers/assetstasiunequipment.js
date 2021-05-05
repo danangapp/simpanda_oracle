@@ -35,6 +35,7 @@ exports.create = (req, res) => {
         details: req.fields.details,
         lokasi_pemegang: req.fields.lokasi_pemegang,
         total_aktif: req.fields.total_aktif,
+        kategori_equipment: req.fields.kategori_equipment,
     };
 
     var used = {};
