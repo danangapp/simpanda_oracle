@@ -21,6 +21,7 @@ exports.create = (req, res) => {
         sarana_bantu_pemandu_personil: req.fields.sarana_bantu_pemandu_personil,
         personil_id: req.fields.personil_id,
         keterangan: req.fields.keterangan,
+        keterangan_sarana: req.fields.keterangan_sarana,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
