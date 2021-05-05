@@ -29,14 +29,16 @@ exports.create = (req, res) => {
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
         question: req.fields.question,
+        personil_id_kkm: req.fields.personil_id_kkm,
+        kkm_jabatan: req.fields.kkm_jabatan,
     };
 
-	var used = {};
-	for (var i in saranabantupemandu) {
-	    if (saranabantupemandu[i] == undefined) {
-	        delete saranabantupemandu[i];
-	    }
-	}
+    var used = {};
+    for (var i in saranabantupemandu) {
+        if (saranabantupemandu[i] == undefined) {
+            delete saranabantupemandu[i];
+        }
+    }
 
     SaranaBantuPemandu.create(saranabantupemandu, (err, data) => {
         if (err)
@@ -83,7 +85,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
+    req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
 
     SaranaBantuPemandu.updateById(
         req.params.id,

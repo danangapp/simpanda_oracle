@@ -15,6 +15,8 @@ const SaranaBantuPemandu = function (saranabantupemandu) {
 	this.sarana_bantu_pemandu_personil = saranabantupemandu.sarana_bantu_pemandu_personil;
 	this.personil_id = saranabantupemandu.personil_id;
 	this.keterangan = saranabantupemandu.keterangan;
+	this.personil_id_kkm = saranabantupemandu.personil_id_kkm;
+	this.kkm_jabatan = saranabantupemandu.kkm_jabatan;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -38,6 +40,7 @@ const setActivity = (objects, koneksi = 1) => {
 SaranaBantuPemandu.create = async (newSaranaBantuPemandu, result, cabang_id, user_id) => {
 	const question = newSaranaBantuPemandu.question;
 	newSaranaBantuPemandu = setActivity(newSaranaBantuPemandu);
+	delete newSaranaBantuPemandu.question;
 	var id = await f.getid("sarana_bantu_pemandu");
 	const hv = await f.headerValue(newSaranaBantuPemandu, id);
 	var queryText = "INSERT INTO \"sarana_bantu_pemandu\" " + hv + " RETURN \"id\" INTO :id";
@@ -123,7 +126,7 @@ SaranaBantuPemandu.updateById = async (id, saranabantupemandu, result, user_id) 
 		}
 	}
 
-	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil", "personil_id", "keterangan"];
+	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil", "personil_id", "keterangan", "personil_id_kkm", "kkm_jabatan"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
