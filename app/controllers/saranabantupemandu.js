@@ -21,6 +21,7 @@ exports.create = (req, res) => {
         sarana_bantu_pemandu_personil: req.fields.sarana_bantu_pemandu_personil,
         personil_id: req.fields.personil_id,
         keterangan: req.fields.keterangan,
+        keterangan_sarana: req.fields.keterangan_sarana,
         date: f.toDate(req.fields.date),
         item: req.fields.item,
         action: req.fields.action,
@@ -29,14 +30,16 @@ exports.create = (req, res) => {
         koneksi: req.fields.koneksi,
         keterangan: req.fields.keterangan,
         question: req.fields.question,
+        personil_id_kkm: req.fields.personil_id_kkm,
+        kkm_jabatan: req.fields.kkm_jabatan,
     };
 
-	var used = {};
-	for (var i in saranabantupemandu) {
-	    if (saranabantupemandu[i] == undefined) {
-	        delete saranabantupemandu[i];
-	    }
-	}
+    var used = {};
+    for (var i in saranabantupemandu) {
+        if (saranabantupemandu[i] == undefined) {
+            delete saranabantupemandu[i];
+        }
+    }
 
     SaranaBantuPemandu.create(saranabantupemandu, (err, data) => {
         if (err)
@@ -83,7 +86,7 @@ exports.update = (req, res) => {
         });
     }
 
-	req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
+    req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
 
     SaranaBantuPemandu.updateById(
         req.params.id,

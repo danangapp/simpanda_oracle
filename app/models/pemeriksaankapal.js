@@ -38,9 +38,7 @@ PemeriksaanKapal.create = async (newPemeriksaanKapal, result, cabang_id, user_id
 		check[i]['pemeriksaan_kapal_check_id'] = check[i]['id'];
 		var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
 		if (check[i].gambar) {
-			;
 			if (check[i].gambar.substring(0, 4) == "data") {
-				;
 				check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
 			};
 		};
@@ -50,6 +48,10 @@ PemeriksaanKapal.create = async (newPemeriksaanKapal, result, cabang_id, user_id
 		const hval = await f.headerValue(check[i], id_pkcd);
 		// console.log(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
 		await f.query(`INSERT INTO "pemeriksaan_kapal_check_data"` + hval);
+		if (check[i]['gambar']) {
+			var id_upload = await f.getid("pemeriksaan_kapal");
+			await f.query(`INSERT INTO "pemeriksaan_kapal_upload" ("pemeriksaan_kapal_id", "pemeriksaan_kapal_check_id", "gambar", "id") VALUES ('${check[i]['pemeriksaan_kapal_id']}', '${check[i]['pemeriksaan_kapal_check_id']}', '${check[i]['gambar']}', '${id_upload}')`);
+		}
 	}
 
 	objek.koneksi = id;
@@ -100,9 +102,7 @@ PemeriksaanKapal.updateById = async (id, pemeriksaankapal, result, user_id) => {
 		for (var i in check) {
 			var id_pkcd = await f.getid("pemeriksaan_kapal_check_data");
 			if (check[i].gambar) {
-				;
 				if (check[i].gambar.substring(0, 4) == "data") {
-					;
 					check[i].gambar = f.uploadFile64('pemeriksaan_kapal', check[i].gambar);;
 				};
 			};

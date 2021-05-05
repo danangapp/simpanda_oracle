@@ -95,6 +95,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
                     a."tanggal_awal",
                     a."tanggal_akhir",
                     a."keterangan",
+                    a."gambar",
                     ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
                 FROM
                     "pemeriksaan_kapal_check_data" a
@@ -106,6 +107,15 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
 
     var output1 = await f.query(query);
     var output = output1.rows;
+    var rows = output1.rows;
+
+    query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
+    var output1 = await f.query(query);
+    var rows2 = output1.rows;
+    console.log(rows2[0])
+    // for (var a in rows2) {
+    //     rows[a].gambar
+    // }
 
     query = `SELECT b."nama", c."nama_asset" FROM "pemeriksaan_kapal" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id" WHERE a."id" = '${id}'`;
     output1 = await f.query(query);
@@ -1240,6 +1250,7 @@ Report.shippeformance = async (req, result, cabang_id) => {
                 a.TOTAL_GERAKAN AS "gerakan", 
                 a.LAMA_TUNDA_KPL AS "total_waktu" 
                 FROM (${query}) a`;
+        console.log("pilotship", query);
 
         var output1 = await f.querySimop(query);
         var output = output1.rows;
