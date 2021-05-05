@@ -21,6 +21,7 @@ const AssetStasiunEquipment = function (assetstasiunequipment) {
 	this.total_aktif = assetstasiunequipment.total_aktif;
 	this.lokasi_pemegang = assetstasiunequipment.lokasi_pemegang;
 	this.details = assetstasiunequipment.details;
+	this.kategori_equipment = assetstasiunequipment.kategori_equipment;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -98,7 +99,7 @@ AssetStasiunEquipment.getAll = async (param, result, cabang_id) => {
 
 AssetStasiunEquipment.updateById = async (id, assetstasiunequipment, result, user_id) => {
 	
-	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable", "cabang_id", "alamat","sertifikat_equipment","tanggal_kadaluarsa","tanggal_terbit","tempat_keluar","lokasi_pemegang","total_aktif","details"];
+	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable", "cabang_id", "alamat","sertifikat_equipment","tanggal_kadaluarsa","tanggal_terbit","tempat_keluar","lokasi_pemegang","total_aktif","details","kategori_equipment"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
 	
 	await f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
