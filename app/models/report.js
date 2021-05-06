@@ -28,14 +28,18 @@ const getCabang = async function (cabang) {
 
 
 Report.saranabantupemandu = async (id, result, cabang_id, param) => {
-    var query = `SELECT d."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
+    var query = `SELECT d."nama", e."nama" AS "nama_kkm", a."kkm_jabatan", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
         b."negara_pembuat", b."horse_power", b."kecepatan", c."nama" AS "cabang", a."pelaksana", a."tanggal_pemeriksaan" FROM "sarana_bantu_pemandu" a
-        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" INNER JOIN "personil" d ON a."personil_id" = d."id" WHERE a."id" = '${id}'`;
+        INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" 
+        LEFT JOIN "personil" d ON a."personil_id" = d."id" 
+        LEFT JOIN "personil" e ON a."personil_id_kkm" = e."id"  WHERE a."id" = '${id}'`;
     var output1 = await f.query(query);
     var output = output1.rows;
     var arr = {}
     const jenis = output[0].tipe_asset_id;
     arr['nama'] = output[0].nama;
+    arr['nama_kkm'] = output[0].nama_kkm;
+    arr['kkm_jabatan'] = output[0].kkm_jabatan;
     arr['pelaksana'] = output[0].pelaksana;
     arr['cabang'] = output[0].cabang;
     arr['tanggal_pemeriksaan'] = f.toDate(output[0].tanggal_pemeriksaan, "DD MMM YYYY");
@@ -52,6 +56,9 @@ Report.saranabantupemandu = async (id, result, cabang_id, param) => {
     arr["v" + "00"] = output[0].status_ijazah_id == 1 ? "" : "";
     arr["tv" + "00"] = output[0].status_ijazah_id == 2 ? "" : "";
     arr["ta" + "00"] = output[0].status_ijazah_id == 0 ? "" : "";
+    arr["v" + "01"] = output[0].status_ijazah_id == 1 ? "" : "";
+    arr["tv" + "01"] = output[0].status_ijazah_id == 2 ? "" : "";
+    arr["ta" + "01"] = output[0].status_ijazah_id == 0 ? "" : "";
     // console.log(arr);
 
     query = `SELECT a.*, b."tipe_asset_id" FROM "sbp_data" a INNER JOIN "sarana_bantu_pemandu" b ON 
