@@ -143,9 +143,8 @@ SaranaBantuPemandu.updateById = async (id, saranabantupemandu, result, user_id) 
 		objek.remark = "Pengajuan dirubah oleh admin cabang";
 	}
 	const hval = await f.headerValue(objek, id_activity_log);
-	console.log(str)
-	// await f.query("INSERT INTO \"activity_log\" " + hval, 2);
-	// await f.query("UPDATE \"sarana_bantu_pemandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
+	await f.query("INSERT INTO \"activity_log\" " + hval, 2);
+	await f.query("UPDATE \"sarana_bantu_pemandu\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 	result(null, { id: id, ...saranabantupemandu });
 };
 

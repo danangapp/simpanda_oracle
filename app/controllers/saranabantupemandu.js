@@ -86,7 +86,7 @@ exports.update = (req, res) => {
         });
     }
 
-    req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
+    // req.fields.tanggal_pemeriksaan = f.toDate(req.fields.tanggal_pemeriksaan);
 
     SaranaBantuPemandu.updateById(
         req.params.id,
