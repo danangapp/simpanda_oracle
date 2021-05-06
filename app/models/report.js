@@ -84,6 +84,7 @@ Report.saranabantupemandu = async (id, result, cabang_id, param) => {
                     AND "personil_id" IS NOT NULL
             ) b ON a."id" = b."personil_id"
             WHERE a."tipe_personil_id" = '5'
+                AND a."approval_status_id" = 1
                 AND a."cabang_id" = '${cbg_id}'`;
     output1 = await f.query(query);
     output = output1.rows;
