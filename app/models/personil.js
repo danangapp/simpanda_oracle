@@ -278,7 +278,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		if (personil.approval_status_id == "1") {
 			const rows = await f.checkDataId("personil", id, personil);
 			var dt, smp;
-
+			
 			if (rows.pandu_bandar_laut_id == 2) {
 				dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
 				smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
@@ -314,6 +314,19 @@ Personil.updateById = async (id, personil, result, user_id) => {
 			objek.keterangan = personil.keterangan;
 		}
 		await f.approvalStatus("personil", personil, objek, id, user_id)
+		
+		const pendukung = await f.query(`SELECT * FROM "personil" WHERE "id" = '${id}'`);
+
+		if (pendukung.rows[0].jabatan === 'Master' || pendukung.rows[0].jabatan === 'Chief Engineer') {
+			await f.query(`UPDATE "personil" SET "enable" = '0', "approval_status_id" = '1' 
+				WHERE "id" != '${id}' 
+				AND "tipe_personil_id" = '${pendukung.rows[0].tipe_personil_id}'
+				AND "jabatan" = '${pendukung.rows[0].jabatan}' 
+				AND "enable" = '1' 
+				AND "asset_kapal_id" = '${pendukung.rows[0].asset_kapal_id}' 
+				AND "cabang_id" ='${pendukung.rows[0].cabang_id}' 
+				AND "approval_status_id" = 1`);
+		}
 
 		str = f.getValueUpdate(personil, id, arr);
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
