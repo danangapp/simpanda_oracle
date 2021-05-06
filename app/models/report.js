@@ -87,32 +87,50 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
 };
 
 Report.pemeriksaankapal = async (id, result, cabang_id) => {
-    var query = `SELECT
-                    ROWNUM "NO",
-                    b."question",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
-                    ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
-                    a."tanggal_awal",
-                    a."tanggal_akhir",
-                    a."keterangan",
-                    a."gambar",
-                    ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
+    var query = `SELECT ROWNUM AS
+                    "NO",
+                    a.*
                 FROM
-                    "pemeriksaan_kapal_check_data" a
-                INNER JOIN "pemeriksaan_kapal_check" b ON a."pemeriksaan_kapal_check_id" = b."id"
-                WHERE
-                    a."pemeriksaan_kapal_id" = '${id}'
-                ORDER BY
-                    b."id"`;
+                    (
+                    SELECT
+                        a."pemeriksaan_kapal_id",
+                        a."pemeriksaan_kapal_check_id",
+                        (CASE WHEN b."gambar" IS NULL THEN '' ELSE  CONCAT( 'http://10.88.49.27:4000/', b."gambar" ) END) AS "gambar",
+                        b."keterangan",
+                        c."question",
+                        ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
+                        ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
+                        a."tanggal_awal",
+                        a."tanggal_akhir",
+                        ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
+                    FROM
+                        "pemeriksaan_kapal_check_data" a
+                        LEFT JOIN (
+                        SELECT
+                            a."id",
+                            "pemeriksaan_kcd_id" AS "upload_id",
+                            "gambar",
+                            "keterangan",
+                            "pemeriksaan_kapal_id",
+                            "pemeriksaan_kapal_check_id"
+                        FROM
+                            "pemeriksaan_kapal_upload" a
+                            INNER JOIN ( SELECT MAX( "id" ) AS "id" FROM "pemeriksaan_kapal_upload" GROUP BY "pemeriksaan_kapal_id", "pemeriksaan_kapal_check_id" ) b ON a."id" = b."id"
+                        ) b ON a."id" = b."upload_id"
+                        INNER JOIN "pemeriksaan_kapal_check" c ON a."pemeriksaan_kapal_check_id" = c."id"
+                    ORDER BY
+                        a."pemeriksaan_kapal_id",
+                    a."pemeriksaan_kapal_check_id"
+                    ) a WHERE a."pemeriksaan_kapal_id" = '${id}'`;
 
     var output1 = await f.query(query);
     var output = output1.rows;
     var rows = output1.rows;
 
-    query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
-    var output1 = await f.query(query);
-    var rows2 = output1.rows;
-    console.log(rows2[0])
+    // query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
+    // var output1 = await f.query(query);
+    // var rows2 = output1.rows;
+    // console.log(rows2[0])
     // for (var a in rows2) {
     //     rows[a].gambar
     // }
@@ -1128,47 +1146,55 @@ Report.pilotship = async (req, result, cabang_id) => {
 
         query_get_kapal = `
             SELECT
-                NVL(a."day", '') AS "day",
-                NVL(a."date", '') AS "date",
-                NVL(b."nama_asset", '') AS "armada",
-                NVL(b."jam_operasi", '') AS "jam_operasi",
-                NVL(ROUND( b."jam_operasi" / 24 * 100, 2 ), '') AS "availability",
-                NVL(b."keterangan", '') AS "keterangan",
-                NVL(b."tipe_asset", '') AS "tipe_kapal"
-            FROM
-                (
+                c."nama_asset" as "armada",
+                a."jam_operasi",
+                NVL( ROUND( a."jam_operasi" / 24 * 100, 2 ), '' ) AS "availability",
+                a."keterangan",
+                d."nama" AS "tipe_kapal",
+                e."date"
+            FROM (
                 SELECT
-                    TO_CHAR( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'YYYY-MM-DD' ) AS "date",
-                    LEVEL AS "day" 
-                FROM
-                    dual CONNECT BY TRUNC( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'MM' ) = TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) 
-                ) a
-                LEFT JOIN (
-                SELECT
-                    TO_CHAR( a."from", 'YYYY-MM-DD' ) AS "date",
-                    b."nama_asset",
-                    MAX( a."keterangan" ) AS "keterangan",
-                    SUM( ROUND( ( a."to" - a."from" ) * 24, 2 ) ) AS "jam_operasi",
-                    MAX( d."nama" ) AS "tipe_asset" 
+                    MAX(a."keterangan") AS "keterangan",
+                    24 - SUM(ROUND( ( a."to" - a."from" ) * 24, 2 )) AS "jam_operasi",
+                    TO_CHAR(MAX(a."from"), 'YYYY-MM-DD') as "date",
+                    a."armada_schedule_id",
+                    a."asset_kapal_id"
                 FROM
                     "armada_jaga" a
-                    INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id"
-                    INNER JOIN "armada_schedule" c ON a."armada_schedule_id" = c."id"
-                    INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id" 
-                WHERE
-                    a."available" = '1' 
-                    AND c."cabang_id" = '${req.fields.cabang_id}' 
-                    AND TO_CHAR( c."date", 'YYYY-MM' ) = '${req.fields.date}'
-                GROUP BY
-                    TO_CHAR( a."from", 'YYYY-MM-DD' ),
-                    b."nama_asset"
-                ) b ON a."date" = b."date"
+                LEFT JOIN "armada_schedule" f ON a."armada_schedule_id" = f."id"
+                WHERE a."available" = '0'
+                AND TO_CHAR( a."from", 'YYYY-MM' ) = '${req.fields.date}'
+                AND f."cabang_id" = '${req.fields.cabang_id}'
+                GROUP BY a."armada_schedule_id",
+                    a."asset_kapal_id"
+            ) a
+            INNER JOIN (
+                SELECT
+                    TO_CHAR(MAX(a."from"), 'YYYY-MM-DD') as "date", a."armada_schedule_id"
+                FROM
+                    "armada_jaga" a 
+                LEFT JOIN "armada_schedule" f ON a."armada_schedule_id" = f."id"
+                WHERE a."available" = '0'
+                AND TO_CHAR( a."from", 'YYYY-MM' ) = '${req.fields.date}'
+                AND f."cabang_id" = '${req.fields.cabang_id}'
+                    GROUP BY a."armada_schedule_id"
+            ) b
+            ON a."date" = b."date" AND a."armada_schedule_id" = b."armada_schedule_id"
+            INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id"
+            INNER JOIN "tipe_asset" d ON c."tipe_asset_id" = d."id"
+            RIGHT JOIN (
+                SELECT
+                        TO_CHAR( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'YYYY-MM-DD' ) AS "date",
+                        LEVEL AS "day" 
+                FROM
+                        dual CONNECT BY TRUNC( TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' ) + LEVEL - 1, 'MM' ) = TRUNC( TO_DATE( '${req.fields.date}', 'YYYY-MM' ), 'MM' )
+            ) e ON a."date" = e."date"
             ORDER BY
-                a."date",
-                b."tipe_asset"
+                e."date",
+                d."nama"
         `;
 
-        console.log(query);
+        // console.log(query);
         var output1 = await f.query(query_get_kapal);
         var output2 = await f.query(query);
         var output_kapal = output1.rows;
