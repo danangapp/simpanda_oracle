@@ -26,7 +26,7 @@ const getCabang = async function (cabang) {
 };
 
 
-Report.saranabantupemandu = async (id, result, cabang_id) => {
+Report.saranabantupemandu = async (id, result, cabang_id, param) => {
     var query = `SELECT d."nama", a."jabatan", a."status_ijazah_id", a."tipe_asset_id", b."nama_asset", b."tahun_pembuatan",
         b."negara_pembuat", b."horse_power", b."kecepatan", c."nama" AS "cabang", a."pelaksana", a."tanggal_pemeriksaan" FROM "sarana_bantu_pemandu" a
         INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" INNER JOIN "cabang" c ON a."cabang_id" = c."id" INNER JOIN "personil" d ON a."personil_id" = d."id" WHERE a."id" = '${id}'`;
@@ -65,13 +65,39 @@ Report.saranabantupemandu = async (id, result, cabang_id) => {
     }
 
 
-    query = `SELECT "nama", "jabatan" FROM "personil" WHERE "tipe_personil_id" = '3' AND "cabang_id" = '${id}'`;
+    query = `SELECT "cabang_id" FROM "personil" WHERE "id"='${id}'`;
+    output1 = await f.query(query);
+    const cbg_id = output1.rows[0].cabang_id;
+
+    query = `SELECT a."id", a."nama",	a."jabatan",
+                    (CASE WHEN b."personil_id" IS NOT NULL THEN 1 ELSE 0 END) AS "valid",
+                    (CASE WHEN b."personil_id" IS NOT NULL THEN 0 ELSE 1 END) AS "tidakvalid"
+            FROM "personil" a
+            LEFT JOIN
+            (
+                SELECT
+                    "personil_id"
+                FROM
+                    "sertifikat"
+                WHERE
+                "tanggal_expire" > SYSDATE
+                    AND "personil_id" IS NOT NULL
+            ) b ON a."id" = b."personil_id"
+            WHERE a."tipe_personil_id" = '5'
+                AND a."cabang_id" = '${cbg_id}'`;
     output1 = await f.query(query);
     output = output1.rows;
+
+    for (var a in output) {
+        output[a].valid = output[a].valid == 1 ? "" : "";
+        output[a].tidakvalid = output[a].tidakvalid == 1 ? "" : "";
+    }
+
     for (var a in output) {
         output[a]['no'] = parseInt(a) + 1;
     }
     arr['operator'] = output;
+
     var d = new Date();
     var t = d.getTime();
     fs.readFile('./report/Report-Inspection-Sarana Bantu Pemanduan ' + jenis + '.xlsx', function async(err, dt) {
