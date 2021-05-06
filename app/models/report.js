@@ -818,13 +818,13 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             `;
     kapal1 = await f.query(query);
     kepil = kapal1.rows;
-    
+
     query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
             WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '4' AND "approval_status_id" = '1' AND "enable" = 1
             `;
     stasiun1 = await f.query(query);
     stasiun = stasiun1.rows;
-    
+
     query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
             WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '1' AND "approval_status_id" = '1' AND "enable" = 1
             `;
@@ -860,11 +860,11 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             `;
     rumah1 = await f.query(query);
     rumah = rumah1.rows;
-    
+
     console.log(rumah1);
-    
-    
-            
+
+
+
 
     // for (var a in rows) {
     //     if (rows[a].tipe_asset_id == "1") {
