@@ -722,13 +722,19 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 a."nama",
                 to_char(b."tanggal_expire",'DD-MM-YYYY')  as "tanggal_expires",
                 a."kelas" AS "tingkat",
-                c."nama" AS "keterangan"
+                c."nama" AS "keterangan",
+                CASE WHEN b."jenis_cert_id" = '1' THEN b."no_sertifikat"
+                ELSE ''
+                END AS "coc",
+                CASE WHEN b."jenis_cert_id" = '2' THEN b."no_sertifikat"
+                ELSE ''
+                END AS "coe"
             FROM
                 "personil" a
-                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id"
+                LEFT JOIN "sertifikat" b ON b."personil_id" = a."id" AND (b."jenis_cert_id" = '1' OR b."jenis_cert_id" = '2')
                 LEFT JOIN "tipe_personil" c ON a."tipe_personil_id" = c."id"
             WHERE
-                a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1'
+                a."cabang_id" = '${cabang}' AND a."enable" = '1' AND a."tipe_personil_id" = '1' AND a."approval_status_id" = '1'
              `;
     output1 = await f.query(query);
     personil = output1.rows;
@@ -747,7 +753,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 LEFT JOIN "tipe_personil" d ON a."tipe_personil_id" = d."id"
             WHERE
                 a."cabang_id" = '${cabang}'
-                AND a."tipe_personil_id" = '5' AND a."enable" = '1'
+                AND a."tipe_personil_id" = '5' AND a."enable" = '1' AND a."approval_status_id" = '1'
             ORDER BY a."id" DESC
             `;
     output2 = await f.query(query);
@@ -781,7 +787,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
                 FROM
                     "asset_kapal" a
                 WHERE
-                    a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '1' AND a."enable" = '1'
+                    a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '1' AND a."enable" = '1' AND a."approval_status_id" = '1'
             ) z
             `;
     kapal1 = await f.query(query);
@@ -794,7 +800,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             FROM
                 "asset_kapal" a
             WHERE
-                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '2' AND a."enable" = '1'
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '2' AND a."enable" = '1' AND a."approval_status_id" = '1'
         ) z
             `;
     kapal1 = await f.query(query);
@@ -807,11 +813,58 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
             FROM
                 "asset_kapal" a
             WHERE
-                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '3' AND a."enable" = '1'
+                a."cabang_id" = '${cabang}' AND a."tipe_asset_id" = '3' AND a."enable" = '1' AND a."approval_status_id" = '1'
         ) z
             `;
     kapal1 = await f.query(query);
     kepil = kapal1.rows;
+    
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '4' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    stasiun1 = await f.query(query);
+    stasiun = stasiun1.rows;
+    
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '1' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    vhf1 = await f.query(query);
+    vhf = vhf1.rows;
+
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '2' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    ht1 = await f.query(query);
+    ht = ht1.rows;
+
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '3' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    jacket1 = await f.query(query);
+    jacket = jacket1.rows;
+
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '4' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    kendaraan1 = await f.query(query);
+    kendaraan = kendaraan1.rows;
+
+    query = `SELECT CONCAT(to_char(NVL(COUNT(*), 0)),' UNIT') as "unit" FROM "asset_stasiun_equipment" 
+            WHERE "cabang_id" = '${cabang}' AND "tipe_asset_id" = '5' AND "kategori_equipment" = '5' AND "approval_status_id" = '1' AND "enable" = 1
+            `;
+    ais1 = await f.query(query);
+    ais = ais1.rows;
+
+    query = `SELECT CONCAT(to_char(NVL(SUM("satuan"), 0)),' UNIT') AS "unit"
+            FROM "asset_rumah_dinas" WHERE "cabang_id" = '${cabang}' AND "approval_status_id" = '1' AND "enable" = 1    
+            `;
+    rumah1 = await f.query(query);
+    rumah = rumah1.rows;
+    
+    console.log(rumah1);
+    
+    
+            
 
     // for (var a in rows) {
     //     if (rows[a].tipe_asset_id == "1") {
@@ -842,7 +895,13 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     arr['tunda'] = tunda;
     arr['pandu'] = pandu;
     arr['kepil'] = kepil;
-    console.log(arr.personil);
+    arr['stasiun'] = stasiun;
+    arr['vhf'] = vhf;
+    arr['ht'] = ht;
+    arr['jacket'] = jacket;
+    arr['kendaraan'] = kendaraan;
+    arr['ais'] = ais;
+    arr['rumah'] = rumah;
 
 
     var d = new Date();
