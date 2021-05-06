@@ -127,7 +127,7 @@ SaranaBantuPemandu.updateById = async (id, saranabantupemandu, result, user_id) 
 		}
 	}
 
-	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil", "personil_id", "keterangan", "personil_id_kkm", "kkm_jabatan"];
+	var arr = ["approval_status_id", "cabang_id", "tanggal_pemeriksaan", "pelaksana", "nama", "tipe_asset_id", "jabatan", "asset_kapal_id", "status_ijazah_id", "sarana_bantu_pemandu_personil", "personil_id", "keterangan_sarana", "personil_id_kkm", "kkm_jabatan"];
 	var str = f.getValueUpdate(saranabantupemandu, id, arr);
 	var id_activity_log = await f.getid("activity_log");
 	objek.koneksi = id;
