@@ -90,8 +90,8 @@ AssetKapal.create = async (newAssetKapal, result, cabang_id, user_id) => {
 	let valid = newAssetKapal
 
 
-	newAssetKapal.simop_kd_fas = newAssetKapal.kd_fas;
-	delete newAssetKapal.kd_fas;
+	// newAssetKapal.simop_kd_fas = newAssetKapal.kd_fas;
+	// delete newAssetKapal.kd_fas;
 	if (newAssetKapal.isFromSimop || newAssetKapal.is_from_simop) {
 		delete newAssetKapal.is_from_simop;
 	} else {
@@ -195,8 +195,9 @@ AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 
 		if (assetkapal.approval_status_id == "1") {
 			const rows = await f.checkDataId("asset_kapal", id, assetkapal);
-			const roww = await f.query(`SELECT "simop_kd_fas" FROM "asset_kapal" WHERE "id"='${id}'`);
-			// assetkapal['simop_kd_fas'] = roww.rows[0].simop_kd_fas;
+			const roww = await f.query(`SELECT "kd_fas" FROM "asset_kapal" WHERE "id"='${id}'`);
+			assetkapal['simop_kd_fas'] = roww.rows[0].kd_fas;
+			console.log("kd_fas", roww.rows[0].kd_fas);
 			var dt = await simop.cekBody(assetkapal.simop_kd_fas ? assetkapal.simop_kd_fas : assetkapal.kd_fas, rows, rows.cabang_id != 1 ? "cabang" : "prod");
 			var smp = await simop.insertFasilitasKapal(dt, rows.simop_kd_fas ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
 		}
