@@ -99,7 +99,7 @@ AssetStasiunEquipment.getAll = async (param, result, cabang_id) => {
 
 AssetStasiunEquipment.updateById = async (id, assetstasiunequipment, result, user_id) => {
 	
-	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable", "cabang_id", "alamat","sertifikat_equipment","tanggal_kadaluarsa","tanggal_terbit","tempat_keluar","lokasi_pemegang","total_aktif","details","kategori_equipment"];
+	var arr = ["nomor_asset", "tipe_asset_id", "nama", "tahun_perolehan", "nilai_perolehan", "kondisi", "approval_status_id", "enable", "cabang_id", "alamat","sertifikat_equipment","tanggal_kadaluarsa","tanggal_terbit","tempat_keluar","lokasi_pemegang","total_aktif","details","kategori_equipment","nomor_sertifikat"];
 	var str = f.getValueUpdate(assetstasiunequipment, id, arr);
 	
 	await f.query("UPDATE \"asset_stasiun_equipment\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
