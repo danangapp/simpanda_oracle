@@ -1598,25 +1598,25 @@ Report.kapal = async (req, result, cabang_id) => {
     }
 }
 
-Report.stasiunpandu = async (req, result, cabang_id) => {
+Report.stasiunpandu_and_equipment = async (req, result, cabang_id) => {
 
     if (req.fields) {
         const cabang = req.fields.cabang_id;
 
-        var query = `SELECT rownum as no,
-            c."nama" as cabang,
+        var query = `SELECT ROWNUM as no, z.*
+        FROM (SELECT c."nama" as cabang,
             b."nama" as jenis_asset,
             a."nama" as nama_asset,
             a."nomor_asset" as nomor_asset,
             a."tahun_perolehan" as tahun_peroleh,
-            d."nama" as kondisi,
+            a."kondisi" as kondisi,
             a."nilai_perolehan" as nilai
             
-            from "asset_stasiun_equipment" a
+            FROM "asset_stasiun_equipment" a
             LEFT JOIN "tipe_asset" b ON a."tipe_asset_id" = b."id"
             LEFT JOIN "cabang" c ON a."cabang_id" = c."id"
-            LEFT JOIN "kondisi" d ON d."id" = a."kondisi"
             WHERE a."id" IN (${cabang})
+            ) z
         `;
 
         var output1 = await f.query(query);
