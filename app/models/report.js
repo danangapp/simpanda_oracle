@@ -737,7 +737,7 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     const cabang = output.cabang_id;
     var arr = {}, personil = [], radio = [], tunda = [], kepil = [], pandu = [], EP = [];
 
-    query = `SELECT * FROM "evaluasi_pelimpahan" WHERE "id" = '${id}'`;
+    query = `SELECT a.*, b."nama" AS "cabang" FROM "evaluasi_pelimpahan" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" WHERE a."id" = '${id}'`;
     output1 = await f.query(query);
     EP = output1.rows;
 
@@ -925,6 +925,8 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
     ep['uncek4'] = ep.check_tarif_jasa_pandu_tunda == 0 ? "V" : "";
     ep['cek5'] = ep.check_data_dukung == 1 ? "V" : "";
     ep['uncek5'] = ep.check_data_dukung == 0 ? "V" : "";
+    ep['cabang'] = ep.cabang;
+
     arr['ep'] = ep;
     arr['personil'] = personil;
     arr['radio'] = radio;
