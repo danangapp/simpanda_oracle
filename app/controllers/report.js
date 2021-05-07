@@ -339,9 +339,9 @@ exports.kapal = async (req, res) => {
     }, req.cabang_id);
 };
 
-exports.stasiunpandu = async (req, res) => {
+exports.stasiunpandu_and_equipment = async (req, res) => {
 
-    Report.stasiunpandu(req, (err, data) => {
+    Report.stasiunpandu_and_equipment(req, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
