@@ -186,18 +186,18 @@ AssetKapal.getAll = async (param, result, cabang_id) => {
 
 AssetKapal.updateById = async (id, assetkapal, result, user_id, cabang_id) => {
 	// console.log("assetkapalnya ya", assetkapal);
-	var check = `SELECT "simop_kd_fas","nama_asset" FROM "asset_kapal"
-					WHERE LOWER("simop_kd_fas") like LOWER('%${assetkapal.kd_fas}%')
-					OR LOWER("nama_asset") like LOWER('%${assetkapal.nama_asset}%') AND "id" != '${id}'`
-	var dataCheck = await f.query(check)
-	if (dataCheck.rows.length > 0) {
-		if (dataCheck.rows[0].simop_kd_fas.toLowerCase() === assetkapal.kd_fas.toLowerCase()) {
-			result(null, { 'status': false, 'message': 'Maaf, Kode fasilitas yang anda pilih sudah tersedia !' })
-		}else if(dataCheck.rows[0].nama_asset.toLowerCase() === assetkapal.nama_asset.toLowerCase()){
-			result(null, { 'status': false, 'message': 'Maaf, Nama kapal yang anda pilih sudah tersedia !' })
-		}
-		return false
-	}
+	// var check = `SELECT "simop_kd_fas","nama_asset" FROM "asset_kapal"
+	// 				WHERE LOWER("simop_kd_fas") like LOWER('%${assetkapal.kd_fas}%')
+	// 				OR LOWER("nama_asset") like LOWER('%${assetkapal.nama_asset}%') AND "id" != '${id}'`
+	// var dataCheck = await f.query(check)
+	// if (dataCheck.rows.length > 0) {
+	// 	if (dataCheck.rows[0].simop_kd_fas.toLowerCase() === assetkapal.kd_fas.toLowerCase()) {
+	// 		result(null, { 'status': false, 'message': 'Maaf, Kode fasilitas yang anda pilih sudah tersedia !' })
+	// 	}else if(dataCheck.rows[0].nama_asset.toLowerCase() === assetkapal.nama_asset.toLowerCase()){
+	// 		result(null, { 'status': false, 'message': 'Maaf, Nama kapal yang anda pilih sudah tersedia !' })
+	// 	}
+	// 	return false
+	// }
 
 	assetkapal.simop_kd_fas = assetkapal.kd_fas;
 	const sertifikat = assetkapal.sertifikat;
