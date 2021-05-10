@@ -77,18 +77,20 @@ Report.saranabantupemandu = async (id, result, cabang_id, param) => {
     output1 = await f.query(query);
     const cbg_id = output1.rows[0].cabang_id;
 
-    query = `SELECT a."id", a."nama",	a."jabatan",
+    query = `SELECT a."id", a."nama", a."jabatan", b."keterangan",
                     (CASE WHEN b."personil_id" IS NOT NULL THEN 1 ELSE 0 END) AS "valid",
                     (CASE WHEN b."personil_id" IS NOT NULL THEN 0 ELSE 1 END) AS "tidakvalid"
             FROM "personil" a
             LEFT JOIN
             (
                 SELECT
-                    "personil_id"
+                    "sertifikat"."personil_id",
+                    "jenis_cert"."nama" AS "keterangan"
                 FROM
                     "sertifikat"
+                    LEFT JOIN "jenis_cert" ON "sertifikat"."jenis_cert_id" = "jenis_cert"."id"
                 WHERE
-                "tanggal_expire" > SYSDATE
+                    "tanggal_expire" > SYSDATE
                     AND "personil_id" IS NOT NULL
             ) b ON a."id" = b."personil_id"
             WHERE a."tipe_personil_id" = '5'
@@ -101,6 +103,7 @@ Report.saranabantupemandu = async (id, result, cabang_id, param) => {
     for (var a in output) {
         output[a].valid = output[a].valid == 1 ? "" : "";
         output[a].tidakvalid = output[a].tidakvalid == 1 ? "" : "";
+        output[a].jabatan = "Radio Operator";
     }
 
     for (var a in output) {
