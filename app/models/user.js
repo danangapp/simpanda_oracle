@@ -13,6 +13,14 @@ const User = function (user) {
 };
 
 User.create = async (newUser, result) => {
+	var check = `SELECT "username" FROM "user" WHERE "username" = '${newUser.username}'`
+	var dataCheck = await f.query(check)
+
+	if (dataCheck.rows.length > 0) {
+		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
+		return false
+	}
+
 	var rand = function () {
 		return Math.random().toString(36).substr(2); // remove `0.`
 	};
@@ -105,6 +113,14 @@ User.login = async (req, result) => {
 };
 
 User.updateById = async (id, user, result) => {
+
+	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
+	var dataCheck = await f.query(check)
+
+	if (dataCheck.rows.length > 0) {
+		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
+		return false
+	}
 
 	var arr = ["username", "nama", "password", "user_group_id", "role_id"];
 
