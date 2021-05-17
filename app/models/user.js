@@ -17,7 +17,9 @@ User.create = async (newUser, result) => {
 	var dataCheck = await f.query(check)
 
 	if (dataCheck.rows.length > 0) {
-		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
+		if (dataCheck.rows[0].username.toLowerCase() === newUser.username.toLowerCase()) {
+			result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
+		}
 		return false
 	}
 
