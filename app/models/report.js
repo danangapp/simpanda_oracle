@@ -1000,10 +1000,20 @@ Report.crewlist = async (req, result, cabang_id) => {
         ) z
             
         `;
-
+            console.log(query)
         var output1 = await f.query(query);
         var output = output1.rows;
+
+        var query = `
+            SELECT "nama" as "cabang" FROM "cabang" WHERE "id" = '${cabang_id}'
+            
+        `;
+
+        var output2 = await f.query(query);
+        var cabang = output2.rows;
+
         arr['pandu'] = output;
+        arr['cabang'] = cabang;
 
         console.log(arr)
 
