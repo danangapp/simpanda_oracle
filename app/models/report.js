@@ -966,11 +966,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 
 Report.crewlist = async (req, result, cabang_id) => {
-    if (req.fields.cabang_id) {
+    // if (req.fields.cabang_id) {
         // const date = req.fields.date;
         // const date1 = date.split("-");
+        var where = ''
         var arr = {};
-
+        if (req.fields.cabang_id === undefined) {
+            where = ''
+        }else{
+            where = 'AND a."cabang_id" = '+req.fields.cabang_id || cabang_id+''
+        }
         var query = `
         SELECT ROWNUM as no, z.*
         FROM (
@@ -985,14 +990,13 @@ Report.crewlist = async (req, result, cabang_id) => {
             c."nama" AS "cabang",
             a."tipe_personil_id",
             d."nama" AS "fleet"
-            
             from "personil" a 
             INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" 
             INNER JOIN "cabang" c ON a."cabang_id" = c."id"
             INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
             where a."tipe_personil_id" IN (2,3,4) 
             AND a."approval_status_id" = '1' 
-            AND a."cabang_id" = '${req.fields.cabang_id || cabang_id}'
+            ${where}
         ) z
             
         `;
@@ -1015,9 +1019,9 @@ Report.crewlist = async (req, result, cabang_id) => {
         });
 
         // result(null, output);
-    } else {
-        result(null, { "status": "error no data" });
-    }
+    // } else {
+    //     result(null, { "status": "error no data" });
+    // }
 };
 
 
