@@ -1660,6 +1660,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             a."wilayah" as wilayah,
             a."satuan" as satuan,
             a."nilai_perolehan" as nilai_peroleh,
+            a."keterangan_rumah_dinas" as keterangan,
             a."nilai_buku" as nilai_buku,
             a."nilai" as nilai_perawatan,
             a."catatan" as catatan_perawatan,
