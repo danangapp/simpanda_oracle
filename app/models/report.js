@@ -967,16 +967,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 Report.crewlist = async (req, result, cabang_id) => {
     // if (req.fields.cabang_id) {
-        // const date = req.fields.date;
-        // const date1 = date.split("-");
-        var where = ''
-        var arr = {};
-        if (req.fields.cabang_id === undefined) {
-            where = ''
-        }else{
-            where = 'AND a."cabang_id" = '+req.fields.cabang_id || cabang_id+''
-        }
-        var query = `
+    // const date = req.fields.date;
+    // const date1 = date.split("-");
+    var where = ''
+    var arr = {};
+    if (req.fields.cabang_id === undefined) {
+        where = ''
+    } else {
+        where = 'AND a."cabang_id" = ' + req.fields.cabang_id || cabang_id + ''
+    }
+    var query = `
         SELECT ROWNUM as no, z.*
         FROM (
             SELECT 
@@ -1000,35 +1000,35 @@ Report.crewlist = async (req, result, cabang_id) => {
         ) z
             
         `;
-            console.log(query)
-        var output1 = await f.query(query);
-        var output = output1.rows;
+    console.log(query)
+    var output1 = await f.query(query);
+    var output = output1.rows;
 
-        var query = `
+    var query = `
             SELECT "nama" as "cabang" FROM "cabang" WHERE "id" = '${cabang_id}'
             
         `;
 
-        var output2 = await f.query(query);
-        var cabang = output2.rows;
+    var output2 = await f.query(query);
+    var cabang = output2.rows;
 
-        arr['pandu'] = output;
-        arr['cabang'] = cabang;
+    arr['pandu'] = output;
+    arr['cabang'] = cabang;
 
-        console.log(arr)
+    console.log(arr)
 
-        var d = new Date();
-        var t = d.getTime();
-        fs.readFile('./report/Report-Customize Report-Crew List.xlsx', function async(err, dt) {
-            var template = new XlsxTemplate(dt);
-            template.substitute(1, arr);
-            var out = template.generate();
-            const fileName = './files/reports/crewlist' + t + '.xlsx';
-            fs.writeFileSync(fileName, out, 'binary');
-            result(null, t + '.xlsx');
-        });
+    var d = new Date();
+    var t = d.getTime();
+    fs.readFile('./report/Report-Customize Report-Crew List.xlsx', function async(err, dt) {
+        var template = new XlsxTemplate(dt);
+        template.substitute(1, arr);
+        var out = template.generate();
+        const fileName = './files/reports/crewlist' + t + '.xlsx';
+        fs.writeFileSync(fileName, out, 'binary');
+        result(null, t + '.xlsx');
+    });
 
-        // result(null, output);
+    // result(null, output);
     // } else {
     //     result(null, { "status": "error no data" });
     // }
@@ -1669,6 +1669,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             a."alamat" as alamat,
             a."wilayah" as wilayah,
             a."satuan" as satuan,
+            a."status_kepemilikan" as status_kepemilikan,
             a."nilai_perolehan" as nilai_peroleh,
             a."keterangan_rumah_dinas" as keterangan,
             a."nilai_buku" as nilai_buku,
