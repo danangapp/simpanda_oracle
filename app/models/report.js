@@ -174,13 +174,22 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     //     rows[a].gambar
     // }
 
-    query = `SELECT b."nama", c."nama_asset" FROM "pemeriksaan_kapal" a INNER JOIN "cabang" b ON a."cabang_id" = b."id" INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id" WHERE a."id" = '${id}'`;
+    query = `SELECT b."nama" as "nama", c."nama_asset" as "nama_asset", d."nama" as "tipe_asset"
+            FROM "pemeriksaan_kapal" a 
+            INNER JOIN "cabang" b ON a."cabang_id" = b."id" 
+            INNER JOIN "asset_kapal" c ON a."asset_kapal_id" = c."id" 
+            INNER JOIN "tipe_asset" d ON c."tipe_asset_id" = d."id" 
+            WHERE a."id" = '${id}'
+    `;
     output1 = await f.query(query);
     var arr = {};
     arr['cabang'] = output1.rows[0].nama;
     arr['kapal'] = output1.rows[0].nama_asset;
+    arr['tipe_asset'] = output1.rows[0].tipe_asset;
     // console.log(cabang);
     arr['pk'] = output;
+
+    // console.log(arr);
 
     var d = new Date();
     var t = d.getTime();
@@ -1014,7 +1023,7 @@ Report.crewlist = async (req, result, cabang_id) => {
     var cabang = output2.rows;
 
     arr['pandu'] = output;
-    arr['cabang'] = cabang;
+    arr['cabang'] = output2.rows[0].cabang;
 
     console.log(arr)
 
