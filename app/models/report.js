@@ -1667,7 +1667,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             a."no_asset" as nomor_asset,
             a."tahun_perolehan" as tahun_peroleh,
             a."alamat" as alamat,
-            a."wilayah" as wilayah,
+            b."nama" as wilayah,
             a."satuan" as satuan,
             a."status_kepemilikan" as status_kepemilikan,
             a."nilai_perolehan" as nilai_peroleh,
@@ -1679,6 +1679,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             to_char(a."tanggal",'DD-MM-YYYY') as tanggal_perawatan
         
             from "asset_rumah_dinas" a
+            INNER JOIN "cabang" b ON a."cabang_id" = b."id"
             WHERE a."id" IN (${cabang})
         `;
 
