@@ -18,6 +18,7 @@ const AssetRumahDinas = function (assetrumahdinas) {
 	this.keterangan = assetrumahdinas.keterangan;
 	this.keterangan_rumah_dinas = assetrumahdinas.keterangan_rumah_dinas;
 	this.no_asset = assetrumahdinas.no_asset;
+	this.status_kepemilikan = assetrumahdinas.status_kepemilikan;
 };
 
 const setActivity = (objects, koneksi = 1) => {
@@ -96,7 +97,7 @@ AssetRumahDinas.getAll = async (param, result, cabang_id) => {
 
 AssetRumahDinas.updateById = async (id, assetrumahdinas, result, user_id) => {
 
-	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset","cabang_id"];
+	var arr = ["nama_asset", "satuan", "tahun_perolehan", "nilai_perolehan", "wilayah", "nilai_buku", "approval_status_id", "tanggal", "nilai", "catatan", "enable", "alamat", "keterangan_rumah_dinas", "no_asset", "cabang_id", "status_kepemilikan"];
 	var str = f.getValueUpdate(assetrumahdinas, id, arr);
 	await f.query("UPDATE \"asset_rumah_dinas\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
 
