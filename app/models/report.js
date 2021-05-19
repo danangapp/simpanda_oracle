@@ -971,7 +971,7 @@ Report.crewlist = async (req, result, cabang_id) => {
         // const date1 = date.split("-");
         var where = ''
         var arr = {};
-        if (req.fields.cabang_id === undefined) {
+        if (req.fields.cabang_id === undefined || req.fields.cabang_id === 0) {
             where = ''
         }else{
             where = 'AND a."cabang_id" = '+req.fields.cabang_id || cabang_id+''
@@ -996,6 +996,7 @@ Report.crewlist = async (req, result, cabang_id) => {
             INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
             where a."tipe_personil_id" IN (2,3,4) 
             AND a."approval_status_id" = '1' 
+            AND a."enable" = '1' 
             ${where}
         ) z
             
@@ -1667,7 +1668,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             a."no_asset" as nomor_asset,
             a."tahun_perolehan" as tahun_peroleh,
             a."alamat" as alamat,
-            a."wilayah" as wilayah,
+            b."nama" as wilayah,
             a."satuan" as satuan,
             a."nilai_perolehan" as nilai_peroleh,
             a."keterangan_rumah_dinas" as keterangan,
@@ -1678,6 +1679,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             to_char(a."tanggal",'DD-MM-YYYY') as tanggal_perawatan
         
             from "asset_rumah_dinas" a
+            LEFT JOIN "cabang" b ON a."cabang_id" = b."id"
             WHERE a."id" IN (${cabang})
         `;
 
