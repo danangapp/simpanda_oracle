@@ -1001,35 +1001,35 @@ Report.crewlist = async (req, result, cabang_id) => {
         ) z
             
         `;
-            console.log(query)
-        var output1 = await f.query(query);
-        var output = output1.rows;
+    console.log(query)
+    var output1 = await f.query(query);
+    var output = output1.rows;
 
-        var query = `
+    var query = `
             SELECT "nama" as "cabang" FROM "cabang" WHERE "id" = '${cabang_id}'
             
         `;
 
-        var output2 = await f.query(query);
-        var cabang = output2.rows;
+    var output2 = await f.query(query);
+    var cabang = output2.rows;
 
-        arr['pandu'] = output;
-        arr['cabang'] = cabang;
+    arr['pandu'] = output;
+    arr['cabang'] = cabang;
 
-        console.log(arr)
+    console.log(arr)
 
-        var d = new Date();
-        var t = d.getTime();
-        fs.readFile('./report/Report-Customize Report-Crew List.xlsx', function async(err, dt) {
-            var template = new XlsxTemplate(dt);
-            template.substitute(1, arr);
-            var out = template.generate();
-            const fileName = './files/reports/crewlist' + t + '.xlsx';
-            fs.writeFileSync(fileName, out, 'binary');
-            result(null, t + '.xlsx');
-        });
+    var d = new Date();
+    var t = d.getTime();
+    fs.readFile('./report/Report-Customize Report-Crew List.xlsx', function async(err, dt) {
+        var template = new XlsxTemplate(dt);
+        template.substitute(1, arr);
+        var out = template.generate();
+        const fileName = './files/reports/crewlist' + t + '.xlsx';
+        fs.writeFileSync(fileName, out, 'binary');
+        result(null, t + '.xlsx');
+    });
 
-        // result(null, output);
+    // result(null, output);
     // } else {
     //     result(null, { "status": "error no data" });
     // }
@@ -1670,6 +1670,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             a."alamat" as alamat,
             b."nama" as wilayah,
             a."satuan" as satuan,
+            a."status_kepemilikan" as status_kepemilikan,
             a."nilai_perolehan" as nilai_peroleh,
             a."keterangan_rumah_dinas" as keterangan,
             a."nilai_buku" as nilai_buku,
@@ -1679,7 +1680,7 @@ Report.rumahdinas = async (req, result, cabang_id) => {
             to_char(a."tanggal",'DD-MM-YYYY') as tanggal_perawatan
         
             from "asset_rumah_dinas" a
-            LEFT JOIN "cabang" b ON a."cabang_id" = b."id"
+            INNER JOIN "cabang" b ON a."cabang_id" = b."id"
             WHERE a."id" IN (${cabang})
         `;
 
