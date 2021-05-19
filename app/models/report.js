@@ -969,7 +969,6 @@ Report.crewlist = async (req, result, cabang_id) => {
     // if (req.fields.cabang_id) {
         // const date = req.fields.date;
         // const date1 = date.split("-");
-        console.log("aaaaa",req.fields.cabang_id)
         var where = ''
         var arr = {};
         if (req.fields.cabang_id === undefined || req.fields.cabang_id === 0 || req.fields.cabang_id === '')  {
