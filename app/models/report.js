@@ -976,16 +976,16 @@ Report.evaluasipelimpahan = async (id, result, cabang_id) => {
 
 Report.crewlist = async (req, result, cabang_id) => {
     // if (req.fields.cabang_id) {
-        // const date = req.fields.date;
-        // const date1 = date.split("-");
-        var where = ''
-        var arr = {};
-        if (req.fields.cabang_id === undefined || req.fields.cabang_id === 0 || req.fields.cabang_id === '')  {
-            where = ''
-        }else{
-            where = 'AND a."cabang_id" = '+req.fields.cabang_id || cabang_id+''
-        }
-        var query = `
+    // const date = req.fields.date;
+    // const date1 = date.split("-");
+    var where = ''
+    var arr = {};
+    if (req.fields.cabang_id === undefined || req.fields.cabang_id === 0 || req.fields.cabang_id === '') {
+        where = ''
+    } else {
+        where = 'AND a."cabang_id" = ' + req.fields.cabang_id || cabang_id + ''
+    }
+    var query = `
         SELECT ROWNUM as no, z.*
         FROM (
             SELECT 
@@ -994,7 +994,7 @@ Report.crewlist = async (req, result, cabang_id) => {
             a."nama" AS "personil",
             a."jabatan" AS "jabatan",
             a."nomor_hp" AS "nomor_hp",
-            a."manning" AS "manning",
+            e."nama" AS "manning",
             a."agency" AS "agency",
             c."nama" AS "cabang",
             a."tipe_personil_id",
@@ -1003,6 +1003,7 @@ Report.crewlist = async (req, result, cabang_id) => {
             INNER JOIN "asset_kapal" b ON a."asset_kapal_id" = b."id" 
             INNER JOIN "cabang" c ON a."cabang_id" = c."id"
             INNER JOIN "tipe_asset" d ON b."tipe_asset_id" = d."id"
+            INNER JOIN "manning" e ON a."manning" = e."id"
             where a."tipe_personil_id" IN (2,3,4) 
             AND a."approval_status_id" = '1' 
             AND a."enable" = '1' 
