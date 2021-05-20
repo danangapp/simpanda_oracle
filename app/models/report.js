@@ -1015,7 +1015,7 @@ Report.crewlist = async (req, result, cabang_id) => {
     var output = output1.rows;
 
     var query = `
-            SELECT "nama" as "cabang" FROM "cabang" WHERE "id" = '${cabang_id}'
+            SELECT (CASE WHEN "id" = 0 THEN 'SEMUA CABANG' ELSE CONCAT('CABANG ',"nama") END) as "cabang" FROM "cabang" WHERE "id" = '${cabang_id}'
             
         `;
 
@@ -1452,7 +1452,7 @@ Report.pandu = async (req, result, cabang_id) => {
             LEFT JOIN "jenis_cert" i ON i."id" = h."jenis_cert_id"
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             WHERE a."id" IN (${cabang})
-            ORDER BY c."id" asc
+            ORDER BY c."nama" asc
         ) z
         
         
@@ -1602,7 +1602,7 @@ Report.kapal = async (req, result, cabang_id) => {
             LEFT JOIN "tipe_cert" j ON j."id" = h."tipe_cert_id"
             LEFT JOIN "kepemilikan_kapal" k ON k."id" = a."kepemilikan_kapal_id"
             WHERE a."id" IN (${cabang})
-            ORDER BY c."id" asc
+            ORDER BY a."nama_asset" asc
         ) z
         `;
 
