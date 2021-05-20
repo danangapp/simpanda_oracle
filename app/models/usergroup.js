@@ -12,6 +12,18 @@ UserGroup.create = async (newUserGroup, result, cabang_id, user_id) => {
 	const user_access = newUserGroup.user_access;
 	delete newUserGroup.user_access;
 	var id = await f.getid("user_group");
+
+	var check = `SELECT "nama" FROM "user_group" 
+					WHERE LOWER("nama") like LOWER('%${newUserGroup.nama}%')`
+	var dataCheck = await f.query(check)
+	if (dataCheck.rows.length > 0) {
+		if (dataCheck.rows[0].nama.toLowerCase() === newUserGroup.nama.toLowerCase()) {
+			result(null, { 'status': false, 'message': 'Maaf, Nama user group yang anda pilih sudah tersedia !' })
+		}
+
+		return false
+	}
+
 	const hv = await f.headerValue(newUserGroup, id);
 	var queryText = "INSERT INTO \"user_group\" " + hv + " RETURN \"id\" INTO :id";
 	const exec = f.query(queryText, 1);
