@@ -1019,7 +1019,7 @@ Report.crewlist = async (req, result, cabang_id) => {
             SELECT (CASE WHEN "id" = 0 THEN 'SEMUA CABANG' ELSE CONCAT('CABANG ',"nama") END) as "cabang" FROM "cabang" WHERE "id" = '${req.fields.cabang_id || cabang_id}'
             
         `;
-        console.log(query)
+    console.log(query)
     var output2 = await f.query(query);
     var cabang = output2.rows;
 
