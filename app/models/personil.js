@@ -250,7 +250,7 @@ Personil.getAll = async (param, result, cabang_id) => {
 
 	wheres += f.whereCabang(cabang_id, `a.\"cabang_id\"`, wheres.length);
 	query += wheres;
-	query += `ORDER BY a."upd_date" DESC`;
+	query += `ORDER BY a."cabang_id", a."nama"`;
 	const exec = f.query(query);
 	const res = await exec;
 	result(null, res.rows);
@@ -269,7 +269,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		str = f.getValueUpdate(personil, id, arr);
-		
+
 		await f.query("UPDATE \"personil\" SET " + str + " WHERE \"simop_kd_pers_pandu\" = '" + personil.simop_kd_pers_pandu + "'", 2);
 	} else {
 		delete personil.remark;
@@ -278,7 +278,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		if (personil.approval_status_id == "1") {
 			const rows = await f.checkDataId("personil", id, personil);
 			var dt, smp;
-			
+
 			if (rows.pandu_bandar_laut_id == 2) {
 				dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
 				smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
@@ -301,7 +301,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 				}
 			}
 		}
-		
+
 		var objek = new Object();
 		objek.keterangan = remarkPersonil;
 		objek.koneksi = id;
@@ -314,7 +314,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 			objek.keterangan = personil.keterangan;
 		}
 		await f.approvalStatus("personil", personil, objek, id, user_id)
-		
+
 		const pendukung = await f.query(`SELECT * FROM "personil" WHERE "id" = '${id}'`);
 
 		if (pendukung.rows[0].jabatan === 'Master' || pendukung.rows[0].jabatan === 'Chief Engineer') {
