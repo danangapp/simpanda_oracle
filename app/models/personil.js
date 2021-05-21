@@ -166,12 +166,12 @@ const setActivity = (objects, koneksi = 1) => {
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	console.log("lewat sini mas")
 	var check = `SELECT "nipp" ,"nama" FROM "personil" 
-					WHERE "nipp" = '%${newUserGroup.nipp}%' OR LOWER("nama") like LOWER('%${newAssetKapal.nama}%')`
+					WHERE "nipp" = '%${newPersonil.nipp}%' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
 	var dataCheck = await f.query(check)
 	if (dataCheck.rows.length > 0) {
-		if (dataCheck.rows[0].nipp === newUserGroup.nipp) {
+		if (dataCheck.rows[0].nipp === newPersonil.nipp) {
 			result(null, { 'status': false, 'message': 'Maaf, NIPP yang anda pilih sudah tersedia !' })
-		}else if(dataCheck.rows[0].nama.toLowerCase() === newAssetKapal.nama.toLowerCase()){
+		}else if(dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()){
 			result(null, { 'status': false, 'message': 'Maaf, Nama yang anda pilih sudah tersedia !' })
 		}
 
