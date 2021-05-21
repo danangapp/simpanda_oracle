@@ -166,7 +166,7 @@ const setActivity = (objects, koneksi = 1) => {
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	console.log("lewat sini mas")
 	var check = `SELECT "nipp" ,"nama" FROM "personil" 
-					WHERE "nipp" = '%${newPersonil.nipp}%' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
+					WHERE "nipp" = '${newPersonil.nipp}' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
 	var dataCheck = await f.query(check)
 	if (dataCheck.rows.length > 0) {
 		if (dataCheck.rows[0].nipp === newPersonil.nipp) {
