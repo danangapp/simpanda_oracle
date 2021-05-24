@@ -82,14 +82,14 @@ User.login = async (req, result) => {
 	}
 
 	console.log("test ya", rows.flag)
-	if (rows.flag >= 3) {
+	if (rows.flag >= 2) {
 		result(null, "Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat");
 		return false;
 	}
 
 	if (rows.password != req.password) {
 		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
-		result(null, "Password salah");
+		result(null, `Password salah ${rows.flag + 1}/3`);
 		return false;
 	}
 
