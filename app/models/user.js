@@ -50,7 +50,7 @@ User.findById = async (id, result) => {
 
 User.getAll = async (param, result) => {
 	var wheres = f.getParam(param);
-	var query = "SELECT a.\"id\", a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
+	var query = "SELECT a.\"id\",a.\"flag\",  a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += `LOWER(a."username") LIKE LOWER('%${param.q}%') OR LOWER(a."nama") LIKE LOWER('%${param.q}%')`;
@@ -133,6 +133,7 @@ User.login = async (req, result) => {
 };
 
 User.updateById = async (id, user, result) => {
+	console.log(user)
 
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
