@@ -72,13 +72,19 @@ Date.prototype.addHours = function (h) {
 User.login = async (req, result) => {
 	req.password = f.hashCode(req.password);
 
-	var query = `SELECT a."id", a."username", a."nama", a."user_group_id" , a1."nama" as "user_group", a1."cabang_id", a."password" FROM "user" a  LEFT JOIN "user_group" a1 ON a."user_group_id" = a1."id" WHERE a."username" = '${req.username}'`;
+	var query = `SELECT a."id", a."username", a."nama", a."user_group_id" , a1."nama" as "user_group", a1."cabang_id", a."password", a."flag" FROM "user" a  LEFT JOIN "user_group" a1 ON a."user_group_id" = a1."id" WHERE a."username" = '${req.username}'`;
 	const exec = f.query(query);
 	const res = await exec;
 	const rows = res.rows[0];
 
 	if (res.rows.length == 0) {
 		result(null, "Username tidak ada");
+	}
+
+	console.log("test ya", rows.flag)
+	if (rows.flag >= 3) {
+		result(null, "Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat");
+		return false;
 	}
 
 	if (rows.password != req.password) {
