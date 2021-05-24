@@ -171,7 +171,7 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	if (dataCheck.rows.length > 0) {
 		if (dataCheck.rows[0].nipp === newPersonil.nipp) {
 			result(null, { 'status': false, 'message': 'Maaf, NIPP yang anda pilih sudah tersedia !' })
-		}else if(dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()){
+		} else if (dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()) {
 			result(null, { 'status': false, 'message': 'Maaf, Nama yang anda pilih sudah tersedia !' })
 		}
 
@@ -274,6 +274,13 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
+	}
+
+	const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
+	console.log(rowNippNama, personil.id, personil.nama, personil.nipp)
+	if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp && rowNippNama.nama == personil.nama) {
+		result(null, { error: "Nip dan nama ini sudah ada di database" });
+		return false;
 	}
 	const remarkPersonil = personil.remark;
 

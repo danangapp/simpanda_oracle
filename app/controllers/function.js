@@ -464,6 +464,10 @@ module.exports = {
         const rows = await this.query(`SELECT * FROM "${table}" WHERE "id" ='${id}'`);
         return rows.rows[0];
     },
+    getOneRow: async function (table, wherColumn, value) {
+        const rows = await this.query(`SELECT * FROM "${table}" WHERE "${wherColumn}" = '${value}'`);
+        return rows.rows[0];
+    },
     checkDataId: async function (table, id, checkData) {
         var rows = await this.getOneRowById(table, id, checkData);
         // console.log(rows);
