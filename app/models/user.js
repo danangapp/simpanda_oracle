@@ -71,10 +71,21 @@ Date.prototype.addHours = function (h) {
 
 User.login = async (req, result) => {
 	req.password = f.hashCode(req.password);
-	var query = `SELECT a."id", a."username", a."nama", a."user_group_id" , a1."nama" as "user_group", a1."cabang_id" FROM "user" a  LEFT JOIN "user_group" a1 ON a."user_group_id" = a1."id" WHERE a."username" = '${req.username}' AND "password" = '${req.password}'`;
+
+	var query = `SELECT a."id", a."username", a."nama", a."user_group_id" , a1."nama" as "user_group", a1."cabang_id", a."password" FROM "user" a  LEFT JOIN "user_group" a1 ON a."user_group_id" = a1."id" WHERE a."username" = '${req.username}'`;
 	const exec = f.query(query);
 	const res = await exec;
 	const rows = res.rows[0];
+
+	if (res.rows.length == 0) {
+		result(null, "Username tidak ada");
+	}
+
+	if (rows.password != req.password) {
+		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
+		result(null, "Password salah");
+		return false;
+	}
 
 	var rand = function () {
 		return Math.random().toString(36).substr(2); // remove `0.`
@@ -105,11 +116,11 @@ User.login = async (req, result) => {
 		delete obj.id;
 		obj.username = rows.username;
 		obj.nama = rows.nama;
+		delete obj.password;
 		let merge = { ...obj, menu }
 
 		result(null, merge);
 	} else {
-		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
 		result(null, "Cannot Get Login Data");
 	}
 
@@ -125,7 +136,8 @@ User.updateById = async (id, user, result) => {
 		return false
 	}
 
-	var arr = ["username", "nama", "password", "user_group_id", "role_id"];
+	user.flag = 0;
+	var arr = ["username", "nama", "password", "user_group_id", "role_id", "flag"];
 
 	if (user.password == "" || !user.password) {
 		console.log(user)
