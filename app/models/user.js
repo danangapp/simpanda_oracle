@@ -23,7 +23,7 @@ User.create = async (newUser, result) => {
 
 	const cekPass = checkPassword(newUser.password);
 	if (!cekPass) {
-		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat abjad dan angka' })
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
 		return false;
 	}
 
