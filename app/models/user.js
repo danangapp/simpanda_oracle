@@ -148,6 +148,12 @@ User.updateById = async (id, user, result) => {
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
 
+	const cekPass = checkPassword(user.password);
+	if (!cekPass) {
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
+		return false;
+	}
+
 	if (dataCheck.rows.length > 0) {
 		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
 		return false
