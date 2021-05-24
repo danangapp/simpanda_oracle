@@ -1153,6 +1153,8 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
         }
 
         arr['global'] = merge;
+        arr['bulan'] = f.toDate(date, "MMM");
+        arr['tahun'] = f.toDate(date, "YYYY");
 
         // console.log("danang", merge)
 
