@@ -277,7 +277,6 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	}
 
 	const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
-	console.log(rowNippNama, personil.id, personil.nama, personil.nipp)
 	if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp && rowNippNama.nama == personil.nama) {
 		result(null, { error: "Nip dan nama ini sudah ada di database" });
 		return false;
