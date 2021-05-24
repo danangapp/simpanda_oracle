@@ -12,9 +12,20 @@ const User = function (user) {
 	this.refreshToken = user.refreshToken;
 };
 
+const checkPassword = (str) => {
+	var re = /^(?=.*\d)(?=.*[a-z]).{8,}$/;
+	return re.test(str);
+}
+
 User.create = async (newUser, result) => {
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${newUser.username}'`
 	var dataCheck = await f.query(check)
+
+	const cekPass = checkPassword(newUser.password);
+	if (!cekPass) {
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat abjad dan angka' })
+		return false;
+	}
 
 	if (dataCheck.rows.length > 0) {
 		if (dataCheck.rows[0].username.toLowerCase() === newUser.username.toLowerCase()) {
