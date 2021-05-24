@@ -21,6 +21,7 @@ exports.create = (req, res) => {
         tanggal_lahir: f.toDate(req.fields.tanggal_lahir),
         nipp: req.fields.nipp,
         jabatan: req.fields.jabatan,
+        pendidikan: req.fields.pendidikan,
         status_kepegawaian_id: req.fields.status_kepegawaian_id,
         cv: req.fields.cv,
         cabang_id: req.fields.cabang_id,
