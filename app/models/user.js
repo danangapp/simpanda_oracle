@@ -78,18 +78,18 @@ User.login = async (req, result) => {
 	const rows = res.rows[0];
 
 	if (res.rows.length == 0) {
-		result(null, "Username tidak ada");
+		result(null, { 'status': false, 'message': 'Username tidak ada' });
 	}
 
 	console.log("test ya", rows.flag)
 	if (rows.flag >= 2) {
-		result(null, "Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat");
+		result(null, { 'status': false, 'message': 'Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat' });
 		return false;
 	}
 
 	if (rows.password != req.password) {
 		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
-		result(null, `Password salah ${rows.flag + 1}/3`);
+		result(null, { 'status': false, 'message': `Password salah ${rows.flag + 1}/3` });
 		return false;
 	}
 

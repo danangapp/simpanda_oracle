@@ -164,18 +164,24 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
-	console.log("lewat sini mas")
-	var check = `SELECT "nipp" ,"nama" FROM "personil" 
-					WHERE "nipp" = '${newPersonil.nipp}' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
-	var dataCheck = await f.query(check)
-	if (dataCheck.rows.length > 0) {
-		if (dataCheck.rows[0].nipp === newPersonil.nipp) {
-			result(null, { 'status': false, 'message': 'Maaf, NIPP yang anda pilih sudah tersedia !' })
-		} else if (dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()) {
-			result(null, { 'status': false, 'message': 'Maaf, Nama yang anda pilih sudah tersedia !' })
-		}
+	// console.log("lewat sini mas")
+	// var check = `SELECT "nipp" ,"nama" FROM "personil" 
+	// 				WHERE "nipp" = '${newPersonil.nipp}' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
+	// var dataCheck = await f.query(check)
+	// if (dataCheck.rows.length > 0) {
+	// 	if (dataCheck.rows[0].nipp === newPersonil.nipp) {
+	// 		result(null, { 'status': false, 'message': 'Maaf, NIPP yang anda pilih sudah tersedia !' })
+	// 	} else if (dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()) {
+	// 		result(null, { 'status': false, 'message': 'Maaf, Nama yang anda pilih sudah tersedia !' })
+	// 	}
 
-		return false
+	// 	return false
+	// }
+
+	const rowNippNama = await f.getOneRow("personil", "nipp", newPersonil.nipp);
+	if (rowNippNama && rowNippNama.nipp == newPersonil.nipp && rowNippNama.nama == newPersonil.nama) {
+		result(null, { 'status': false, 'message': 'Maaf, NIPP & Nama yang anda pilih sudah tersedia !' })
+		return false;
 	}
 
 	const sertifikat = newPersonil.sertifikat;
@@ -278,7 +284,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 	const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
 	if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp && rowNippNama.nama == personil.nama) {
-		result(null, { error: "Nip dan nama ini sudah ada di database" });
+		result(null, "Nip dan nama ini sudah ada di database");
 		return false;
 	}
 	const remarkPersonil = personil.remark;
