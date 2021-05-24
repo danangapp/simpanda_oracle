@@ -12,9 +12,20 @@ const User = function (user) {
 	this.refreshToken = user.refreshToken;
 };
 
+const checkPassword = (str) => {
+	var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+	return re.test(str);
+}
+
 User.create = async (newUser, result) => {
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${newUser.username}'`
 	var dataCheck = await f.query(check)
+
+	const cekPass = checkPassword(newUser.password);
+	if (!cekPass) {
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
+		return false;
+	}
 
 	if (dataCheck.rows.length > 0) {
 		if (dataCheck.rows[0].username.toLowerCase() === newUser.username.toLowerCase()) {
@@ -137,6 +148,12 @@ User.updateById = async (id, user, result) => {
 
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
+
+	const cekPass = checkPassword(user.password);
+	if (!cekPass) {
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
+		return false;
+	}
 
 	if (dataCheck.rows.length > 0) {
 		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })

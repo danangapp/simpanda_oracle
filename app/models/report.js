@@ -1352,7 +1352,7 @@ Report.pilotship = async (req, result, cabang_id) => {
         console.log("rowCabang", rowCabang);
         arr['global'] = output_kapal;
         arr['pandu'] = output_pandu;
-        arr['cabang'] = rowCabang.nama;
+        arr['cabang'] = req.fields.cabang_id == 0 ? `SEMUA CABANG` : `CABANG ${rowCabang.nama}`;
 
         var d = new Date();
         var t = d.getTime();
