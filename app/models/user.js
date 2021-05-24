@@ -96,7 +96,7 @@ User.login = async (req, result) => {
 		const hv = await f.headerValue(obj, id);
 		// await f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
 		await f.query(`INSERT INTO "authorization" ${hv}`, 2);
-
+		await f.query(`UPDATE "user" SET "flag"=0 WHERE "username"='${req.username}'`, 2);
 
 		query = `SELECT c."config", c."parent", c."id", c."url", c."nama", c."icon" FROM "user" a INNER JOIN "user_access" b ON a."user_group_id" = b."user_group_id" INNER JOIN "menu" c ON b."menu_id" = c."id" WHERE a."id" = '${rows.id}'`;
 		const exex = f.query(query);
@@ -109,6 +109,7 @@ User.login = async (req, result) => {
 
 		result(null, merge);
 	} else {
+		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
 		result(null, "Cannot Get Login Data");
 	}
 
