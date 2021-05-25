@@ -124,7 +124,6 @@ User.login = async (req, result) => {
 		var id = await f.getid("authorization");
 		const hv = await f.headerValue(obj, id);
 		// await f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
-		await f.query(`DELETE FROM "authorization" WHERE "user_id" = '${rows.id}'`, 2);
 		await f.query(`INSERT INTO "authorization" ${hv}`, 2);
 		await f.query(`UPDATE "user" SET "flag"=0 WHERE "username"='${req.username}'`, 2);
 

@@ -36,6 +36,8 @@ var requestToken = async function (req, res, next) {
     const resQuery = await f.query(`select * from "authorization" WHERE "accessToken" = '${tokens}' AND "expired" > CURRENT_TIMESTAMP`);
     if (resQuery) {
       if (resQuery.rows.length > 0) {
+        const timeExpired = f.toDate(new Date().addHours(1), 'yyyy/mm/dd HH24:MI:SS');
+        await f.query(`UPDATE "authorization" SET "expired" = '${timeExpired}' WHERE "accessToken" = '${tokens}'`, 2);
         req.cabang_id = resQuery.rows[0].cabang_id;
         req.user_id = resQuery.rows[0].user_id;
         next();
