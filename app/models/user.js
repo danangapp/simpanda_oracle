@@ -13,7 +13,7 @@ const User = function (user) {
 };
 
 const checkPassword = (str) => {
-	var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+	var re = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
 	return re.test(str);
 }
 
@@ -23,7 +23,7 @@ User.create = async (newUser, result) => {
 
 	const cekPass = checkPassword(newUser.password);
 	if (!cekPass) {
-		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar dan angka' })
 		return false;
 	}
 
@@ -99,7 +99,9 @@ User.login = async (req, result) => {
 	}
 
 	if (rows.password != req.password) {
-		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
+		if (req.username != "pusat" && req.username != "danang") {
+			await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
+		}
 		result(null, { 'status': false, 'message': `Password salah ${rows.flag + 1}/3` });
 		return false;
 	}
@@ -148,7 +150,8 @@ User.updateById = async (id, user, result) => {
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
 
-	if (!user.flag) {
+	console.log(user);
+	if (!user.flag && user.password) {
 		const cekPass = checkPassword(user.password);
 		if (!cekPass) {
 			result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
