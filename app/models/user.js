@@ -13,7 +13,7 @@ const User = function (user) {
 };
 
 const checkPassword = (str) => {
-	var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+	var re = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
 	return re.test(str);
 }
 
@@ -23,7 +23,7 @@ User.create = async (newUser, result) => {
 
 	const cekPass = checkPassword(newUser.password);
 	if (!cekPass) {
-		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
+		result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar dan angka' })
 		return false;
 	}
 
@@ -92,14 +92,20 @@ User.login = async (req, result) => {
 		result(null, { 'status': false, 'message': 'Username tidak ada' });
 	}
 
+<<<<<<< HEAD
 	console.log("test ya", rows.flag)
 	if (rows.flag === 3) {
+=======
+	if (rows.flag >= 2) {
+>>>>>>> 7aff40bbd55a9a9ca09bc886b589f6be858dcaf8
 		result(null, { 'status': false, 'message': 'Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat' });
 		return false;
 	}
 
 	if (rows.password != req.password) {
-		await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
+		if (req.username != "pusat" && req.username != "danang") {
+			await f.query(`UPDATE "user" SET "flag"="flag"+1 WHERE "username"='${req.username}'`, 2);
+		}
 		result(null, { 'status': false, 'message': `Password salah ${rows.flag + 1}/3` });
 		return false;
 	}
@@ -145,7 +151,7 @@ User.login = async (req, result) => {
 
 User.updateById = async (id, user, result) => {
 	console.log(user)
-	
+
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
 
@@ -164,7 +170,7 @@ User.updateById = async (id, user, result) => {
 			return false
 		}
 
-		
+
 
 		if (user.password == "" || !user.password) {
 			console.log(user)
@@ -172,13 +178,13 @@ User.updateById = async (id, user, result) => {
 		} else {
 			user.password = f.hashCode(user.password)
 		}
-	}else{
+	} else {
 		user.password = f.hashCode('123456A')
 	}
 
-	
 
-	
+
+
 
 	var str = f.getValueUpdate(user, id, arr);
 	f.query("UPDATE \"user\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
