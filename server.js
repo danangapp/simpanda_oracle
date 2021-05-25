@@ -33,7 +33,7 @@ var requestToken = async function (req, res, next) {
     next();
   } else {
     var tokens = req.get('authorization');
-    const resQuery = await f.query(`select * from "authorization" WHERE "accessToken" = '${tokens}'`);
+    const resQuery = await f.query(`select * from "authorization" WHERE "accessToken" = '${tokens}' AND "expired" > CURRENT_TIMESTAMP`);
     if (resQuery) {
       if (resQuery.rows.length > 0) {
         req.cabang_id = resQuery.rows[0].cabang_id;
