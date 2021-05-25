@@ -93,7 +93,7 @@ User.login = async (req, result) => {
 	}
 
 	console.log("test ya", rows.flag)
-	if (rows.flag >= 2) {
+	if (rows.flag === 3) {
 		result(null, { 'status': false, 'message': 'Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat' });
 		return false;
 	}
