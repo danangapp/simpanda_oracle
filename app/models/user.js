@@ -92,12 +92,8 @@ User.login = async (req, result) => {
 		result(null, { 'status': false, 'message': 'Username tidak ada' });
 	}
 
-<<<<<<< HEAD
 	console.log("test ya", rows.flag)
 	if (rows.flag === 3) {
-=======
-	if (rows.flag >= 2) {
->>>>>>> 7aff40bbd55a9a9ca09bc886b589f6be858dcaf8
 		result(null, { 'status': false, 'message': 'Password salah lebih dari 3, untuk reset silahkan hubungi Kantor Pusat' });
 		return false;
 	}
