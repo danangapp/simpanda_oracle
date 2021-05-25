@@ -117,6 +117,7 @@ const Personil = function (personil) {
 	this.tanggal_lahir = personil.tanggal_lahir;
 	this.nipp = personil.nipp;
 	this.jabatan = personil.jabatan;
+	this.pendidikan = personil.pendidikan;
 	this.status_kepegawaian_id = personil.status_kepegawaian_id;
 	this.cv = personil.cv;
 	this.cabang_id = personil.cabang_id;
@@ -290,7 +291,7 @@ Personil.updateById = async (id, personil, result, user_id) => {
 	const remarkPersonil = personil.remark;
 
 	var str;
-	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai"];
+	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai","pendidikan"];
 	if (personil.is_from_simop) {
 		personil['cabang_id'] = parseInt(personil.cabang_id);
 		str = f.getValueUpdate(personil, id, arr);

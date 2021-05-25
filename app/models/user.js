@@ -61,7 +61,7 @@ User.findById = async (id, result) => {
 
 User.getAll = async (param, result) => {
 	var wheres = f.getParam(param);
-	var query = "SELECT a.\"id\", a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
+	var query = "SELECT a.\"id\",a.\"flag\",  a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += `LOWER(a."username") LIKE LOWER('%${param.q}%') OR LOWER(a."nama") LIKE LOWER('%${param.q}%')`;
@@ -145,33 +145,41 @@ User.login = async (req, result) => {
 };
 
 User.updateById = async (id, user, result) => {
+	console.log(user)
 
 	var check = `SELECT "username" FROM "user" WHERE "username" = '${user.username}' AND "id" != '${id}' `
 	var dataCheck = await f.query(check)
 
-	console.log(user);
-	if (!user.flag && user.password) {
+	user.flag = 0;
+	var arr = ["username", "nama", "password", "user_group_id", "role_id", "flag"];
+
+	if (user.type === undefined) {
 		const cekPass = checkPassword(user.password);
 		if (!cekPass) {
 			result(null, { 'status': false, 'message': 'Password harus memiliki minimal 8 karakter, terdapat huruf besar, huruf kecil dan angka' })
 			return false;
 		}
-	}
 
-	if (dataCheck.rows.length > 0) {
-		result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
-		return false
-	}
+		if (dataCheck.rows.length > 0) {
+			result(null, { 'status': false, 'message': 'Maaf, Username sudah terdaftar !' })
+			return false
+		}
 
-	user.flag = 0;
-	var arr = ["username", "nama", "password", "user_group_id", "role_id", "flag"];
 
-	if (user.password == "" || !user.password) {
-		console.log(user)
-		delete user.password;
+
+		if (user.password == "" || !user.password) {
+			console.log(user)
+			delete user.password;
+		} else {
+			user.password = f.hashCode(user.password)
+		}
 	} else {
-		user.password = f.hashCode(user.password)
+		user.password = f.hashCode('123456A')
 	}
+
+
+
+
 
 	var str = f.getValueUpdate(user, id, arr);
 	f.query("UPDATE \"user\" SET " + str + " WHERE \"id\" = '" + id + "'", 2);
