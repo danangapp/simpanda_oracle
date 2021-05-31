@@ -1,5 +1,5 @@
 const User = require("../models/user.js");
-const f = require('./function'); 
+const f = require('./function');
 
 exports.create = (req, res) => {
     if (!req.fields) {
@@ -16,6 +16,7 @@ exports.create = (req, res) => {
         role_id: req.fields.role_id,
         accessToken: req.fields.accessToken,
         refreshToken: req.fields.refreshToken,
+        email: req.fields.email,
     };
 
     var used = {};

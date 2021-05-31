@@ -10,6 +10,7 @@ const User = function (user) {
 	this.role_id = user.role_id;
 	this.accessToken = user.accessToken;
 	this.refreshToken = user.refreshToken;
+	this.email = user.email;
 };
 
 const checkPassword = (str) => {
@@ -52,7 +53,7 @@ User.create = async (newUser, result) => {
 };
 
 User.findById = async (id, result) => {
-	var queryText = "SELECT a.\"username\", a.\"nama\", a.\"user_group_id\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"  WHERE a.\"id\" = '" + id + "'";
+	var queryText = "SELECT a.\"username\", a.\"nama\", a.\"user_group_id\", a.\"email\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"  WHERE a.\"id\" = '" + id + "'";
 	console.log(queryText);
 	const exec = f.query(queryText);
 	const res = await exec;
@@ -61,7 +62,7 @@ User.findById = async (id, result) => {
 
 User.getAll = async (param, result) => {
 	var wheres = f.getParam(param);
-	var query = "SELECT a.\"id\",a.\"flag\",  a.\"username\", a.\"nama\", a.\"user_group_id\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
+	var query = "SELECT a.\"id\",a.\"flag\",  a.\"username\", a.\"nama\", a.\"user_group_id\", a.\"email\" , a1.\"nama\", a1.\"keterangan\", a1.\"cabang_id\", a2.\"nama\" as \"cabang\" FROM \"user\" a  INNER JOIN \"user_group\" a1 ON a.\"user_group_id\" = a1.\"id\" INNER JOIN \"cabang\" a2 ON a1.\"cabang_id\" = a2.\"id\"";
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
 		wheres += `LOWER(a."username") LIKE LOWER('%${param.q}%') OR LOWER(a."nama") LIKE LOWER('%${param.q}%')`;
@@ -151,7 +152,7 @@ User.updateById = async (id, user, result) => {
 	var dataCheck = await f.query(check)
 
 	user.flag = 0;
-	var arr = ["username", "nama", "password", "user_group_id", "role_id", "flag"];
+	var arr = ["username", "nama", "password", "user_group_id", "role_id", "flag", "email"];
 
 	if (user.type === undefined) {
 		const cekPass = checkPassword(user.password);
