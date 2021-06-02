@@ -27,6 +27,7 @@ app.use((req, res, next) => {
   next()
 })
 
+f.userActive()
 
 var requestToken = async function (req, res, next) {
   if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/login" || req.path === "/") {

@@ -4,6 +4,7 @@ var http = require('http');
 var fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
 var sjcl = require('sjcl');
+const cron = require('node-cron');
 require('dotenv').config();
 
 var oracledb = require('oracledb');
@@ -491,5 +492,17 @@ module.exports = {
             }
         }
         return arr;
+    },
+    userActive: async (table, id) => {
+        const User = require("../models/user.js");
+        cron.schedule('59 23 * * *', async () => {
+            console.log('cek')
+            User.checkActive((err, data) => {
+                if (err){
+                    console.log('cannt catch data')
+                }
+                else console.log(data);
+            });
+        });
     }
 };
