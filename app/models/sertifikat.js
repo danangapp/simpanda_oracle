@@ -94,5 +94,20 @@ Sertifikat.remove = (id, result) => {
 	result(null, { id: id });
 };
 
+Sertifikat.checkExp = async (month, result) => {
+	const query = `SELECT  s."id", s."no_sertifikat", p."nama", c."nama", u."email" , s."tanggal_expire" FROM "sertifikat" s 
+				INNER JOIN "personil" p ON s."personil_id" = p."id"				
+				INNER JOIN "cabang" c ON p."cabang_id" = c."id"				
+				INNER JOIN "user_group" ug ON c."id" = ug."cabang_id"				
+				INNER JOIN "user" u ON ug."id" = u."user_group_id"				
+				WHERE s."tanggal_expire" BETWEEN trunc(sysdate+INTERVAL '${month}' MONTH) AND trunc(sysdate+1+INTERVAL '${month}' MONTH)`
+	try {
+		const res = await f.query(query);
+	result(null, res.rows);
+	} catch (error) {
+		result(error)
+	}
+};
+
 module.exports = Sertifikat;
 

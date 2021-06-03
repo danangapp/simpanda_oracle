@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 })
 
 f.userActive()
+f.sertifikatExp()
 
 var requestToken = async function (req, res, next) {
   if (req.path === "/auth/login/" || req.path === "/login/" || req.path === "/login" || req.path === "/") {

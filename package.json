@@ -25,6 +25,7 @@
     "moment": "^2.29.1",
     "mv": "^2.1.1",
     "node-cron": "^3.0.0",
+    "nodemailer": "^6.6.1",
     "oracledb": "^5.1.0",
     "reload": "^3.1.1",
     "sjcl": "^1.0.8",

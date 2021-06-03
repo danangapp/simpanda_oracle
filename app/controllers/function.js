@@ -5,10 +5,12 @@ var fs = require('fs');
 var XlsxTemplate = require('xlsx-template');
 var sjcl = require('sjcl');
 const cron = require('node-cron');
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 var oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig');
+const transporter = require('../config/emailconfig');
 var objOracle = {};
 objOracle[process.env.OC_DIR] = process.env.OC;
 oracledb.initOracleClient(objOracle);
@@ -493,16 +495,54 @@ module.exports = {
         }
         return arr;
     },
-    userActive: async (table, id) => {
+    userActive: async () => {
         const User = require("../models/user.js");
         cron.schedule('59 23 * * *', async () => {
             console.log('cek')
             User.checkActive((err, data) => {
                 if (err){
                     console.log('cannt catch data')
-                }
-                else console.log(data);
+                } else console.log(data);
             });
+        });
+    },
+
+    sertifikatExp: async () => {
+        const Sertifikat = require("../models/sertifikat.js")
+        const User = require("../models/user.js");
+        
+        cron.schedule('59 23 * * *', async () => {
+            console.log('exp')
+            let adminPusat 
+            const schedule = [12, 7, 3]
+            await User.checkAdminPusat( (err, data) => {
+                adminPusat = data
+            })
+            schedule.forEach(month => {
+                Sertifikat.checkExp(month, (err, data) => {
+                    const sendmail = data.map(async value=>{
+                        adminPusat.forEach(async admin => {
+                            await transporter.sendMail({
+                                from: process.env.EMAIL, // sender address
+                                to: admin.email, // list of receivers
+                                subject: "Tanggal Kadaluarsa Sertifikat "+month+" lagi", // Subject line
+                                text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
+                            });
+                        });
+                        let info = await transporter.sendMail({
+                                from: process.env.EMAIL, // sender address
+                                to: value.email, // list of receivers
+                                subject: "Tanggal Kadaluarsa Sertifikat "+month+" lagi", // Subject line
+                                text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
+                        });
+                        return "send mail"
+                    })
+
+
+                })
+            })
+        
+
         });
     }
 };

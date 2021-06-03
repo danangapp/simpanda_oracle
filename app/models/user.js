@@ -195,7 +195,6 @@ User.remove = (id, result) => {
 
 User.checkActive = async (result) => {
 	const query = `UPDATE "user" SET "active"=0 WHERE "active"=1  AND "upd_date" > trunc(sysdate+INTERVAL '3' MONTH)`
-	// const query = `SELECT "username", "upd_date", "active" FROM "user" WHERE "upd_date" > trunc(sysdate+INTERVAL '3' MONTH)`
 	try {
 		const userActive = await f.query(query);
 		result(null, userActive)
@@ -203,6 +202,16 @@ User.checkActive = async (result) => {
 		result(error)
 	}
 };
+
+User.checkAdminPusat = async (result) => {
+	const query = `SELECT "nama", "email" FROM "user" WHERE "user_group_id"=0`
+	try {
+		const adminPusat = await f.query(query);
+		result(null, adminPusat.rows)
+	} catch (error) {
+		result(error)
+	}
+}
 
 module.exports = User;
 
