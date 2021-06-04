@@ -11,6 +11,7 @@ require('dotenv').config();
 var oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig');
 const transporter = require('../config/emailconfig');
+const sertifikatExp = require('../assets/sertifikatExp');
 var objOracle = {};
 objOracle[process.env.OC_DIR] = process.env.OC;
 oracledb.initOracleClient(objOracle);
@@ -525,17 +526,18 @@ module.exports = {
                             await transporter.sendMail({
                                 from: process.env.EMAIL, // sender address
                                 to: admin.email, // list of receivers
-                                subject: "Tanggal Kadaluarsa Sertifikat "+month+" lagi", // Subject line
+                                subject: "Sertifikat Kadaluarsa "+month+" lagi", // Subject line
                                 text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
+                                html: sertifikatExp(admin.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
                             });
                         });
                         let info = await transporter.sendMail({
                                 from: process.env.EMAIL, // sender address
                                 to: value.email, // list of receivers
-                                subject: "Tanggal Kadaluarsa Sertifikat "+month+" lagi", // Subject line
+                                subject: "Sertifikat Kadaluarsa "+month+" lagi", // Subject line
                                 text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
+                                html: sertifikatExp(value.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
                         });
-                        return "send mail"
                     })
 
 

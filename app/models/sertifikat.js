@@ -95,7 +95,7 @@ Sertifikat.remove = (id, result) => {
 };
 
 Sertifikat.checkExp = async (month, result) => {
-	const query = `SELECT  s."id", s."no_sertifikat", p."nama", c."nama", u."email" , s."tanggal_expire" FROM "sertifikat" s 
+	const query = `SELECT  s."id", s."no_sertifikat", p."nama", u."email" , s."tanggal_expire" FROM "sertifikat" s 
 				INNER JOIN "personil" p ON s."personil_id" = p."id"				
 				INNER JOIN "cabang" c ON p."cabang_id" = c."id"				
 				INNER JOIN "user_group" ug ON c."id" = ug."cabang_id"				
