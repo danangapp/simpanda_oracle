@@ -526,7 +526,7 @@ module.exports = {
                             await transporter.sendMail({
                                 from: process.env.EMAIL, // sender address
                                 to: admin.email, // list of receivers
-                                subject: "Sertifikat Kadaluarsa "+month+" lagi", // Subject line
+                                subject: "Sertifikat Kadaluarsa "+month+" bulan lagi", // Subject line
                                 text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
                                 html: sertifikatExp(admin.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
                             });
@@ -534,7 +534,7 @@ module.exports = {
                         let info = await transporter.sendMail({
                                 from: process.env.EMAIL, // sender address
                                 to: value.email, // list of receivers
-                                subject: "Sertifikat Kadaluarsa "+month+" lagi", // Subject line
+                                subject: "Sertifikat Kadaluarsa "+month+" bulan lagi", // Subject line
                                 text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
                                 html: sertifikatExp(value.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
                         });
