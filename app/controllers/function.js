@@ -11,7 +11,7 @@ require('dotenv').config();
 var oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig');
 const transporter = require('../config/emailconfig');
-const sertifikatExp = require('../assets/sertifikatExp');
+const sertifikatExpTemplate = require('../assets/sertifikatExpTemplate');
 var objOracle = {};
 objOracle[process.env.OC_DIR] = process.env.OC;
 oracledb.initOracleClient(objOracle);
@@ -513,38 +513,34 @@ module.exports = {
         const User = require("../models/user.js");
         
         cron.schedule('59 23 * * *', async () => {
-            console.log('exp')
-            let adminPusat 
-            const schedule = [12, 7, 3]
-            await User.checkAdminPusat( (err, data) => {
-                adminPusat = data
-            })
-            schedule.forEach(month => {
-                Sertifikat.checkExp(month, (err, data) => {
-                    const sendmail = data.map(async value=>{
-                        adminPusat.forEach(async admin => {
-                            await transporter.sendMail({
-                                from: process.env.EMAIL, // sender address
-                                to: admin.email, // list of receivers
-                                subject: "Sertifikat Kadaluarsa "+month+" bulan lagi", // Subject line
-                                text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
-                                html: sertifikatExp(admin.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
-                            });
-                        });
-                        let info = await transporter.sendMail({
-                                from: process.env.EMAIL, // sender address
-                                to: value.email, // list of receivers
-                                subject: "Sertifikat Kadaluarsa "+month+" bulan lagi", // Subject line
-                                text: month+" bulan lagi, id sertifikat "+value.id+" dengan nomor seritifikat "+value.no_sertifikat+", akan habis pada tanggal "+value.tanggal_expire+".", // plain text body
-                                html: sertifikatExp(value.nama, value.id, value.no_sertifikat, value.tanggal_expire, month),
-                        });
+            const schedule = [12, 7, 3]           
+            let admin = []
+            await User.getAdmin(data => admin = data)  
+
+            schedule.forEach(async month =>{
+                let cabang = {}
+                await Sertifikat.checkSertifikatExp(schedule, (err, data) => {
+                    data.map( value => {
+                        if(cabang.hasOwnProperty(value.CABANG_ID)===false) cabang[value.CABANG_ID]=[]
+                        cabang[value.CABANG_ID].push(value)
                     })
-
-
                 })
+                let sendTo = {}
+                admin = admin.map(value=>{
+                    if(sendTo.hasOwnProperty(value.CABANG_ID)===false) sendTo[value.CABANG_ID]=[]
+                    sendTo[value.CABANG_ID].push(value.EMAIL)
+                })
+                for (var key in sendTo) {
+                    if(cabang.hasOwnProperty(key)){
+                        await transporter.sendMail({
+                            from: process.env.EMAIL, // sender address
+                            to: [...sendTo[key], ...sendTo[0]], // list of receivers
+                            subject: "Surat Pemberitahuan Validasi Sertifikat", // Subject line
+                            html: sertifikatExp(cabang[key]),
+                        });
+                    }
+                } 
             })
-        
-
         });
     }
 };

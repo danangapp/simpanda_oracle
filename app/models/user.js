@@ -203,11 +203,13 @@ User.checkActive = async (result) => {
 	}
 };
 
-User.checkAdminPusat = async (result) => {
-	const query = `SELECT "nama", "email" FROM "user" WHERE "user_group_id"=0`
+User.getAdmin = async (result) => {
+	const query = `SELECT u."nama" nama, u."email" email, c."id" cabang_id FROM "user" u
+				INNER JOIN "user_group" ug ON u."user_group_id" = ug."id"		
+				INNER JOIN "cabang" c ON ug."cabang_id" = c."id"`
 	try {
-		const adminPusat = await f.query(query);
-		result(null, adminPusat.rows)
+		const admin = await f.query(query);
+		result(admin.rows)
 	} catch (error) {
 		result(error)
 	}
