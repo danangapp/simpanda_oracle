@@ -508,38 +508,40 @@ module.exports = {
         });
     },
 
-    sertifikatExp: async () => {
+    sertifikatExp: () => {
         const Sertifikat = require("../models/sertifikat.js")
         const User = require("../models/user.js");
         
         cron.schedule('59 23 * * *', async () => {
             const schedule = [12, 7, 3]           
-            let admin = []
-            await User.getAdmin(data => admin = data)  
+            let admin = {}
+            await User.getAdmin(data => {
+                data.map(value=>{
+                    if(admin.hasOwnProperty(value.CABANG_ID)===false) admin[value.CABANG_ID]=[]
+                    admin[value.CABANG_ID].push(value.EMAIL)
+                })
+            })  
 
-            schedule.forEach(async month =>{
+            schedule.forEach(async month => {
                 let cabang = {}
-                await Sertifikat.checkSertifikatExp(schedule, (err, data) => {
-                    data.map( value => {
-                        if(cabang.hasOwnProperty(value.CABANG_ID)===false) cabang[value.CABANG_ID]=[]
-                        cabang[value.CABANG_ID].push(value)
-                    })
-                })
-                let sendTo = {}
-                admin = admin.map(value=>{
-                    if(sendTo.hasOwnProperty(value.CABANG_ID)===false) sendTo[value.CABANG_ID]=[]
-                    sendTo[value.CABANG_ID].push(value.EMAIL)
-                })
-                for (var key in sendTo) {
-                    if(cabang.hasOwnProperty(key)){
-                        await transporter.sendMail({
-                            from: process.env.EMAIL, // sender address
-                            to: [...sendTo[key], ...sendTo[0]], // list of receivers
-                            subject: "Surat Pemberitahuan Validasi Sertifikat", // Subject line
-                            html: sertifikatExp(cabang[key]),
-                        });
+                await Sertifikat.checkSertifikatExp(month, async (data) => {
+                    if(data.length!=0){                   
+                        data.map( value => {
+                            if(cabang.hasOwnProperty(value.CABANG_ID)===false) cabang[value.CABANG_ID]=[]
+                            cabang[value.CABANG_ID].push(value)
+                        })
+    
+                        for (let key in cabang) {
+                            let send = await transporter.sendMail({
+                                from: process.env.EMAIL, // sender address
+                                to: [...admin[key], ...admin[0], 'pryamm@gmail.com'], // list of receivers
+                                subject: "Surat Pemberitahuan Validasi Sertifikat", // Subject line
+                                html: sertifikatExpTemplate(cabang[key]),
+                            });          
+                            console.log('sending message', send)               
+                        } 
                     }
-                } 
+                })
             })
         });
     }

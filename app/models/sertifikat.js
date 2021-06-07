@@ -95,18 +95,18 @@ Sertifikat.remove = (id, result) => {
 };
 
 Sertifikat.checkSertifikatExp = async (month, result) => {
-	const query = `SELECT s."no_sertifikat" no, c."nama" cabang, p."nama" nama, p."nipp" nipp, jc."nama" jenis_sertifikat, tc."nama" kategori_sertifikat, s."tanggal_expire" tanggal_kadaluarsa, c."id" cabang_id 
-				FROM "sertifikat" s 
-				INNER JOIN "tipe_cert" tc ON s."tipe_cert_id" = tc."id"			
-				INNER JOIN "jenis_cert" jc ON tc."jenis_cert_id" = jc."id"		
-				INNER JOIN "personil" p ON s."personil_id" = p."id"		
-				INNER JOIN "cabang" c ON p."cabang_id" = c."id"									
-				WHERE s."tanggal_expire" BETWEEN trunc(sysdate+INTERVAL '${month}' MONTH) AND trunc(sysdate+1+INTERVAL '${month}' MONTH)`
 	try {
+		const query = `SELECT s."no_sertifikat" no, c."nama" cabang, p."nama" nama, p."nipp" nipp, jc."nama" jenis_sertifikat, tc."nama" kategori_sertifikat, s."tanggal_expire" tanggal_kadaluarsa, c."id" cabang_id 
+					FROM "sertifikat" s 
+					INNER JOIN "tipe_cert" tc ON s."tipe_cert_id" = tc."id"			
+					INNER JOIN "jenis_cert" jc ON tc."jenis_cert_id" = jc."id"		
+					INNER JOIN "personil" p ON s."personil_id" = p."id"		
+					INNER JOIN "cabang" c ON p."cabang_id" = c."id"									
+					WHERE s."tanggal_expire" BETWEEN trunc(sysdate+INTERVAL '${month}' MONTH) AND trunc(sysdate+1+INTERVAL '${month}' MONTH)`
 		const res = await f.query(query);
-	result(null, res.rows);
+		result(res.rows);
 	} catch (error) {
-		result(error)
+		console.log(error)
 	}
 };
 

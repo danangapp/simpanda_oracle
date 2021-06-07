@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const sertifikatExp = (data) => {   
     return `
     <table style="font-family: Arial, Helvetica, sans-serif; padding: 10px;">
@@ -36,7 +38,7 @@ ${data.map(value=> '<tr>'+
 '<td>'+value.NIPP+'</td>'+
 '<td>'+value.JENIS_SERTIFIKAT+'</td>'+
 '<td>'+value.KATEGORI_SERTIFIKAT+'</td>'+
-'<td>'+value.TANGGAL_KADALUARSA+'</td>'+
+'<td>'+moment(value.TANGGAL_KADALUARSA).format('DD MMMM YYYY')+'</td>'+
                     '</tr>').reduce((tot,mod)=>tot+=mod)}
                 </table>
             </td>
