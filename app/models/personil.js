@@ -180,8 +180,10 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 	// }
 
 	const rowNippNama = await f.getOneRow("personil", "nipp", newPersonil.nipp);
-	if (rowNippNama && rowNippNama.nipp == newPersonil.nipp && rowNippNama.nama == newPersonil.nama) {
-		result(null, { 'status': false, 'message': 'Maaf, NIPP & Nama yang anda pilih sudah tersedia !' })
+	// if (rowNippNama && rowNippNama.nipp == newPersonil.nipp && rowNippNama.nama == newPersonil.nama) {
+	if (rowNippNama) {
+		// result(null, { 'status': false, 'message': 'Maaf, NIPP & Nama yang anda pilih sudah tersedia !' })
+		result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
 		return false;
 	}
 
