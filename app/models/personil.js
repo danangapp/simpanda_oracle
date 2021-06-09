@@ -187,6 +187,12 @@ Personil.create = async (newPersonil, result, cabang_id, user_id) => {
 		return false;
 	}
 
+	if(newPersonil.skpp_tanggal_mulai>newPersonil.skpp_tanggal_selesai) {
+		result(null, { 'status': false, 'message': 'Maaf, tanggal mulai SKKP harus lebih lama dari pada tanggal selesai!' })
+		return false;
+	}
+
+
 	const sertifikat = newPersonil.sertifikat;
 	delete newPersonil.sertifikat;
 	newPersonil = setActivity(newPersonil);
