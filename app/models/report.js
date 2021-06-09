@@ -139,8 +139,8 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
                         c."question",
                         ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
                         ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
-                        a."tanggal_awal",
-                        a."tanggal_akhir",
+                        to_char(a."tanggal_awal", 'DD fmMonth YYYY') AS "tanggal_awal",
+                        to_char(a."tanggal_akhir", 'DD fmMonth YYYY') AS "tanggal_akhir",
                         ( CASE WHEN to_char( a."status" ) = 0 THEN 'Close' ELSE 'Open' END ) AS "status"
                     FROM
                         "pemeriksaan_kapal_check_data" a
