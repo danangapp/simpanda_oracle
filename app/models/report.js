@@ -3,11 +3,15 @@ const fs = require('fs');
 var moment = require('moment');
 var XlsxTemplate = require('xlsx-template');
 const createReport = require('docx-templates').default;
-const { version } = require('moment');
-var query_asli = `SELECT a.*, round( 0.05 * pendapatan_pandu, 0 ) pnbp_pandu, round( 0.05 * pendapatan_tunda, 0 ) pnbp_tunda, round( 0.05 * pendapatan_pandu, 0 ) + round( 0.05 * pendapatan_tunda, 0 ) jumlah_pnbp FROM (SELECT c.kd_cabang, c.nm_cabang, bkt_pandu.kd_ppkb, to_char( bkt_pandu.jam_pandu_naik, 'mm-yyyy' ) periode, bkt_pandu.no_ukk, bkt_pandu.no_bkt_pandu, pkk.tgl_jam_tiba, bkt_pandu.ppkb_ke, bkt_pandu.draft_depan, bkt_pandu.draft_belakang, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat1, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat1, (SELECT mst_kapal.kp_loa FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat1, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat1, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat1, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk1 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat1, (SELECT mst_kapal.nm_kapal FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) nm_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_grt_tugboat2, (SELECT mst_kapal.kp_grt FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) kp_loa_tugboat2, (SELECT mst_kapal.kd_bendera FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) flag_tugboat2, (SELECT pkk.draft_depan FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_depan_tugboat2, (SELECT pkk.draft_belakang FROM pkk, mst_kapal_agen, mst_kapal WHERE pkk.no_ukk = bkt_pandu.no_ukk2 AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal ) draft_belakang_tugboat2, mst_kapal.nm_kapal, mst_kapal.jn_kapal, mst_kapal.kp_grt, mst_kapal.kp_loa, mst_kapal.kd_bendera, mst_agen.kd_agen, mst_pers_pandu.nm_pers_pandu, to_char( pkk.tgl_jam_tiba, 'dd-mm-yyyy' ) tgl_tiba, to_char( pkk.tgl_jam_tiba, 'hh24:mi' ) jam_tiba, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'dd-mm-yyyy' ) tgl_pmt, to_char( ppkb_pandu.tgl_jam_pmt_pandu_d, 'hh24:mi' ) jam_pmt, to_char( bkt_pandu.jam_pandu_naik, 'hh24:mi' ) pnk, to_char( bkt_pandu.jam_kapal_gerak, 'hh24:mi' ) kb, bkt_pandu.jam_pandu_naik,  to_char( bkt_pandu.jam_pandu_naik, 'dd-mm-yyyy hh24:mi' ) mulai_pelaksanaan, to_char( bkt_pandu.jam_pandu_turun, 'dd-mm-yyyy hh24:mi' ) selesai_pelaksanaan, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) pnd, round((bkt_pandu.jam_pandu_turun - bkt_pandu.jam_pandu_naik) * 24*60) pnd_minute, ( CASE WHEN bkt_pandu.jam_pandu_naik > ppkb_pandu.tgl_jam_pmt_pandu_d THEN f_selisih_jam ( ppkb_pandu.tgl_jam_pmt_pandu_d, bkt_pandu.jam_pandu_naik ) ELSE '00:00' END ) wt, round( ( bkt_pandu.jam_pandu_naik - ppkb_pandu.tgl_jam_pmt_pandu_d ) * 24 * 60 ) wt_minute,(CASE WHEN bkt_pandu.kd_gerakan = 1 AND ppkb_pandu.tgl_jam_pmt_pandu_d > pkk.tgl_jam_tiba THEN trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 - trunc( ( ppkb_pandu.tgl_jam_pmt_pandu_d - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) pt, (CASE WHEN bkt_pandu.kd_gerakan = 3 AND bkt_pandu.jam_pandu_turun > pkk.tgl_jam_tiba THEN trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) || ':' || trunc(( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 - trunc( ( bkt_pandu.jam_pandu_turun - pkk.tgl_jam_tiba ) * 24 ) ) * 60 ) ELSE '00:00'END ) trt, f_selisih_jam ( bkt_pandu.jam_pandu_naik, bkt_pandu.jam_pandu_turun ) at_jam, (CASE bkt_pandu.pandu_dari WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_sebelum ) ELSE bkt_pandu.pandu_dari END ) pandu_dari, (CASE bkt_pandu.pandu_ke WHEN '9999' THEN ( SELECT mst_pelabuhan.nm_pelabuhan FROM mst_pelabuhan WHERE mst_pelabuhan.kd_pelabuhan = pkk.pelabuhan_berikut ) ELSE bkt_pandu.pandu_ke END ) pandu_ke, bkt_pandu.kd_gerakan, mst_gerakan.gerakan, bkt_pandu.tgl_mpandu, mst_agen.nm_agen, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) nm_kapal_1, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_1 = mst_fasilitas.kd_fas ) hp_kapal_1, ( SELECT mst_fasilitas.nm_fas FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) nm_kapal_2, ( SELECT mst_fasilitas.daya FROM mst_fasilitas WHERE bkt_tunda.kd_kapal_2 = mst_fasilitas.kd_fas ) hp_kapal_2, to_char( bkt_tunda.tgl_jam_tiba_kpl1, 'hh24:mi' ) mulai_tunda, to_char( bkt_tunda.tgl_jam_brngkt_kpl1, 'hh24:mi' ) selesai_tunda, f_selisih_jam ( bkt_tunda.tgl_jam_tiba_kpl1, bkt_tunda.tgl_jam_brngkt_kpl1 ) lama_tunda, bkt_pandu.ket_pandu, mst_keterangan_pandu.keterangan || ', ' || ( SELECT keterangan FROM kapal_prod.mst_ket_pandu_khusus WHERE kd_keterangan_pandu = bkt_pandu.ket_pandu ) AS keterangan_pandu, decode( pkk.kd_pelayaran, '1', 'ln', '2', 'dn', '3', 'rkyt', '4', 'prnts' ) AS pelayaran, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'pandu'), 0 ) pendapatan_pandu, nvl((SELECT sum( nvl( amount, 0 ) ) FROM kapal_cabang.simkeu_data_nota_tmp a WHERE a.no_ukk = pkk.no_ukk AND a.no_bukti = bkt_pandu.no_bkt_pandu AND a.type_pelayanan = 'tunda'), 0 ) pendapatan_tunda, mst_dermaga.dermaga FROM bkt_pandu, bkt_tunda, ppkb_detail, ppkb_pandu, ppkb, pkk, mst_kapal_agen, mst_kapal, mst_pers_pandu, mst_gerakan, mst_agen, mst_keterangan_pandu, mst_cabang c, mst_kade, mst_dermaga WHERE bkt_pandu.no_bkt_pandu = bkt_tunda.no_bkt_tunda ( + ) AND mst_kapal_agen.kd_cabang = c.kd_cabang AND bkt_pandu.kd_ppkb = ppkb_detail.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_detail.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb_pandu.kd_ppkb AND bkt_pandu.ppkb_ke = ppkb_pandu.ppkb_ke AND bkt_pandu.kd_ppkb = ppkb.kd_ppkb AND ppkb.no_ukk = pkk.no_ukk AND pkk.kd_kapal_agen = mst_kapal_agen.kd_kapal_agen AND mst_kapal_agen.kd_kapal = mst_kapal.kd_kapal AND ( bkt_pandu.kd_pers_pandu = mst_pers_pandu.kd_pers_pandu AND SUBSTR( bkt_pandu.kd_ppkb, 5, 2 ) = mst_pers_pandu.KD_CABANG ) AND bkt_pandu.kd_gerakan = mst_gerakan.kd_gerakan AND mst_kapal_agen.kd_agen = mst_agen.kd_agen AND bkt_pandu.ket_pandu = mst_keterangan_pandu.kd_keterangan_pandu AND ppkb_detail.kade_tujuan = mst_kade.kd_kade AND mst_kade.kd_dermaga = mst_dermaga.kd_dermaga ) a`;
+const axios = require('axios').default;
 const Report = function (report) {
     this.nama = report.nama;
 };
+
+var auth = {
+    username: 'vms_user',
+    password: 'vms_user'
+}
 
 const queryPandu = function (cabang, date, dbCabang = "") {
     return `SELECT KD_PROSES, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
@@ -1049,87 +1053,52 @@ Report.crewlist = async (req, result, cabang_id) => {
 Report.pelaporanmanagement = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date;
-
         var arr = {};
-        query = `SELECT a.*, b.GERAKAN, c.PENDAPATAN_PANDU, d.PENDAPATAN_TUNDA FROM (
-                    SELECT NM_CABANG, DERMAGA, PELAYARAN, COUNT(UNIT) AS UNIT, SUM(GT) AS GT FROM (
-                        SELECT
-                            NM_CABANG, KD_PPKB AS UNIT, DERMAGA, PELAYARAN, COUNT(KD_PPKB), SUM(KP_GRT) AS GT
-                        FROM
-                            V_SIMPANDA_PEL_MANAJEMEN
-                        WHERE
-                            TO_CHAR(JAM_PANDU_NAIK, 'YYYY-MM') = '${date}'
-                            AND PELAYARAN IN ('dn', 'ln')
-                            GROUP BY NM_CABANG,KD_PPKB, DERMAGA, PELAYARAN
-                    ) a
-                    GROUP BY NM_CABANG, DERMAGA, PELAYARAN
-                    ORDER BY NM_CABANG, DERMAGA, PELAYARAN
-                ) a
-                LEFT JOIN (
-                    SELECT
-                        NM_CABANG, DERMAGA, PELAYARAN, COUNT(KD_PPKB) AS GERAKAN
-                    FROM
-                        V_SIMPANDA_PEL_MANAJEMEN
-                    WHERE
-                        TO_CHAR(JAM_PANDU_NAIK, 'YYYY-MM') = '${date}'
-                        AND PELAYARAN IN ('dn', 'ln')
-                    GROUP BY NM_CABANG, DERMAGA, PELAYARAN
-                    ORDER BY NM_CABANG, PELAYARAN
-                ) b ON a.NM_CABANG = b.NM_CABANG AND a.DERMAGA = b.DERMAGA AND a.PELAYARAN = b.PELAYARAN
-                LEFT JOIN (
-                    SELECT
-                        NM_CABANG, DERMAGA, PELAYARAN, SUM(PENDAPATAN_PANDU) AS PENDAPATAN_PANDU
-                    FROM
-                        V_SIMPANDA_PEL_MANAJEMEN
-                    WHERE
-                        TO_CHAR(JAM_PANDU_NAIK, 'YYYY-MM') = '${date}'
-                        AND PELAYARAN IN ('dn', 'ln')
-                    GROUP BY NM_CABANG, DERMAGA, PELAYARAN
-                    ORDER BY NM_CABANG, PELAYARAN
-                ) c ON a.NM_CABANG = c.NM_CABANG AND a.DERMAGA = c.DERMAGA AND a.PELAYARAN = c.PELAYARAN
-                LEFT JOIN (
-                    SELECT
-                        NM_CABANG, DERMAGA, PELAYARAN, SUM(PENDAPATAN_TUNDA) AS PENDAPATAN_TUNDA
-                    FROM
-                        V_SIMPANDA_PEL_MANAJEMEN
-                    WHERE
-                        TO_CHAR(JAM_PANDU_NAIK, 'YYYY-MM') = '${date}'
-                        AND PELAYARAN IN ('dn', 'ln')
-                    GROUP BY NM_CABANG, DERMAGA, PELAYARAN
-                    ORDER BY NM_CABANG, PELAYARAN
-                ) d ON a.NM_CABANG = d.NM_CABANG AND a.DERMAGA = d.DERMAGA AND a.PELAYARAN = d.PELAYARAN`;
+        const url = "http://10.88.48.57:5555/restv2/simpanda/managementReport/cabang";
+        var dta = await axios({
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            auth: auth,
+            data: JSON.stringify({
+                "opSelectManagementReportCabangRequest": {
+                    "esbBody": {
+                        "jamPanduNaik": date
+                    }
+                }
+            }),
+            url,
+        })
 
-        const output1 = await f.querySimop(query);
-        const rows = output1.rows;
+        const rows = dta.data.opSelectManagementReportCabangResponse.esbBody.results;
         var no = 0, cabang = "", merge = [], unitUln = 0, unitUdn = 0, unitKln = 0, unitKdn = 0, gerakanUln = 0, gerakanUdn = 0, gerakanKln = 0, gerakanKdn = 0, gtUln = 0, gtUdn = 0, gtKln = 0, gtKdn = 0, pendapatanUln = 0, pendapatanUdn = 0, pendapatanKln = 0, pendapatanKdn = 0;
         for (var a in rows) {
-            if (rows[a].DERMAGA == "Umum" && rows[a].PELAYARAN == "ln") {
-                unitUln = rows[a].UNIT;
-                gerakanUln = rows[a].GERAKAN;
-                gtUln = rows[a].GT;
-                pendapatanUln = rows[a].PENDAPATAN_PANDU + rows[a].PENDAPATAN_TUNDA;
+            if (rows[a].dermaga == "Umum" && rows[a].pelayaran == "ln") {
+                unitUln = rows[a].unit;
+                gerakanUln = rows[a].gerakan;
+                gtUln = rows[a].gt;
+                pendapatanUln = rows[a].pendapatan_pandu + rows[a].pendapatan_tunda || 0;
             }
-            if (rows[a].DERMAGA == "Umum" && rows[a].PELAYARAN == "dn") {
-                unitUdn = rows[a].UNIT;
-                gerakanUdn = rows[a].GERAKAN;
-                gtUdn = rows[a].GT;
-                pendapatanUdn = rows[a].PENDAPATAN_PANDU + rows[a].PENDAPATAN_TUNDA;
+            if (rows[a].dermaga == "Umum" && rows[a].pelayaran == "dn") {
+                unitUdn = rows[a].unit;
+                gerakanUdn = rows[a].gerakan;
+                gtUdn = rows[a].gt;
+                pendapatanUdn = rows[a].pendapatan_pandu + rows[a].pendapatan_tunda || 0;
             }
-            if (rows[a].DERMAGA == "Khusus" && rows[a].PELAYARAN == "ln") {
-                unitKln = rows[a].UNIT;
-                gerakanKln = rows[a].GERAKAN;
-                gtKln = rows[a].GT;
-                pendapatanKln = rows[a].PENDAPATAN_PANDU + rows[a].PENDAPATAN_TUNDA;
+            if (rows[a].dermaga == "Khusus" && rows[a].pelayaran == "ln") {
+                unitKln = rows[a].unit;
+                gerakanKln = rows[a].gerakan;
+                gtKln = rows[a].gt;
+                pendapatanKln = rows[a].pendapatan_pandu + rows[a].pendapatan_tunda || 0;
             }
-            if (rows[a].DERMAGA == "Khusus" && rows[a].PELAYARAN == "dn") {
-                unitKdn = rows[a].UNIT;
-                gerakanKdn = rows[a].GERAKAN;
-                gtKdn = rows[a].GT;
-                pendapatanKdn = rows[a].PENDAPATAN_PANDU + rows[a].PENDAPATAN_TUNDA;
+            if (rows[a].dermaga == "Khusus" && rows[a].pelayaran == "dn") {
+                unitKdn = rows[a].unit;
+                gerakanKdn = rows[a].gerakan;
+                gtKdn = rows[a].gt;
+                pendapatanKdn = rows[a].pendapatan_pandu + rows[a].pendapatan_tunda || 0;
             }
 
-            if (cabang != rows[a].NM_CABANG) {
-                cabang = rows[a].NM_CABANG
+            if (cabang != rows[a].nmCabang) {
+                cabang = rows[a].nmCabang
                 no++;
                 const arr1 = { no, cabang, unitUln, unitUdn, unitKln, unitKdn, gerakanUln, gerakanUdn, gerakanKln, gerakanKdn, gtUln, gtUdn, gtKln, gtKdn, pendapatanUln, pendapatanUdn, pendapatanKln, pendapatanKdn }
                 merge.push(arr1)
@@ -1156,8 +1125,6 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
         arr['bulan'] = f.toDate(date, "MMM");
         arr['tahun'] = f.toDate(date, "YYYY");
 
-        // console.log("danang", merge)
-
         var d = new Date();
         var t = d.getTime();
         fs.readFile('./report/Report-Pelaporan Manajemen- Laporan produksi Global.xlsx', function async(err, dt) {
@@ -1169,7 +1136,7 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
             result(null, t + '.xlsx');
         });
 
-        result(null, output1.rows);
+        result(null, rows);
     } else {
         result(null, { "status": "error no data" });
     }
@@ -1180,12 +1147,44 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
-        var arr = {}, query = queryTunda(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
-        query = `SELECT ROWNUM NO, a.* FROM (${query}) a`;
-        var output1 = await f.querySimop(query);
-        console.log(query);
+        var arr = {};
+        const url = cabang == "01" ? "http://10.88.48.57:5555/restv2/simpanda/produksiTunda/prod" : "http://10.88.48.57:5555/restv2/simpanda/produksiTunda/cabang";
+        var dataBody;
+        if (cabang == "01") {
+            dataBody = {
+                "opSelectProduksiTundaProdRequest": {
+                    "esbBody": {
+                        "tglProduksi": date
+                    }
+                }
+            }
 
-        arr['global'] = output1.rows;
+        } else {
+            dataBody = {
+                "opSelectProduksiTundaCabangRequest": {
+                    "esbBody": {
+                        "kdPpkb": cabang,
+                        "tglProduksi": date
+                    }
+                }
+            }
+        }
+        var dta = await axios({
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            auth: auth,
+            data: JSON.stringify(dataBody),
+            url,
+        })
+
+        var globalResult;
+        if (cabang == "01") {
+            globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody.results;
+        } else {
+            globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody.results;
+        }
+
+        arr['global'] = globalResult;
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
@@ -1200,7 +1199,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             result(null, t + '.xlsx');
         });
 
-        result(null, output1.rows);
+        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
@@ -1211,13 +1210,45 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
-        var arr = {}, query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
-        query = `SELECT MAX(KD_PROSES) AS KD_PROSES, MAX(NM_PERS_PANDU) AS NM_PERS_PANDU, SUM(GERAKAN_DN) AS GERAKAN_DN, SUM(GERAKAN_LN) AS GERAKAN_LN, SUM(TOTAL_GERAKAN) AS TOTAL_GERAKAN, SUM(GT_DN) AS GT_DN, SUM(GT_LN) AS GT_LN, SUM(TOTAL_GT) AS TOTAL_GT, SUM(LAMA_PANDU_DN) AS LAMA_PANDU_DN, SUM(LAMA_PANDU_LN) AS LAMA_PANDU_LN, SUM(TOTAL_LAMA_PANDU) AS TOTAL_LAMA_PANDU, SUM(WT_DN) AS WT_DN, SUM(WT_LN) AS WT_LN, SUM(TOTAL_WT) AS TOTAL_WT, SUM(TOTAL_PENDAPATAN_PANDU) AS TOTAL_PENDAPATAN_PANDU, SUM(PNBP_TOTAL_PENDAPATAN_PANDU) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a GROUP BY NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
-        query = `SELECT ROWNUM NO, a.KD_PROSES, a.NM_PERS_PANDU, a.GERAKAN_DN, a.GERAKAN_LN, a.TOTAL_GERAKAN, a.GT_DN, a.GT_LN, a.TOTAL_GT, a.LAMA_PANDU_DN, a.LAMA_PANDU_LN, a.TOTAL_LAMA_PANDU, a.WT_DN, a.WT_LN, a.TOTAL_WT, a.TOTAL_PENDAPATAN_PANDU, a.PNBP_TOTAL_PENDAPATAN_PANDU FROM (${query}) a WHERE TO_NUMBER( KD_PROSES ) > 3`;
-        console.log("output1", query);
-        var output1 = await f.querySimop(query);
+        var arr = {}
+        const url = cabang == "01" ? "http://10.88.48.57:5555/restv2/simpanda/produksiPandu/prod" : "http://10.88.48.57:5555/restv2/simpanda/produksiPandu/cabang";
 
-        arr['global'] = output1.rows || [];
+        var dataBody;
+        if (cabang == "01") {
+            dataBody = {
+                "opSelectProduksiPanduProdRequest": {
+                    "esbBody": {
+                        "tglProduksi": date
+                    }
+                }
+            }
+        } else {
+            dataBody = {
+                "opSelectProduksiPanduCabangRequest": {
+                    "esbBody": {
+                        "kdPpkb": cabang,
+                        "tglProduksi": date
+                    }
+                }
+            }
+        }
+        console.log("cabang", dataBody)
+
+        var dta = await axios({
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            auth: auth,
+            data: JSON.stringify(dataBody),
+            url,
+        })
+
+        var globalResult;
+        if (cabang == "01") {
+            globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+        } else {
+            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results;
+        }
+        arr['global'] = globalResult || [];
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
@@ -1232,7 +1263,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             result(null, t + '.xlsx');
         });
 
-        result(null, output1.rows);
+        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
