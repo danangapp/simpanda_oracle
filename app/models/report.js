@@ -14,7 +14,7 @@ var auth = {
 }
 
 const queryPandu = function (cabang, date, dbCabang = "") {
-    return `SELECT KD_PROSES, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
+    return `SELECT KD_PROSES, KD_PERS_PANDU, NM_PERS_PANDU, SUM( GERAKAN_DN ) AS GERAKAN_DN, SUM( GERAKAN_LN ) AS GERAKAN_LN, ( SUM( GERAKAN_DN ) + SUM( GERAKAN_LN ) ) AS TOTAL_GERAKAN, SUM( GT_DN ) AS GT_DN, SUM( GT_LN ) AS GT_LN, ( SUM( GT_DN ) + SUM( GT_LN ) ) AS TOTAL_GT, TRUNC( SUM( LAMA_PANDU_DN ) / 60 ) AS LAMA_PANDU_DN, TRUNC( SUM( LAMA_PANDU_LN ) / 60 ) AS LAMA_PANDU_LN, TRUNC( ( SUM( LAMA_PANDU_DN ) + SUM( LAMA_PANDU_LN ) ) / 60 ) AS TOTAL_LAMA_PANDU, TRUNC( SUM( WT_DN ) / 60 ) AS WT_DN, TRUNC( SUM( WT_LN ) / 60 ) AS WT_LN, TRUNC( ( SUM( WT_DN ) + SUM( WT_LN ) ) / 60 ) AS TOTAL_WT, SUM( PENDAPATAN_PANDU ) AS TOTAL_PENDAPATAN_PANDU, ROUND( 0.05 * SUM( PENDAPATAN_PANDU ), 0 ) AS PNBP_TOTAL_PENDAPATAN_PANDU FROM ${dbCabang}V_PRODUKSI_PEMANDUAN_KAPAL WHERE SUBSTR(KD_PPKB, 5, 2) = '${cabang}' AND TO_CHAR(TGL_PRODUKSI, 'YYYY-MM') = '${date}' GROUP BY KD_PERS_PANDU, KD_PROSES, NM_PERS_PANDU ORDER BY NM_PERS_PANDU`;
 };
 
 const queryTunda = function (cabang, date, dbCabang = "") {
@@ -169,7 +169,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var output1 = await f.query(query);
     var output = output1.rows;
     var rows = output1.rows;
-    console.log(rows)
+    
     // query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
     // var output1 = await f.query(query);
     // var rows2 = output1.rows;
@@ -1409,17 +1409,17 @@ Report.personelpeformance = async (req, result, cabang_id) => {
         const date = req.fields.date;
         const cabang = req.fields.cabang_id;
         var query = queryPandu(cabang, date, cabang == "01" ? "KAPAL_PROD." : "");
-        query = `SELECT ROWNUM NO, 
+        query = `SELECT 
+
+                a.KD_PERS_PANDU AS "kd_pers_pandu",
                 a.NM_PERS_PANDU AS "nm_pers_pandu",
-                a.TOTAL_GERAKAN AS "gerakan",
-                a.TOTAL_GT AS "total_gt",
-                a.TOTAL_LAMA_PANDU AS "waiting_time"
-                FROM (${query}) a WHERE a.KD_PROSES IN (3, 4, 5, 6)`;
+                SUM(a.TOTAL_GERAKAN) AS "gerakan",
+                SUM(a.TOTAL_GT) AS "total_gt",
+                SUM(a.TOTAL_LAMA_PANDU) AS "waiting_time"
+                FROM (${query}) a WHERE a.KD_PROSES IN (3, 4, 5, 6) GROUP BY a.KD_PERS_PANDU, a.NM_PERS_PANDU`;
 
         var output1 = await f.querySimop(query);
-        // console.log(req.fields);
         var output = output1.rows;
-
         result(null, output);
     } else {
         result(null, { "status": "error no data" });
