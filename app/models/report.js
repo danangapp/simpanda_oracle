@@ -139,7 +139,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
                         a."pemeriksaan_kapal_id",
                         a."pemeriksaan_kapal_check_id",
                         (CASE WHEN b."gambar" IS NULL THEN '' ELSE  CONCAT( 'http://10.88.49.27:4000/', b."gambar" ) END) AS "gambar",
-                        b."keterangan",
+                        a."keterangan",
                         c."question",
                         ( CASE WHEN to_char( a."kondisi_id" ) = 1 THEN 'ü' ELSE '' END ) AS "baik",
                         ( CASE WHEN to_char( a."kondisi_id" ) = 2 THEN 'ü' ELSE '' END ) AS "rusak",
@@ -169,7 +169,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var output1 = await f.query(query);
     var output = output1.rows;
     var rows = output1.rows;
-
+    console.log(rows)
     // query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
     // var output1 = await f.query(query);
     // var rows2 = output1.rows;
