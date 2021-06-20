@@ -4,6 +4,7 @@ var moment = require('moment');
 var XlsxTemplate = require('xlsx-template');
 const createReport = require('docx-templates').default;
 const axios = require('axios').default;
+require('dotenv').config();
 const Report = function (report) {
     this.nama = report.nama;
 };
@@ -169,7 +170,7 @@ Report.pemeriksaankapal = async (id, result, cabang_id) => {
     var output1 = await f.query(query);
     var output = output1.rows;
     var rows = output1.rows;
-    
+
     // query = `SELECT * FROM "pemeriksaan_kapal_upload" WHERE "pemeriksaan_kapal_id" = '${id}' ORDER BY "upd_date" DESC) a WHERE ROWNUM = 1`;
     // var output1 = await f.query(query);
     // var rows2 = output1.rows;
@@ -1054,7 +1055,7 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date;
         var arr = {};
-        const url = "http://10.88.48.57:5555/restv2/simpanda/managementReport/cabang";
+        const url = `${process.env.ESB}restv2/simpanda/managementReport/cabang`;
         var dta = await axios({
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -1148,7 +1149,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {};
-        const url = cabang == "01" ? "http://10.88.48.57:5555/restv2/simpanda/produksiTunda/prod" : "http://10.88.48.57:5555/restv2/simpanda/produksiTunda/cabang";
+        const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiTunda/prod` : `${process.env.ESB}restv2/simpanda/produksiTunda/cabang`;
         var dataBody;
         if (cabang == "01") {
             dataBody = {
@@ -1211,7 +1212,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}
-        const url = cabang == "01" ? "http://10.88.48.57:5555/restv2/simpanda/produksiPandu/prod" : "http://10.88.48.57:5555/restv2/simpanda/produksiPandu/cabang";
+        const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiPandu/prod` : `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
 
         var dataBody;
         if (cabang == "01") {

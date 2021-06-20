@@ -17,9 +17,9 @@ module.exports = {
     insertPanduLaut: function (data, statusInsert = 1, cabang) {
         var url
         if (statusInsert == 1) {
-            url = "http://10.88.48.57:5555/restv2/simpanda/insertPanduLaut/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/insertPanduLaut/` + cabang;
         } else {
-            url = "http://10.88.48.57:5555/restv2/simpanda/updatePanduLaut/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/updatePanduLaut/` + cabang;
         }
         console.log("pandu lautnya", url, data);
         const options = this.options(url, data);
@@ -28,9 +28,9 @@ module.exports = {
     insertPandu: function (data, statusInsert = 1, cabang) {
         var url
         if (statusInsert == 1) {
-            url = "http://10.88.48.57:5555/restv2/simpanda/insertPandu/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/insertPandu/` + cabang;
         } else {
-            url = "http://10.88.48.57:5555/restv2/simpanda/updatePandu/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/updatePandu/` + cabang;
         }
         console.log("danang pandu lewat sini", url, data);
         const options = this.options(url, data);
@@ -39,9 +39,9 @@ module.exports = {
     insertFasilitasKapal: function (data, statusInsert = 1, cabang) {
         var url
         if (statusInsert == 1) {
-            url = "http://10.88.48.57:5555/restv2/simpanda/insertFasilitas/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/insertFasilitas/` + cabang;
         } else {
-            url = "http://10.88.48.57:5555/restv2/simpanda/updateFasilitas/" + cabang;
+            url = `${process.env.ESB}/restv2/simpanda/updateFasilitas/` + cabang;
         }
         console.log("danang assetkapal", url, data);
         const options = this.options(url, data);
