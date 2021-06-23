@@ -1234,6 +1234,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             }
         }
         console.log("cabang", dataBody)
+<<<<<<< HEAD
 
         var dta = await axios({
             method: 'POST',
@@ -1248,23 +1249,43 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
+=======
+        try {           
+            var dta = await axios({
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                auth: auth,
+                data: JSON.stringify(dataBody),
+                url,
+            })
+            
+            var globalResult;
+            if (cabang == "01") {
+                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+            } else {
+                globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
+            }
+            arr['global'] = globalResult;
+            arr['cabang'] = await getCabang(parseInt(cabang));
+            arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
+    
+            var d = new Date();
+            var t = d.getTime();
+            fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
+                var template = new XlsxTemplate(dt);
+                template.substitute(1, arr);
+                var out = template.generate();
+                const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
+                fs.writeFileSync(fileName, out, 'binary');
+                result(null, t + '.xlsx');
+            });
+    
+            result(null, arr['global']);
+        } catch (error) {
+            result(null, { "status": "error no data" });
+            
+>>>>>>> 53e4d5a13b2d3954669c9fb5d02fa43893359aee
         }
-        arr['global'] = globalResult;
-        arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
-
-        var d = new Date();
-        var t = d.getTime();
-        fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
-            var template = new XlsxTemplate(dt);
-            template.substitute(1, arr);
-            var out = template.generate();
-            const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
-            fs.writeFileSync(fileName, out, 'binary');
-            result(null, t + '.xlsx');
-        });
-
-        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
