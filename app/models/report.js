@@ -1234,22 +1234,6 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             }
         }
         console.log("cabang", dataBody)
-<<<<<<< HEAD
-
-        var dta = await axios({
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            auth: auth,
-            data: JSON.stringify(dataBody),
-            url,
-        })
-	
-        var globalResult;
-        if (cabang == "01") {
-            globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-        } else {
-            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
-=======
         try {           
             var dta = await axios({
                 method: 'POST',
@@ -1284,7 +1268,6 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         } catch (error) {
             result(null, { "status": "error no data" });
             
->>>>>>> 53e4d5a13b2d3954669c9fb5d02fa43893359aee
         }
     } else {
         result(null, { "status": "error no data" });
