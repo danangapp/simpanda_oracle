@@ -1210,7 +1210,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
         var arr = {}
         const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiPandu/prod` : `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
 
@@ -1242,7 +1242,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             data: JSON.stringify(dataBody),
             url,
         })
-
+	
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
