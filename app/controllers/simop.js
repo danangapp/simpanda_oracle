@@ -1,5 +1,7 @@
 const f = require('./function');
 const axios = require('axios').default;
+require('dotenv').config();
+
 var auth = {
     username: 'vms_user',
     password: 'vms_user'
