@@ -1177,9 +1177,9 @@ Report.pelaporantunda = async (req, err, result, cabang_id) => {
                 auth: auth,
                 data: JSON.stringify(dataBody),
                 url,
-                timeout: 3000
+                timeout: 5000
             })
-            if(dta!==undefined) console.log("connected")
+            if(dta!==undefined) console.log("connected") //temp catch
             var globalResult;
             if (cabang == "01") {
                 globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody.results ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
@@ -1247,9 +1247,9 @@ Report.pelaporanpandu = async (req, err, result, cabang_id) => {
                 auth: auth,
                 data: JSON.stringify(dataBody),
                 url,
-                timeout: 3000
+                timeout: 5000
             })
-            if(dta!==undefined) console.log("connected")
+            if(dta!==undefined) console.log("connected") //temp catch
             var globalResult;
             if (cabang == "01") {
                 globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
