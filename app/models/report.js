@@ -1210,7 +1210,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
         var arr = {}
         const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiPandu/prod` : `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
 
@@ -1234,37 +1234,41 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             }
         }
         console.log("cabang", dataBody)
-
-        var dta = await axios({
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            auth: auth,
-            data: JSON.stringify(dataBody),
-            url,
-        })
-
-        var globalResult;
-        if (cabang == "01") {
-            globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-        } else {
-            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
+        try {           
+            var dta = await axios({
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                auth: auth,
+                data: JSON.stringify(dataBody),
+                url,
+            })
+            
+            var globalResult;
+            if (cabang == "01") {
+                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+            } else {
+                globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
+            }
+            arr['global'] = globalResult;
+            arr['cabang'] = await getCabang(parseInt(cabang));
+            arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
+    
+            var d = new Date();
+            var t = d.getTime();
+            fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
+                var template = new XlsxTemplate(dt);
+                template.substitute(1, arr);
+                var out = template.generate();
+                const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
+                fs.writeFileSync(fileName, out, 'binary');
+                result(null, t + '.xlsx');
+            });
+    
+            result(null, arr['global']);
+        } catch (error) {
+            result(null, { "status": "error no data" });
+            
         }
-        arr['global'] = globalResult;
-        arr['cabang'] = await getCabang(parseInt(cabang));
-        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
-
-        var d = new Date();
-        var t = d.getTime();
-        fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
-            var template = new XlsxTemplate(dt);
-            template.substitute(1, arr);
-            var out = template.generate();
-            const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
-            fs.writeFileSync(fileName, out, 'binary');
-            result(null, t + '.xlsx');
-        });
-
-        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
