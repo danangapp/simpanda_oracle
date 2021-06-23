@@ -1144,7 +1144,7 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
 };
 
 
-Report.pelaporantunda = async (req, result, cabang_id) => {
+Report.pelaporantunda = async (req, err, result, cabang_id) => {
 
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
@@ -1170,13 +1170,19 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
                 }
             }
         }
-        var dta = await axios({
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            auth: auth,
-            data: JSON.stringify(dataBody),
-            url,
-        })
+        try {
+            var dta = await axios({
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                auth: auth,
+                data: JSON.stringify(dataBody),
+                url,
+                timeout: 3000
+            })
+            if(dta!==undefined) console.log("connected")
+        } catch (error) {
+            err({ "kind" : "not_connected"})
+        }
 
         var globalResult;
         if (cabang == "01") {
@@ -1208,7 +1214,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 };
 
 
-Report.pelaporanpandu = async (req, result, cabang_id) => {
+Report.pelaporanpandu = async (req, err, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
         var arr = {}
@@ -1234,41 +1240,43 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             }
         }
         console.log("cabang", dataBody)
-        try {           
+        try {
             var dta = await axios({
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 auth: auth,
                 data: JSON.stringify(dataBody),
                 url,
+                timeout: 3000
             })
-            
-            var globalResult;
-            if (cabang == "01") {
-                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-            } else {
-                globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
-            }
-            arr['global'] = globalResult;
-            arr['cabang'] = await getCabang(parseInt(cabang));
-            arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
-    
-            var d = new Date();
-            var t = d.getTime();
-            fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
-                var template = new XlsxTemplate(dt);
-                template.substitute(1, arr);
-                var out = template.generate();
-                const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
-                fs.writeFileSync(fileName, out, 'binary');
-                result(null, t + '.xlsx');
-            });
-    
-            result(null, arr['global']);
+            if(dta!==undefined) console.log("connected")
         } catch (error) {
-            result(null, { "status": "error no data" });
-            
+            err({ "kind" : "not_connected"})
         }
+        
+        var globalResult;
+        if (cabang == "01") {
+            globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+        } else {
+            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
+        }
+        arr['global'] = globalResult;
+        arr['cabang'] = await getCabang(parseInt(cabang));
+        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+
+        result(null, arr['global']);
+   
     } else {
         result(null, { "status": "error no data" });
     }
