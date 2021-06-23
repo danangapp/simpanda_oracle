@@ -1151,7 +1151,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         var arr = {};
         const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiTunda/prod` : `${process.env.ESB}restv2/simpanda/produksiTunda/cabang`;
         var dataBody;
-        if (cabang == "01") {no
+        if (cabang == "01") {
             dataBody = {
                 "opSelectProduksiTundaProdRequest": {
                     "esbBody": {
