@@ -1167,7 +1167,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
                     }
                 }
             }
-        } else if (cabang == "00") {
+        } else if (cabang == "") {
             dataBody = {
                 "opSelectProduksiTundaAllRequest": {
                     "esbBody": {
@@ -1196,7 +1196,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
-        } else if (cabang == "00") {
+        } else if (cabang == "") {
             if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
                 globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
                     return value = {
@@ -1256,7 +1256,8 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         } else {
             url = `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
         }
-        console.log("cabang", cabang)
+        console.log("cabang", typeof cabang, cabang)
+        console.log(cabang === "00")
         var dataBody = {};
         if (cabang == "01") {
             dataBody = {
@@ -1266,7 +1267,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
                     }
                 }
             }
-        } else if (cabang == "00") {
+        } else if (cabang == "") {
             dataBody = {
                 "opSelectProduksiPanduAllRequest": {
                     "esbBody": {
@@ -1297,7 +1298,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-        } else if (cabang == "00") {
+        } else if (cabang == "") {
             if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
                 globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody.results.map(value=>{
                     return value = {
