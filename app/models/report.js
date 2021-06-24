@@ -1197,26 +1197,26 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
         } else if (cabang == "") {
-            // if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
-            //     globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
-            //         return value = {
-            //             no : value.NO,
-            //             nmKpl : value.NM_KPL,
-            //             hpKpl : value.HP_KPL,
-            //             gerakanDn : value.GERAKAN_DN,
-            //             gerakanLn : value.GERAKAN_LN,
-            //             totalGerakan : value.TOTAL_GERAKAN,
-            //             lamaTundaKpl : value.LAMA_TUNDA_KPL,
-            //             pendapatanPerHp : value.PENDAPATAN_PER_HP,
-            //             pendapatanTotalKpl : value.PENDAPATAN_TOTAL_KPL,
-            //             pnbpPerHp : value.PNBP_PER_HP,
-            //             pnbpTotalKpl : value.PNBP_TOTAL_KPL
-            //         }
-            //     })
-            // } else {
-            //     globalResult = [];
-            // }
-            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
+            if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
+                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
+                    return value = {
+                        no : value.NO,
+                        nmKpl : value.NM_KPL,
+                        hpKpl : value.HP_KPL,
+                        gerakanDn : value.GERAKAN_DN,
+                        gerakanLn : value.GERAKAN_LN,
+                        totalGerakan : value.TOTAL_GERAKAN,
+                        lamaTundaKpl : value.LAMA_TUNDA_KPL,
+                        pendapatanPerHp : value.PENDAPATAN_PER_HP,
+                        pendapatanTotalKpl : value.PENDAPATAN_TOTAL_KPL,
+                        pnbpPerHp : value.PNBP_PER_HP,
+                        pnbpTotalKpl : value.PNBP_TOTAL_KPL
+                    }
+                })
+            } else {
+                globalResult = [];
+            }
+            // globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
@@ -1298,33 +1298,33 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else if (cabang == "") {
-            // if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
-            //     globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody.results.map(value=>{
-            //         return value = {
-            //             kdProses: value.KD_PROSES,
-            //             nmPersPandu: value.NM_PERS_PANDU,
-            //             gerakanDn: value.GERAKAN_DN,
-            //             gerakanLn: value.GERAKAN_LN,
-            //             totalGerakan: value.TOTAL_GERAKAN,
-            //             gtDn: value.GT_DN, 
-            //             gtLn: value.GT_LN, 
-            //             totalGt: value.TOTAL_GT, 
-            //             lamaPanduDn: value.LAMA_PANDU_DN,
-            //             lamaPanduLn: value.LAMA_PANDU_LN,
-            //             totalLamaPandu: value.TOTAL_LAMA_PANDU,
-            //             wtDn: value.WT_DN,
-            //             wtLn: value.WT_LN,
-            //             totalWT: value.TOTAL_WT,
-            //             totalPendapatanPandu: value.TOTAL_PENDAPATAN_PANDU,
-            //             pnbpTotalPendapatanPandu: value.PNBP_TOTAL_PENDAPATAN_PANDU,
-            //             kdPpkb: value.KD_PPKB, 
-            //             tglProduksi: value.TGL_PRODUKSI
-            //         }
-            //     })
-            // } else {
-            //     globalResult = []
-            // }
-            globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduAllResponse.esbBody.results : [];
+            if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
+                globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody.results.map(value=>{
+                    return value = {
+                        kdProses: value.KD_PROSES,
+                        nmPersPandu: value.NM_PERS_PANDU,
+                        gerakanDn: value.GERAKAN_DN,
+                        gerakanLn: value.GERAKAN_LN,
+                        totalGerakan: value.TOTAL_GERAKAN,
+                        gtDn: value.GT_DN, 
+                        gtLn: value.GT_LN, 
+                        totalGt: value.TOTAL_GT, 
+                        lamaPanduDn: value.LAMA_PANDU_DN,
+                        lamaPanduLn: value.LAMA_PANDU_LN,
+                        totalLamaPandu: value.TOTAL_LAMA_PANDU,
+                        wtDn: value.WT_DN,
+                        wtLn: value.WT_LN,
+                        totalWT: value.TOTAL_WT,
+                        totalPendapatanPandu: value.TOTAL_PENDAPATAN_PANDU,
+                        pnbpTotalPendapatanPandu: value.PNBP_TOTAL_PENDAPATAN_PANDU,
+                        kdPpkb: value.KD_PPKB, 
+                        tglProduksi: value.TGL_PRODUKSI
+                    }
+                })
+            } else {
+                globalResult = []
+            }
+            // globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduAllResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
         }
