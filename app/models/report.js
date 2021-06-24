@@ -1198,8 +1198,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
         } else if (cabang == "") {
             if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
-                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results
-                globalResult = globalResult.map(value=>{
+                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
                     return value = {
                         no : value.NO,
                         nmKpl : value.NM_KPL,
@@ -1299,8 +1298,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else if (cabang == "") {
             if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
-                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody.results;
-                globalResult = globalResult.map(value=>{
+                globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody.results.map(value=>{
                     return value = {
                         kdProses: value.KD_PROSES,
                         nmPersPandu: value.NM_PERS_PANDU,
