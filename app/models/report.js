@@ -1144,10 +1144,10 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
 };
 
 
-Report.pelaporantunda = async (req, err, result, cabang_id) => {
+Report.pelaporantunda = async (req, result, cabang_id) => {
 
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {};
         var url;
         if (cabang == "01") {
@@ -1185,45 +1185,39 @@ Report.pelaporantunda = async (req, err, result, cabang_id) => {
                 }
             }
         }
-        try {
-            var dta = await axios({
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                auth: auth,
-                data: JSON.stringify(dataBody),
-                url,
-                timeout: 4000
-            })
-            // if(dta!==undefined) console.log("connected") //temp catch
-            var globalResult;
-            if (cabang == "01") {
-                globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
-            } else if (cabang == "") {
-                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
-            } else {
-                globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
-            }
+        var dta = await axios({
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            auth: auth,
+            data: JSON.stringify(dataBody),
+            url,
+        })
 
-            arr['global'] = globalResult;
-            arr['cabang'] = await getCabang(parseInt(cabang));
-            arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
-
-            var d = new Date();
-            var t = d.getTime();
-            fs.readFile('./report/Report-Pelaporan Manajemen-Laporan Produksi dan Pendapatan Tunda.xlsx', function async(err, dt) {
-                var template = new XlsxTemplate(dt);
-                template.substitute(1, arr);
-                var out = template.generate();
-                const fileName = './files/reports/PelaporanTunda' + t + '.xlsx';
-                fs.writeFileSync(fileName, out, 'binary');
-                result(null, t + '.xlsx');
-            });
-
-            result(null, arr['global']);
-        } catch (error) {
-            err({ "kind": "not_connected" })
+        var globalResult;
+        if (cabang == "01") {
+            globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
+        } else if (cabang == "") {
+            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
+        } else {
+            globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
 
+        arr['global'] = globalResult;
+        arr['cabang'] = await getCabang(parseInt(cabang));
+        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Report-Pelaporan Manajemen-Laporan Produksi dan Pendapatan Tunda.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/PelaporanTunda' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+
+        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
@@ -1231,9 +1225,9 @@ Report.pelaporantunda = async (req, err, result, cabang_id) => {
 };
 
 
-Report.pelaporanpandu = async (req, err, result, cabang_id) => {
+Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}
         var url
         if (cabang == "01") {
@@ -1271,46 +1265,40 @@ Report.pelaporanpandu = async (req, err, result, cabang_id) => {
                 }
             }
         }
-        console.log("cabang", dataBody)
-        try {
-            var dta = await axios({
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                auth: auth,
-                data: JSON.stringify(dataBody),
-                url,
-                timeout: 4000
-            })
-            // if (dta !== undefined) console.log("connected") //temp catch
-            var globalResult;
-            if (cabang == "01") {
-                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-            } else if (cabang == "") {
-                globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-            } else {
-                globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
-            }
-            arr['global'] = globalResult;
-            arr['cabang'] = await getCabang(parseInt(cabang));
-            arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
+        console.log("cabang", url, dataBody)
 
-            var d = new Date();
-            var t = d.getTime();
-            fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
-                var template = new XlsxTemplate(dt);
-                template.substitute(1, arr);
-                var out = template.generate();
-                const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
-                fs.writeFileSync(fileName, out, 'binary');
-                result(null, t + '.xlsx');
-            });
+        var dta = await axios({
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            auth: auth,
+            data: JSON.stringify(dataBody),
+            url,
+        })
 
-            result(null, arr['global']);
-        } catch (error) {
-            err({ "kind": "not_connected" })
+        var globalResult;
+        if (cabang == "01") {
+            globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+        } else if (cabang == "") {
+            globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+        } else {
+            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
         }
+        arr['global'] = globalResult || [];
+        arr['cabang'] = await getCabang(parseInt(cabang));
+        arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
 
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Report-Pelaporan Manajemen- Laporan Produksi dan Pendapatan Pandu.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/PelaporanPandu' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
 
+        result(null, arr['global']);
     } else {
         result(null, { "status": "error no data" });
     }
