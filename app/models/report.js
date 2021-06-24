@@ -1152,7 +1152,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         var url;
         if (cabang == "01") {
             url = `${process.env.ESB}restv2/simpanda/produksiTunda/prod`;
-        } else if (cabang == "") {
+        } else if (cabang == "0") {
             url = `${process.env.ESB}restv2/simpanda/produksiTunda/all`;
         } else {
             url = `${process.env.ESB}restv2/simpanda/produksiTunda/cabang`;
@@ -1251,7 +1251,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         var url
         if (cabang == "01") {
             url = `${process.env.ESB}restv2/simpanda/produksiPandu/prod`;
-        } else if (cabang == "") {
+        } else if (cabang == "0") {
             url = `${process.env.ESB}restv2/simpanda/produksiPandu/all`;
         } else {
             url = `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
