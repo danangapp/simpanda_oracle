@@ -1167,7 +1167,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
                     }
                 }
             }
-        } else if (cabang == "") {
+        } else if (cabang == "00") {
             dataBody = {
                 "opSelectProduksiTundaAllRequest": {
                     "esbBody": {
@@ -1196,7 +1196,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
-        } else if (cabang == "") {
+        } else if (cabang == "00") {
             if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
                 globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
                     return value = {
@@ -1266,7 +1266,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
                     }
                 }
             }
-        } else if (cabang == "") {
+        } else if (cabang == "00") {
             dataBody = {
                 "opSelectProduksiPanduAllRequest": {
                     "esbBody": {
@@ -1297,7 +1297,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
-        } else if (cabang == "") {
+        } else if (cabang == "00") {
             if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
                 globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody.results.map(value=>{
                     return value = {
