@@ -1198,7 +1198,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
         } else if (cabang == "") {
             if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
-                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.map(value=>{
+                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
                     return value = {
                         no : value.NO,
                         nmKpl : value.NM_KPL,
