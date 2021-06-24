@@ -1246,7 +1246,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
         var arr = {}
         var url
         if (cabang == "01") {
@@ -1298,6 +1298,33 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else if (cabang == "") {
+            if (dta.data.opSelectProduksiPanduAllResponse.esbBody) {
+                globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody.results;
+                globalResult = globalResult.map(value=>{
+                    return value = {
+                        kdProses: value.KD_PROSES,
+                        nmPersPandu: value.NM_PERS_PANDU,
+                        gerakanDn: value.GERAKAN_DN,
+                        gerakanLn: value.GERAKAN_LN,
+                        totalGerakan: value.TOTAL_GERAKAN,
+                        gtDn: value.GT_DN, 
+                        gtLn: value.GT_LN, 
+                        totalGt: value.TOTAL_GT, 
+                        lamaPanduDn: value.LAMA_PANDU_DN,
+                        lamaPanduLn: value.LAMA_PANDU_LN,
+                        totalLamaPandu: value.TOTAL_LAMA_PANDU,
+                        wtDn: value.WT_DN,
+                        wtLn: value.WT_LN,
+                        totalWT: value.TOTAL_WT,
+                        totalPendapatanPandu: value.TOTAL_PENDAPATAN_PANDU,
+                        pnbpTotalPendapatanPandu: value.PNBP_TOTAL_PENDAPATAN_PANDU,
+                        kdPpkb: value.KD_PPKB, 
+                        tglProduksi: value.TGL_PRODUKSI
+                    }
+                })
+            } else {
+                globalResult = []
+            }
             globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
