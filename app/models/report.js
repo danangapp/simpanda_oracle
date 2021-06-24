@@ -1256,7 +1256,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         } else {
             url = `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
         }
-
+        console.log("cabang", cabang)
         var dataBody = {};
         if (cabang == "01") {
             dataBody = {
