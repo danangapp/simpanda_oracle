@@ -1216,7 +1216,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             // } else {
             //     globalResult = [];
             // }
-            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
+            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
@@ -1292,8 +1292,8 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             auth: auth,
             data: JSON.stringify(dataBody),
             url,
-        }).then(data=>console.log(data.opSelectProduksiPanduProdResponse.esbBody.results))
-        console.log("data", dta.data.opSelectProduksiPanduProdResponse.esbBody.results)
+        })
+        
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
