@@ -1147,7 +1147,7 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
 Report.pelaporantunda = async (req, result, cabang_id) => {
 
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {};
         var url;
         if (cabang == "01") {
@@ -1246,7 +1246,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
 Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}
         var url
         if (cabang == "01") {
@@ -1325,7 +1325,6 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
             } else {
                 globalResult = []
             }
-            globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else {
             globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
         }
