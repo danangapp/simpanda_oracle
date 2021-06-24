@@ -1197,7 +1197,25 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
         } else if (cabang == "") {
-            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
+            if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
+                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.map(value=>{
+                    return value = {
+                        no : value.NO,
+                        nmKpl : value.NM_KPL,
+                        hpKpl : value.HP_KPL,
+                        gerakanDn : value.GERAKAN_DN,
+                        gerakanLn : value.GERAKAN_LN,
+                        totalGerakan : value.TOTAL_GERAKAN,
+                        lamaTundaKpl : value.LAMA_TUNDA_KPL,
+                        pendapatanPerHp : value.PENDAPATAN_PER_HP,
+                        pendapatanTotalKpl : value.PENDAPATAN_TOTAL_KPL,
+                        pnbpPerHp : value.PNBP_PER_HP,
+                        pnbpTotalKpl : value.PNBP_TOTAL_KPL
+                    }
+                })
+            } else {
+                globalResult = [];
+            }
         } else {
             globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
