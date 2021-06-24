@@ -1147,7 +1147,7 @@ Report.pelaporanmanagement = async (req, result, cabang_id) => {
 Report.pelaporantunda = async (req, result, cabang_id) => {
 
     if (req.fields.date) {
-        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
+        const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;
         var arr = {};
         var url;
         if (cabang == "01") {
@@ -1198,7 +1198,8 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
             globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
         } else if (cabang == "") {
             if(dta.data.opSelectProduksiTundaAllResponse.esbBody){
-                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results.map(value=>{
+                globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody.results
+                globalResult = globalResult.map(value=>{
                     return value = {
                         no : value.NO,
                         nmKpl : value.NM_KPL,
@@ -1219,7 +1220,7 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
         } else {
             globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
-
+        
         arr['global'] = globalResult;
         arr['cabang'] = await getCabang(parseInt(cabang));
         arr['date'] = moment().month(parseInt(date.substring(5, 7)) - 1).format("MMMM") + " " + date.substring(0, 4);
