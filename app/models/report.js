@@ -1149,7 +1149,15 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {};
-        const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiTunda/prod` : `${process.env.ESB}restv2/simpanda/produksiTunda/cabang`;
+        var url;
+        if (cabang == "01") {
+            url = `${process.env.ESB}restv2/simpanda/produksiTunda/prod`;
+        } else if (cabang == "") {
+            url = `${process.env.ESB}restv2/simpanda/produksiTunda/all`;
+        } else {
+            url = `${process.env.ESB}restv2/simpanda/produksiTunda/cabang`;
+        }
+
         var dataBody;
         if (cabang == "01") {
             dataBody = {
@@ -1159,7 +1167,14 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
                     }
                 }
             }
-
+        } else if (cabang == "") {
+            dataBody = {
+                "opSelectProduksiTundaAllRequest": {
+                    "esbBody": {
+                        "tglProduksi": date
+                    }
+                }
+            }
         } else {
             dataBody = {
                 "opSelectProduksiTundaCabangRequest": {
@@ -1180,9 +1195,11 @@ Report.pelaporantunda = async (req, result, cabang_id) => {
 
         var globalResult;
         if (cabang == "01") {
-            globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody.results;
+            globalResult = dta.data.opSelectProduksiTundaProdResponse.esbBody ? dta.data.opSelectProduksiTundaProdResponse.esbBody.results : [];
+        } else if (cabang == "") {
+            globalResult = dta.data.opSelectProduksiTundaAllResponse.esbBody ? dta.data.opSelectProduksiTundaAllResponse.esbBody.results : [];
         } else {
-            globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody.results;
+            globalResult = dta.data.opSelectProduksiTundaCabangResponse.esbBody ? dta.data.opSelectProduksiTundaCabangResponse.esbBody.results : [];
         }
 
         arr['global'] = globalResult;
@@ -1212,12 +1229,27 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
     if (req.fields.date) {
         const date = req.fields.date, cabang = req.fields.cabang_id < 10 ? "0" + req.fields.cabang_id.toString() : req.fields.cabang_id;;
         var arr = {}
-        const url = cabang == "01" ? `${process.env.ESB}restv2/simpanda/produksiPandu/prod` : `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
+        var url
+        if (cabang == "01") {
+            url = `${process.env.ESB}restv2/simpanda/produksiPandu/prod`;
+        } else if (cabang == "") {
+            url = `${process.env.ESB}restv2/simpanda/produksiPandu/all`;
+        } else {
+            url = `${process.env.ESB}restv2/simpanda/produksiPandu/cabang`;
+        }
 
-        var dataBody;
+        var dataBody = {};
         if (cabang == "01") {
             dataBody = {
                 "opSelectProduksiPanduProdRequest": {
+                    "esbBody": {
+                        "tglProduksi": date
+                    }
+                }
+            }
+        } else if (cabang == "") {
+            dataBody = {
+                "opSelectProduksiPanduAllRequest": {
                     "esbBody": {
                         "tglProduksi": date
                     }
@@ -1233,7 +1265,7 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
                 }
             }
         }
-        console.log("cabang", dataBody)
+        console.log("cabang", url, dataBody)
 
         var dta = await axios({
             method: 'POST',
@@ -1246,8 +1278,10 @@ Report.pelaporanpandu = async (req, result, cabang_id) => {
         var globalResult;
         if (cabang == "01") {
             globalResult = dta.data.opSelectProduksiPanduProdResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
+        } else if (cabang == "") {
+            globalResult = dta.data.opSelectProduksiPanduAllResponse.esbBody ? dta.data.opSelectProduksiPanduProdResponse.esbBody.results : [];
         } else {
-            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody.results;
+            globalResult = dta.data.opSelectProduksiPanduCabangResponse.esbBody ? dta.data.opSelectProduksiPanduCabangResponse.esbBody.results : [];
         }
         arr['global'] = globalResult || [];
         arr['cabang'] = await getCabang(parseInt(cabang));
