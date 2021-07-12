@@ -111,6 +111,7 @@ require("./app/routes/authorization")(app);
 require("./app/routes/pemilikkapal")(app);
 require("./app/routes/kepemilikankapal")(app);
 require("./app/routes/sbpdata")(app);
+require("./app/routes/dasarhukum")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 4000;
