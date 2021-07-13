@@ -290,10 +290,10 @@ Personil.updateById = async (id, personil, result, user_id) => {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	}
-
+	
 	const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
 	if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp) {
-		result(null, "Nip ini sudah ada di database");
+		result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
 		return false;
 	}
 	const remarkPersonil = personil.remark;
