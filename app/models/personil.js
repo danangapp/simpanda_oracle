@@ -165,26 +165,14 @@ const setActivity = (objects, koneksi = 1) => {
 };
 
 Personil.create = async (newPersonil, result, cabang_id, user_id) => {
-	// console.log("lewat sini mas")
-	// var check = `SELECT "nipp" ,"nama" FROM "personil" 
-	// 				WHERE "nipp" = '${newPersonil.nipp}' OR LOWER("nama") like LOWER('%${newPersonil.nama}%')`
-	// var dataCheck = await f.query(check)
-	// if (dataCheck.rows.length > 0) {
-	// 	if (dataCheck.rows[0].nipp === newPersonil.nipp) {
-	// 		result(null, { 'status': false, 'message': 'Maaf, NIPP yang anda pilih sudah tersedia !' })
-	// 	} else if (dataCheck.rows[0].nama.toLowerCase() === newPersonil.nama.toLowerCase()) {
-	// 		result(null, { 'status': false, 'message': 'Maaf, Nama yang anda pilih sudah tersedia !' })
-	// 	}
-
-	// 	return false
-	// }
-
-	const rowNippNama = await f.getOneRow("personil", "nipp", newPersonil.nipp);
-	// if (rowNippNama && rowNippNama.nipp == newPersonil.nipp && rowNippNama.nama == newPersonil.nama) {
-	if (rowNippNama) {
-		// result(null, { 'status': false, 'message': 'Maaf, NIPP & Nama yang anda pilih sudah tersedia !' })
-		result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
-		return false;
+	
+	console.log('data create personil', newPersonil)
+	if(newPersonil.nipp !== '0' || newPersonil.status_kepegawaian_id && newPersonil.status_kepegawaian_id !== '2'){
+		const rowNippNama = await f.getOneRow("personil", "nipp", newPersonil.nipp);
+		if (rowNippNama) {	
+			result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
+			return false;
+		}
 	}
 
 	if(newPersonil.skpp_tanggal_mulai>newPersonil.skpp_tanggal_selesai) {
@@ -285,19 +273,24 @@ Personil.getAll = async (param, result, cabang_id) => {
 }
 
 Personil.updateById = async (id, personil, result, user_id) => {
+
+	console.log('data update personil', personil)
 	const sertifikat = personil.sertifikat;
 	if (personil.sertifikat) {
 		await f.query("DELETE FROM \"sertifikat\" WHERE \"personil_id\"='" + id + "'");
 		await f.executeSertifikat(sertifikat, id, "personil", "personil_id");
 	}
 	
-	const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
-	if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp) {
-		result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
-		return false;
+	if((personil.nipp && personil.nipp != '0' ) || (personil.status_kepegawaian_id && personil.status_kepegawaian_id != '2')){		
+		const rowNippNama = await f.getOneRow("personil", "nipp", personil.nipp);
+		if (rowNippNama && rowNippNama.id != personil.id && rowNippNama.nipp == personil.nipp) {
+			result(null, { 'status': false, 'message': 'Maaf, NIPP telah terdaftar!' })
+			return false;
+		}
 	}
+	
 	const remarkPersonil = personil.remark;
-
+	
 	var str;
 	var arr = ["tipe_personil_id", "approval_status_id", "simop_kd_pers_pandu", "simop_kd_pers_pandu_cbg", "enable", "asset_kapal_id", "nama", "kelas", "tempat_lahir", "tanggal_lahir", "nipp", "jabatan", "status_kepegawaian_id", "cv", "cabang_id", "nomor_sk", "tanggal_mulai", "tanggal_selesai", "sk", "skpp", "surat_kesehatan", "sertifikat_id", "skpp_tanggal_mulai", "skpp_tanggal_selesai", "pandu_bandar_laut_id", "manning", "remark", "skes_tanggal_mulai", "skes_tanggal_selesai","pendidikan"];
 	if (personil.is_from_simop) {
@@ -311,26 +304,29 @@ Personil.updateById = async (id, personil, result, user_id) => {
 
 		if (personil.approval_status_id == "1") {
 			const rows = await f.checkDataId("personil", id, personil);
-			var dt, smp;
-
-			if (rows.pandu_bandar_laut_id == 2) {
-				dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
-				smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
-				if (rows.simop_kd_pers_pandu == undefined) {
-					if (rows.cabang_id > 1) {
-						personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
-					} else {
-						personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
+			console.log('data preparation', rows)
+			if (rows.tipe_personil_id === 1) {
+				console.log('data send to simop')
+				var dt, smp;
+				if (rows.pandu_bandar_laut_id == 2) {
+					dt = cekBody(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+					smp = await simop.insertPanduLaut(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id > 1 ? "cabang" : "prod")
+					if (rows.simop_kd_pers_pandu == undefined) {
+						if (rows.cabang_id > 1) {
+							personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautCabangResponse.esbBody.kdPersPandu;
+						} else {
+							personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPanduLautProdResponse.esbBody.kdPersPandu;
+						}
 					}
-				}
-			} else {
-				dt = cekBodyBandar(rows, rows.cabang_id != 1 ? "cabang" : "prod");
-				var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
-				if (rows.simop_kd_pers_pandu == undefined) {
-					if (rows.cabang_id > 1) {
-						personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
-					} else {
-						personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
+				} else {
+					dt = cekBodyBandar(rows, rows.cabang_id != 1 ? "cabang" : "prod");
+					var smp = await simop.insertPandu(dt, rows.simop_kd_pers_pandu ? 2 : 1, rows.cabang_id != 1 ? "cabang" : "prod");
+					if (rows.simop_kd_pers_pandu == undefined) {
+						if (rows.cabang_id > 1) {
+							personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduCabangResponse.esbBody.kdPersPandu;
+						} else {
+							personil['simop_kd_pers_pandu'] = smp.data.opInsertMstPersPanduProdResponse.esbBody.kdPersPandu;
+						}
 					}
 				}
 			}
