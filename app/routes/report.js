@@ -19,4 +19,5 @@ module.exports = app => {
     app.post("/report/kapal", report.kapal);
     app.post("/report/stasiunpandu_and_equipment", report.stasiunpandu_and_equipment);
     app.post("/report/rumahdinas", report.rumahdinas);
+    app.post("/report/dasarhukum", report.dasarhukum);
 };

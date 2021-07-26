@@ -34,6 +34,10 @@ exports.create = (req, res) => {
         }
     }
 
+    if (req.fields.dasar_hukum) {
+        dasarhukum.dasar_hukum = f.uploadFile64('dasar_hukum', req.fields.dasar_hukum);
+    }
+
     DasarHukum.create(dasarhukum, (err, data) => {
         if (err)
             res.status(500).send({
@@ -78,7 +82,14 @@ exports.update = (req, res) => {
             message: "Content can not be empty!"
         });
     }
-    console.log("danangnya", req.fields);
+    console.log("data field", req.fields);
+    if (req.fields.dasar_hukum) {
+        if (req.fields.dasar_hukum.substring(0, 4) == "data") {
+            req.fields.dasar_hukum = f.uploadFile64('dasar_hukum', req.fields.dasar_hukum);
+        } else {
+            delete req.fields.dasar_hukum
+        }
+    }
 
     if (req.fields.tanggal)
         req.fields.tanggal = f.toDate(req.fields.tanggal);

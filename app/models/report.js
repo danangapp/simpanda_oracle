@@ -1786,5 +1786,51 @@ Report.rumahdinas = async (req, result, cabang_id) => {
     }
 }
 
+Report.dasarhukum = async (req, result, cabang_id) => {
+
+    if (req.fields) {
+        const cabang = req.fields.cabang_id;
+
+        var query = `SELECT rownum as no,
+            a."nama_asset" as nama_asset,
+            a."no_asset" as nomor_asset,
+            a."tahun_perolehan" as tahun_peroleh,
+            a."alamat" as alamat,
+            b."nama" as wilayah,
+            a."satuan" as satuan,
+            a."status_kepemilikan" as status_kepemilikan,
+            a."nilai_perolehan" as nilai_peroleh,
+            a."keterangan_rumah_dinas" as keterangan,
+            a."nilai_buku" as nilai_buku,
+            a."nilai" as nilai_perawatan,
+            a."catatan" as catatan_perawatan,
+            
+            to_char(a."tanggal",'DD-MM-YYYY') as tanggal_perawatan
+        
+            from "asset_rumah_dinas" a
+            INNER JOIN "cabang" b ON a."cabang_id" = b."id"
+            WHERE a."id" IN (${cabang})
+        `;
+
+        var output1 = await f.query(query);
+        var output = output1.rows;
+        var arr = {};
+        arr['pk'] = output;
+
+        var d = new Date();
+        var t = d.getTime();
+        fs.readFile('./report/Custom Report - Dasar Hukum.xlsx', function async(err, dt) {
+            var template = new XlsxTemplate(dt);
+            template.substitute(1, arr);
+            var out = template.generate();
+            const fileName = './files/reports/rumahdinas' + t + '.xlsx';
+            fs.writeFileSync(fileName, out, 'binary');
+            result(null, t + '.xlsx');
+        });
+    } else {
+        result(null, { "status": "error no data" });
+    }
+}
+
 module.exports = Report;
 
