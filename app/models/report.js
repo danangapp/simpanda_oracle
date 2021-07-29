@@ -1454,6 +1454,7 @@ Report.personelpeformance = async (req, result, cabang_id) => {
                     NM_PERS_PANDU`
         var output1 = await f.querySimop(query);
         var output = output1.rows;
+        console.log('data perfomance pandu', await f.querySimop(query))
         result(null, output);
     } else {
         result(null, { "status": "error no data" });
@@ -1483,7 +1484,7 @@ Report.shippeformance = async (req, result, cabang_id) => {
                     
         var output1 = await f.querySimop(query);
         var output = output1.rows;
-
+        console.log('data perfomance kapal', await f.querySimop(query))
         result(null, output);
     } else {
         result(null, { "status": "error no data" });
