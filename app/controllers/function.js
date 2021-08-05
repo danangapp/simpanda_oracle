@@ -261,7 +261,7 @@ module.exports = {
                         }
                         wherein = wherein.substring(0, wherein.length - 2);
                         wheres += "a.\"" + i + "\" IN (" + wherein + ")";
-                        wheres += " and ";
+                        wheres += " AND ";
                     } else {
                         wheres += this.customWhere(db, i, param);
                     }

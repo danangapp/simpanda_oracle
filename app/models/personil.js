@@ -232,37 +232,70 @@ Personil.findById = async (id, result) => {
 Personil.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "personil");
 
-
-	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "filter-1") {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
-		} else if (param.sertifikat == 'filter-2') {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
-		} else if (param.sertifikat == 'filter-3') {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
-		}
+	if (param.sertifikat) {
+		wheres = wheres.replace(`and LOWER(a."sertifikat") = LOWER('${param.sertifikat}')`, '');
 	}
 
-	wheres = wheres.replace(`a."flag"`, `a1."flag"`);
-	var query = "SELECT a.* , a1.\"flag\" as \"flag\", a2.\"nama\" as \"approval_status\", a3.\"nama\" as \"ena\", a4.\"nama_asset\" as \"asset_kapal\", a5.\"nama\" as \"status_kepegawaian\", a6.\"nama\" as \"cabang\", a7.\"nama\" as \"pandu_bandar_laut\" , a1.\"nama\" as \"tipe_personil\" FROM \"personil\" a  LEFT JOIN \"tipe_personil\" a1 ON a.\"tipe_personil_id\" = a1.\"id\"  LEFT JOIN \"approval_status\" a2 ON a.\"approval_status_id\" = a2.\"id\"  LEFT JOIN \"enable\" a3 ON a.\"enable\" = a3.\"id\"  LEFT JOIN \"asset_kapal\" a4 ON a.\"asset_kapal_id\" = a4.\"id\"  LEFT JOIN \"status_kepegawaian\" a5 ON a.\"status_kepegawaian_id\" = a5.\"id\"  LEFT JOIN \"cabang\" a6 ON a.\"cabang_id\" = a6.\"id\"  LEFT JOIN \"pandu_bandar_laut\" a7 ON a.\"pandu_bandar_laut_id\" = a7.\"id\" ";
+	wheres = wheres.replace(`a."flag"`, `tp."flag"`);
+	var query = `SELECT a.*, 
+						ass."nama" AS "approval_status",
+						ak."nama_asset" AS "asset_kapal",
+						c."nama" AS "cabang",
+						e."nama" AS "ena",
+						pbl."nama" AS "pandu_bandar_laut",
+						sk."nama" AS "status_kepegawaian",
+						tp."nama" AS "tipe_personil",
+						tp."flag" AS "flag"
+				FROM "personil" a
+				LEFT JOIN "approval_status" ass ON ass."id" = a."approval_status_id"
+				LEFT JOIN "asset_kapal" ak ON ak."id" = a."asset_kapal_id"
+				LEFT JOIN "cabang" c ON c."id" = a."cabang_id"
+				LEFT JOIN "enable" e ON e."id" = a."enable"
+				LEFT JOIN "pandu_bandar_laut" pbl ON pbl."id" = a."pandu_bandar_laut_id"
+				LEFT JOIN "status_kepegawaian" sk ON sk."id" = a."status_kepegawaian_id"
+				LEFT JOIN "tipe_personil" tp ON tp."id"= a."tipe_personil_id"`
 
 	if (param.sertifikat != undefined) {
-		query += 'LEFT JOIN \"sertifikat\" a8 ON a8.\"personil_id\" = a.\"id\"'
+		query += 'LEFT JOIN \"sertifikat\" s ON s.\"personil_id\" = a.\"id\"'
 		if (param.sertifikat == "filter-1") {
-			wheres += ' AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 3)'
+			wheres += ' AND s.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 3)'
 		} else if (param.sertifikat == 'filter-2') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 3) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 7)'
+			wheres += ' AND s.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 3) AND s.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 7)'
 		} else if (param.sertifikat == 'filter-3') {
-			wheres += ' AND a8.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 7) AND a8.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
+			wheres += ' AND s.\"tanggal_expire\" > ADD_MONTHS(SYSDATE, 7) AND s.\"tanggal_expire\" <= ADD_MONTHS(SYSDATE, 12)'
 		}
-		wheres += ' AND a8.\"tanggal_expire\" > SYSDATE ';
+		wheres += ' AND s.\"tanggal_expire\" > SYSDATE ';
 	}
 
 	if (param.q) {
 		wheres += wheres.length == 7 ? "(" : "AND (";
-		wheres += `LOWER(a."tipe_personil_id") LIKE LOWER('%${param.q}%') OR LOWER(a."approval_status_id") LIKE LOWER('%${param.q}%') OR LOWER(a."simop_kd_pers_pandu") LIKE LOWER('%${param.q}%') OR LOWER(a."simop_kd_pers_pandu_cbg") LIKE LOWER('%${param.q}%') OR LOWER(a."enable") LIKE LOWER('%${param.q}%') OR LOWER(a."asset_kapal_id") LIKE LOWER('%${param.q}%') OR LOWER(a."nama") LIKE LOWER('%${param.q}%') OR LOWER(a."kelas") LIKE LOWER('%${param.q}%') OR LOWER(a."tempat_lahir") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_lahir") LIKE LOWER('%${param.q}%') OR LOWER(a."nipp") LIKE LOWER('%${param.q}%') OR LOWER(a."jabatan") LIKE LOWER('%${param.q}%') OR LOWER(a."status_kepegawaian_id") LIKE LOWER('%${param.q}%') OR LOWER(a."cv") LIKE LOWER('%${param.q}%') OR LOWER(a."cabang_id") LIKE LOWER('%${param.q}%') OR LOWER(a."nomor_sk") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_mulai") LIKE LOWER('%${param.q}%') OR LOWER(a."tanggal_selesai") LIKE LOWER('%${param.q}%') OR LOWER(a."sk") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp") LIKE LOWER('%${param.q}%') OR LOWER(a."surat_kesehatan") LIKE LOWER('%${param.q}%') OR LOWER(a."sertifikat_id") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp_tanggal_mulai") LIKE LOWER('%${param.q}%') OR LOWER(a."skpp_tanggal_selesai") LIKE LOWER('%${param.q}%') OR LOWER(a."pandu_bandar_laut_id") LIKE LOWER('%${param.q}%')`;
+		wheres += `LOWER(a."tipe_personil_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."approval_status_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."simop_kd_pers_pandu") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."simop_kd_pers_pandu_cbg") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."enable") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."asset_kapal_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."nama") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."kelas") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."tempat_lahir") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."tanggal_lahir") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."nipp") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."jabatan") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."status_kepegawaian_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."cv") LIKE LOWER('%${param.q}%') OR LOWER(a."cabang_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."nomor_sk") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."tanggal_mulai") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."tanggal_selesai") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."sk") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."skpp") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."surat_kesehatan") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."sertifikat_id") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."skpp_tanggal_mulai") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."skpp_tanggal_selesai") LIKE LOWER('%${param.q}%') 
+				OR LOWER(a."pandu_bandar_laut_id") LIKE LOWER('%${param.q}%')`;
 		wheres += ")";
 	}
+	
 
 	wheres += f.whereCabang(cabang_id, `a.\"cabang_id\"`, wheres.length);
 	query += wheres;

@@ -144,14 +144,8 @@ AssetKapal.findById = async (id, result) => {
 AssetKapal.getAll = async (param, result, cabang_id) => {
 	var wheres = f.getParam(param, "asset_kapal");
 
-	if (param.sertifikat != undefined) {
-		if (param.sertifikat == "filter-1") {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-1'`, '');
-		} else if (param.sertifikat == 'filter-2') {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-2'`, '');
-		} else if (param.sertifikat == 'filter-3') {
-			wheres = wheres.replace(` and a."sertifikat" = 'filter-3'`, '');
-		}
+	if (param.sertifikat) {
+		wheres = wheres.replace(`and LOWER(a."sertifikat") = LOWER('${param.sertifikat}')`, '');
 	}
 
 	wheres = wheres.replace(`a."flag"`, `a2."flag"`);
